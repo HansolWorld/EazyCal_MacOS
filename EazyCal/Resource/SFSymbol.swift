@@ -10,6 +10,8 @@ import Foundation
 enum SFSymbol {
     case square
     case check
+    case circle
+    case checkCircle
     
     var name: String {
         switch self {
@@ -17,6 +19,10 @@ enum SFSymbol {
             return "square"
         case .check:
             return "checkmark.square.fill"
+        case .circle:
+            return "circle"
+        case .checkCircle:
+            return "circle.inset.filled"
         }
     }
 }
