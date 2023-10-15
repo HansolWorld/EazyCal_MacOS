@@ -12,6 +12,7 @@ extension Font {
     static let category: Font = .system(size: 12).weight(.medium)
     static let dday: Font = .system(size: 10).weight(.regular)
     static let templete: Font = .system(size: 9)
+    static let semiTitle: Font = .system(size: 13).weight(.semibold)
 }
 
 //struct FontStyle {

@@ -17,6 +17,7 @@ struct CategoryLabel: View {
             RoundedRectangle(cornerRadius: 4)
                 .frame(width: 4, height: 16)
             Text(name)
+                .font(.category)
                 .foregroundStyle(.black)
             Spacer()
             Button(action: {
@@ -26,7 +27,6 @@ struct CategoryLabel: View {
             }
         }
         .foregroundStyle(Color(color))
-        .padding()
     }
     
     func checkToImageName() -> String {

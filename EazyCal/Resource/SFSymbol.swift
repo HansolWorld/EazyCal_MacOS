@@ -12,6 +12,7 @@ enum SFSymbol {
     case check
     case circle
     case checkCircle
+    case circlePlus
     
     var name: String {
         switch self {
@@ -23,6 +24,8 @@ enum SFSymbol {
             return "circle"
         case .checkCircle:
             return "circle.inset.filled"
+        case .circlePlus:
+            return "plus.circle.fill"
         }
     }
 }

@@ -19,6 +19,8 @@
 		FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759142ADB9FF0001E588F /* FontStyle.swift */; };
 		FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759162ADBA50F001E588F /* TodoLabel.swift */; };
 		FF57591B2ADBA578001E588F /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591A2ADBA578001E588F /* Importance.swift */; };
+		FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591D2ADBAFDA001E588F /* CategoryView.swift */; };
+		FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591F2ADBB068001E588F /* CalendarCategory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		FF5759142ADB9FF0001E588F /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
 		FF5759162ADBA50F001E588F /* TodoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLabel.swift; sourceTree = "<group>"; };
 		FF57591A2ADBA578001E588F /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
+		FF57591D2ADBAFDA001E588F /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
+		FF57591F2ADBB068001E588F /* CalendarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */,
+				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
 				FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */,
 				FF41EB012AD8CCB9002FD4A9 /* MainView.swift */,
 				FF57591C2ADBAEB0001E588F /* CoreData */,
@@ -96,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
+				FF57591D2ADBAFDA001E588F /* CategoryView.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -137,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				FF57591A2ADBA578001E588F /* Importance.swift */,
+				FF57591F2ADBB068001E588F /* CalendarCategory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -145,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				FF41EB0A2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld */,
-				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
 				FF41EB082AD8CCBB002FD4A9 /* Persistence.swift */,
 			);
 			path = CoreData;
@@ -226,6 +232,8 @@
 				FF41EB092AD8CCBB002FD4A9 /* Persistence.swift in Sources */,
 				FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */,
 				FF5759132ADB9EEF001E588F /* TempleteLabel.swift in Sources */,
+				FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */,
+				FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */,
 				FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */,
 				FF41EB0C2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld in Sources */,
 				FF57591B2ADBA578001E588F /* Importance.swift in Sources */,
