@@ -20,6 +20,7 @@ struct MainView: View {
         HStack {
             VStack {
                 CategoryView()
+                TemplateView()
             }
             Spacer()
         }

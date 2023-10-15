@@ -15,13 +15,16 @@
 		FF41EB0C2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FF41EB0A2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld */; };
 		FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57590D2ADB9A86001E588F /* CategoryLabel.swift */; };
 		FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759102ADB9CC3001E588F /* SFSymbol.swift */; };
-		FF5759132ADB9EEF001E588F /* TempleteLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759122ADB9EEF001E588F /* TempleteLabel.swift */; };
+		FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759122ADB9EEF001E588F /* TemplateLabel.swift */; };
 		FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759142ADB9FF0001E588F /* FontStyle.swift */; };
 		FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759162ADBA50F001E588F /* TodoLabel.swift */; };
 		FF57591B2ADBA578001E588F /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591A2ADBA578001E588F /* Importance.swift */; };
 		FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591D2ADBAFDA001E588F /* CategoryView.swift */; };
 		FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591F2ADBB068001E588F /* CalendarCategory.swift */; };
 		FF5759222ADBC1A3001E588F /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */; };
+		FF5759242ADBC320001E588F /* TemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759232ADBC320001E588F /* TemplateView.swift */; };
+		FF5759262ADBC33B001E588F /* TemplateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759252ADBC33B001E588F /* TemplateViewModel.swift */; };
+		FF5759282ADBC3B8001E588F /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759272ADBC3B8001E588F /* Template.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,13 +39,16 @@
 		FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF57590D2ADB9A86001E588F /* CategoryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabel.swift; sourceTree = "<group>"; };
 		FF5759102ADB9CC3001E588F /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
-		FF5759122ADB9EEF001E588F /* TempleteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempleteLabel.swift; sourceTree = "<group>"; };
+		FF5759122ADB9EEF001E588F /* TemplateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateLabel.swift; sourceTree = "<group>"; };
 		FF5759142ADB9FF0001E588F /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
 		FF5759162ADBA50F001E588F /* TodoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLabel.swift; sourceTree = "<group>"; };
 		FF57591A2ADBA578001E588F /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
 		FF57591D2ADBAFDA001E588F /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		FF57591F2ADBB068001E588F /* CalendarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategory.swift; sourceTree = "<group>"; };
 		FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
+		FF5759232ADBC320001E588F /* TemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateView.swift; sourceTree = "<group>"; };
+		FF5759252ADBC33B001E588F /* TemplateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateViewModel.swift; sourceTree = "<group>"; };
+		FF5759272ADBC3B8001E588F /* Template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,9 +89,9 @@
 				FF5759192ADBA56C001E588F /* Model */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
 				FF57590B2ADB9A65001E588F /* Todo */,
-				FF57590A2ADB9A5D001E588F /* Templete */,
 				FF57590C2ADB9A6A001E588F /* Calendar */,
 				FF5759092ADB9A50001E588F /* Category */,
+				FF57590A2ADB9A5D001E588F /* Templete */,
 				FF41EB052AD8CCBB002FD4A9 /* Preview Content */,
 			);
 			path = EazyCal;
@@ -112,7 +118,9 @@
 		FF57590A2ADB9A5D001E588F /* Templete */ = {
 			isa = PBXGroup;
 			children = (
-				FF5759122ADB9EEF001E588F /* TempleteLabel.swift */,
+				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
+				FF5759232ADBC320001E588F /* TemplateView.swift */,
+				FF5759252ADBC33B001E588F /* TemplateViewModel.swift */,
 			);
 			path = Templete;
 			sourceTree = "<group>";
@@ -147,6 +155,7 @@
 			children = (
 				FF57591A2ADBA578001E588F /* Importance.swift */,
 				FF57591F2ADBB068001E588F /* CalendarCategory.swift */,
+				FF5759272ADBC3B8001E588F /* Template.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -232,9 +241,12 @@
 			files = (
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */,
+				FF5759242ADBC320001E588F /* TemplateView.swift in Sources */,
 				FF41EB092AD8CCBB002FD4A9 /* Persistence.swift in Sources */,
 				FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */,
-				FF5759132ADB9EEF001E588F /* TempleteLabel.swift in Sources */,
+				FF5759282ADBC3B8001E588F /* Template.swift in Sources */,
+				FF5759262ADBC33B001E588F /* TemplateViewModel.swift in Sources */,
+				FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */,
 				FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */,
 				FF5759222ADBC1A3001E588F /* CategoryViewModel.swift in Sources */,
 				FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */,
