@@ -69,19 +69,16 @@
 		FF41EAFE2AD8CCB9002FD4A9 /* EazyCal */ = {
 			isa = PBXGroup;
 			children = (
+				FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */,
 				FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */,
 				FF41EB012AD8CCB9002FD4A9 /* MainView.swift */,
+				FF57591C2ADBAEB0001E588F /* CoreData */,
 				FF5759192ADBA56C001E588F /* Model */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
 				FF57590B2ADB9A65001E588F /* Todo */,
 				FF57590A2ADB9A5D001E588F /* Templete */,
 				FF57590C2ADB9A6A001E588F /* Calendar */,
 				FF5759092ADB9A50001E588F /* Category */,
-				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
-				FF41EB082AD8CCBB002FD4A9 /* Persistence.swift */,
-				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
-				FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */,
-				FF41EB0A2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld */,
 				FF41EB052AD8CCBB002FD4A9 /* Preview Content */,
 			);
 			path = EazyCal;
@@ -129,6 +126,7 @@
 		FF57590F2ADB9CB3001E588F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
 				FF5759102ADB9CC3001E588F /* SFSymbol.swift */,
 				FF5759142ADB9FF0001E588F /* FontStyle.swift */,
 			);
@@ -141,6 +139,16 @@
 				FF57591A2ADBA578001E588F /* Importance.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		FF57591C2ADBAEB0001E588F /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				FF41EB0A2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld */,
+				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
+				FF41EB082AD8CCBB002FD4A9 /* Persistence.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
