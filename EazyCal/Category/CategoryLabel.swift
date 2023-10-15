@@ -8,29 +8,27 @@
 import SwiftUI
 
 struct CategoryLabel: View {
-    let name: String
-    let color: UIColor
-    @Binding var isCheck: Bool
+    @ObservedObject var category: CalendarCategory
     
     var body: some View {
         HStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 4)
                 .frame(width: 4, height: 16)
-            Text(name)
+            Text(category.name)
                 .font(.category)
                 .foregroundStyle(.black)
             Spacer()
             Button(action: {
-                isCheck.toggle()
+                category.isCheck.toggle()
             }) {
                 Image(systemName: checkToImageName())
             }
         }
-        .foregroundStyle(Color(color))
+        .foregroundStyle(Color(category.color))
     }
     
     func checkToImageName() -> String {
-        switch self.isCheck {
+        switch self.category.isCheck {
         case true:
             return SFSymbol.check.name
         case false:
@@ -40,5 +38,5 @@ struct CategoryLabel: View {
 }
 
 #Preview {
-    CategoryLabel(name: "기본 캘린더", color: .blue, isCheck: .constant(false))
+    CategoryLabel(category: CalendarCategory(name: "기본 캘린더", color: "Blue", isCheck: false))
 }

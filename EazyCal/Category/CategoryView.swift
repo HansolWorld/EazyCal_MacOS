@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CategoryView: View {
-    let categories: [CalendarCategory]
-    @State var isCheck: Bool = true
+    @StateObject private var categoryViewModel = CategoryViewModel()
+
     var body: some View {
         VStack(spacing: 19) {
             HStack {
@@ -23,12 +23,8 @@ struct CategoryView: View {
                 }
             }
             .foregroundStyle(.secondary)
-            ForEach(categories, id: \.self) { category in
-                CategoryLabel(
-                    name: category.name,
-                    color: UIColor(named: category.color) ?? UIColor.black,
-                    isCheck: $isCheck
-                )
+            ForEach(categoryViewModel.categories) { category in
+                CategoryLabel(category: category)
             }
         }
         .padding()
@@ -36,10 +32,5 @@ struct CategoryView: View {
 }
 
 #Preview {
-    CategoryView(categories: [
-        CalendarCategory(name: "기본 캘린더", color: "Blue"),
-        CalendarCategory(name: "사이드 프로젝트", color: "Puple"),
-        CalendarCategory(name: "개인 공부", color: "Orange"),
-        CalendarCategory(name: "집안일", color: "Pink")
-    ])
+    CategoryView()
 }

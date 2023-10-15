@@ -21,6 +21,7 @@
 		FF57591B2ADBA578001E588F /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591A2ADBA578001E588F /* Importance.swift */; };
 		FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591D2ADBAFDA001E588F /* CategoryView.swift */; };
 		FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591F2ADBB068001E588F /* CalendarCategory.swift */; };
+		FF5759222ADBC1A3001E588F /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		FF57591A2ADBA578001E588F /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
 		FF57591D2ADBAFDA001E588F /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		FF57591F2ADBB068001E588F /* CalendarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategory.swift; sourceTree = "<group>"; };
+		FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 			children = (
 				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
 				FF57591D2ADBAFDA001E588F /* CategoryView.swift */,
+				FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */,
 				FF5759132ADB9EEF001E588F /* TempleteLabel.swift in Sources */,
 				FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */,
+				FF5759222ADBC1A3001E588F /* CategoryViewModel.swift in Sources */,
 				FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */,
 				FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */,
 				FF41EB0C2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld in Sources */,
