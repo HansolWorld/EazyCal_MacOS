@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  MainView.swift
 //  EazyCal
 //
 //  Created by apple on 10/13/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-struct ContentView: View {
+struct MainView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -82,5 +82,5 @@ private let itemFormatter: DateFormatter = {
 }()
 
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    MainView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
