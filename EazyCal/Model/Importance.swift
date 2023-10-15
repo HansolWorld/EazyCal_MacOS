@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+enum Importance {
+    case nomal
+    case middle
+    case high
+}
