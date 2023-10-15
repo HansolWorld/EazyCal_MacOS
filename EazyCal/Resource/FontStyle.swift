@@ -9,7 +9,8 @@ import SwiftUI
 
 extension Font {
     static let icon: Font = .system(size: 20)
-    static let category: Font = .system(size: 12)
+    static let category: Font = .system(size: 12).weight(.medium)
+    static let dday: Font = .system(size: 10).weight(.regular)
     static let templete: Font = .system(size: 9)
 }
 
