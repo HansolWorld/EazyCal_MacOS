@@ -1,0 +1,18 @@
+//
+//  FontStyle.swift
+//  EazyCal
+//
+//  Created by apple on 10/15/23.
+//
+
+import SwiftUI
+
+extension Font {
+    static let icon: Font = .system(size: 20)
+    static let category: Font = .system(size: 12)
+    static let templete: Font = .system(size: 9)
+}
+
+//struct FontStyle {
+//    case
+//}
