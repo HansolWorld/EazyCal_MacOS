@@ -21,6 +21,7 @@ struct MainView: View {
             VStack {
                 CategoryView()
             }
+            Spacer()
         }
 //        NavigationView {
 //            List {
