@@ -8,30 +8,44 @@
 import SwiftUI
 
 struct TodoLabel: View {
-    let task: String
-    let date: Date
-    let importance: Importance
-    @Binding var isCheck: Bool
+    @ObservedObject var todo: Todo
     
     var body: some View {
         HStack(spacing: 8) {
             Button(action: {
-                isCheck.toggle()
+                todo.isCheck.toggle()
             }) {
                 Image(systemName: checkToImageName())
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 14, height: 14)
             }
-            Text(task)
+            Text(todo.name)
                 .font(.category)
+                .foregroundStyle(todo.isCheck ? .gray : .black)
+                .strikethrough(todo.isCheck)
+                .background {
+                    switch todo.importance {
+                    case .nomal:
+                        Color.clear
+                    case .middle:
+                        Color.yellow
+                            .opacity(0.2)
+                    case .high:
+                        Color.highlight
+                            .opacity(0.5)
+                    }
+                }
             Spacer()
             Text(caclulatorDay())
                 .font(.dday)
+                .foregroundStyle(.gray)
         }
         .tint(.black)
-        .padding()
     }
     
     func checkToImageName() -> String {
-        switch self.isCheck {
+        switch todo.isCheck {
         case true:
             return SFSymbol.checkCircle.name
         case false:
@@ -40,20 +54,22 @@ struct TodoLabel: View {
     }
 
     func caclulatorDay() -> String{
-        let currentDay = Date()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: Date(), to: todo.date)
+        guard let daysDifference = components.day else { return ""}
         
-        let dday = Int(Date().timeIntervalSince(date)/86400)
-        
-        if dday < 0 {
-            return "\(dday)일 지남"
-        } else if dday == 0 {
+        if daysDifference < 0 {
+            return "\(abs(daysDifference))일 지남"
+        } else if daysDifference == 0 {
             return "오늘"
         } else {
-            return "\(dday)일 전"
+            return "\(daysDifference)일 전"
         }
     }
 }
 
 #Preview {
-    TodoLabel(task: "중간점검", date: Date(), importance: .high, isCheck: .constant(true))
+    TodoLabel(
+        todo: Todo.dummyTodo
+    )
 }

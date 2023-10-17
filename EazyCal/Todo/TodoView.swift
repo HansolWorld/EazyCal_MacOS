@@ -1,5 +1,5 @@
 //
-//  TemplateView.swift
+//  TodoView.swift
 //  EazyCal
 //
 //  Created by apple on 10/15/23.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct TemplateView: View {
-    @StateObject private var templateViewModel = TemplateViewModel()
-    var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
-    
+struct TodoView: View {
+    let mode: IndexCategory
+    @StateObject private var todoViewModel = TodoViewModel()
+
     var body: some View {
-        VStack(spacing: 19) {
+        VStack(spacing: 15) {
             HStack {
-                Text(IndexCategory.template.title)
+                Text(mode.title)
                     .font(.semiTitle)
                 Spacer()
                 Button(action: {
@@ -25,10 +25,8 @@ struct TemplateView: View {
             }
             .foregroundStyle(.gray)
             ScrollView {
-                LazyVGrid(columns: columns) {
-                    ForEach(templateViewModel.templates) { template in
-                        TemplateLabel(template: template)
-                    }
+                ForEach(todoViewModel.todos) { todo in
+                    TodoLabel(todo: todo)
                 }
             }
         }
@@ -37,5 +35,5 @@ struct TemplateView: View {
 }
 
 #Preview {
-    TemplateView()
+    TodoView(mode: IndexCategory.futureTodo)
 }

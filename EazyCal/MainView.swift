@@ -15,15 +15,38 @@ struct MainView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
+    private var hGrid = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        HStack {
-            VStack {
-                CategoryView()
-                TemplateView()
+        ZStack {
+            Color.background
+            HStack() {
+                LazyHGrid(rows: hGrid) {
+                    VStack {
+                        CategoryView()
+                        Divider()
+                    }
+                    VStack {
+                        TemplateView()
+                        Divider()
+                    }
+                    VStack {
+                        TodoView(mode: .futureTodo)
+                        Divider()
+                    }
+                    VStack {
+                        TodoView(mode: .Todo)
+                    }
+                }
+                .padding(.vertical)
+                .background {
+                    Color.white
+                }
+                Spacer()
+                CalenderView()
             }
-            Spacer()
         }
+        .ignoresSafeArea()
 //        NavigationView {
 //            List {
 //                ForEach(items) { item in

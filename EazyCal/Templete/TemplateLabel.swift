@@ -19,9 +19,11 @@ struct TemplateLabel: View {
                     .opacity(0.1)
                 Text(template.icon)
                     .font(.icon)
+                    .foregroundStyle(.black)
             }
             Text(template.name)
                 .font(.templete)
+                .foregroundStyle(.black)
         }
     }
 }

@@ -11,9 +11,9 @@ struct CategoryView: View {
     @StateObject private var categoryViewModel = CategoryViewModel()
 
     var body: some View {
-        VStack(spacing: 19) {
+        VStack(spacing: 15) {
             HStack {
-                Text("캘린더")
+                Text(IndexCategory.calendar.title)
                     .font(.semiTitle)
                 Spacer()
                 Button(action: {
@@ -22,12 +22,14 @@ struct CategoryView: View {
                     Image(systemName: SFSymbol.circlePlus.name)
                 }
             }
-            .foregroundStyle(.secondary)
-            ForEach(categoryViewModel.categories) { category in
-                CategoryLabel(category: category)
+            .foregroundStyle(.gray)
+            ScrollView {
+                ForEach(categoryViewModel.categories) { category in
+                    CategoryLabel(category: category)
+                }
             }
         }
-        .padding()
+        .padding(.horizontal)
     }
 }
 

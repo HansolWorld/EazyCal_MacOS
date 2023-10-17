@@ -13,6 +13,8 @@ enum SFSymbol {
     case circle
     case checkCircle
     case circlePlus
+    case chevronBackward
+    case chevronForward
     
     var name: String {
         switch self {
@@ -26,6 +28,10 @@ enum SFSymbol {
             return "circle.inset.filled"
         case .circlePlus:
             return "plus.circle.fill"
+        case .chevronBackward:
+            return "chevron.backward.circle.fill"
+        case .chevronForward:
+            return "chevron.forward.circle.fill"
         }
     }
 }
