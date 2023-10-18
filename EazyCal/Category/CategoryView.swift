@@ -14,7 +14,7 @@ struct CategoryView: View {
         VStack(spacing: 15) {
             HStack {
                 Text(IndexCategory.calendar.title)
-                    .font(.semiTitle)
+                    .customStyle(.body)
                 Spacer()
                 Button(action: {
                     

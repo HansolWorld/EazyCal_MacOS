@@ -46,15 +46,14 @@ struct CalenderView: View {
                     .foregroundStyle(.white)
             }
             Text(calendarViewModel.monthYearString())
+                .customStyle(.title)
             Button(action: {
                 nextMonth()
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
                     .foregroundStyle(.white)
-                    
             }
         }
-        .font(.title)
         .foregroundStyle(.black)
     }
     

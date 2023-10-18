@@ -18,11 +18,11 @@ struct TemplateLabel: View {
                     .foregroundStyle(Color(template.category.color))
                     .opacity(0.1)
                 Text(template.icon)
-                    .font(.icon)
+                    .font(.system(size: 20))
                     .foregroundStyle(.black)
             }
             Text(template.name)
-                .font(.templete)
+                .customStyle(.caption)
                 .foregroundStyle(.black)
         }
     }

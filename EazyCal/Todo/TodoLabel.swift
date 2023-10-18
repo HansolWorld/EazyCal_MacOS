@@ -21,7 +21,7 @@ struct TodoLabel: View {
                     .frame(width: 14, height: 14)
             }
             Text(todo.name)
-                .font(.category)
+                .customStyle(.body)
                 .foregroundStyle(todo.isCheck ? .gray : .black)
                 .strikethrough(todo.isCheck)
                 .background {
@@ -38,7 +38,7 @@ struct TodoLabel: View {
                 }
             Spacer()
             Text(caclulatorDay())
-                .font(.dday)
+                .customStyle(.caption)
                 .foregroundStyle(.gray)
         }
         .tint(.black)

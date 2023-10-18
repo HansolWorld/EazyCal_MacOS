@@ -15,7 +15,7 @@ struct TemplateView: View {
         VStack(spacing: 19) {
             HStack {
                 Text(IndexCategory.template.title)
-                    .font(.semiTitle)
+                    .customStyle(.subtitle)
                 Spacer()
                 Button(action: {
                     

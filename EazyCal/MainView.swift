@@ -47,6 +47,14 @@ struct MainView: View {
             }
         }
         .ignoresSafeArea()
+        .onAppear {
+            for family: String in UIFont.familyNames {
+                print(family)
+                for names : String in UIFont.fontNames(forFamilyName: family){
+                    print("=== \(names)")
+                }
+            }
+        }
 //        NavigationView {
 //            List {
 //                ForEach(items) { item in

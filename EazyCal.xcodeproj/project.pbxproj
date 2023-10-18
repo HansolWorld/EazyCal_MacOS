@@ -13,6 +13,9 @@
 		FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF41EB062AD8CCBB002FD4A9 /* Preview Assets.xcassets */; };
 		FF41EB092AD8CCBB002FD4A9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF41EB082AD8CCBB002FD4A9 /* Persistence.swift */; };
 		FF41EB0C2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FF41EB0A2AD8CCBB002FD4A9 /* EazyCal.xcdatamodeld */; };
+		FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */; };
+		FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */; };
+		FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */; };
 		FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57590D2ADB9A86001E588F /* CategoryLabel.swift */; };
 		FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759102ADB9CC3001E588F /* SFSymbol.swift */; };
 		FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759122ADB9EEF001E588F /* TemplateLabel.swift */; };
@@ -47,6 +50,9 @@
 		FF41EB0B2AD8CCBB002FD4A9 /* EazyCal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EazyCal.xcdatamodel; sourceTree = "<group>"; };
 		FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EazyCal.entitlements; sourceTree = "<group>"; };
 		FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Medium.otf"; sourceTree = "<group>"; };
+		FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Bold.otf"; sourceTree = "<group>"; };
+		FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Regular.otf"; sourceTree = "<group>"; };
 		FF57590D2ADB9A86001E588F /* CategoryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabel.swift; sourceTree = "<group>"; };
 		FF5759102ADB9CC3001E588F /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
 		FF5759122ADB9EEF001E588F /* TemplateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateLabel.swift; sourceTree = "<group>"; };
@@ -105,6 +111,7 @@
 				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
 				FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */,
 				FF41EB012AD8CCB9002FD4A9 /* MainView.swift */,
+				FF54FA2B2ADF7C8F00996AC9 /* fonts */,
 				FF57591C2ADBAEB0001E588F /* CoreData */,
 				FF5759192ADBA56C001E588F /* Model */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
@@ -124,6 +131,16 @@
 				FF41EB062AD8CCBB002FD4A9 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FF54FA2B2ADF7C8F00996AC9 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */,
+				FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */,
+				FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		FF5759092ADB9A50001E588F /* Category */ = {
@@ -267,6 +284,9 @@
 			files = (
 				FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */,
 				FF41EB042AD8CCBB002FD4A9 /* Assets.xcassets in Resources */,
+				FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */,
+				FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */,
+				FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,7 +466,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -482,7 +502,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

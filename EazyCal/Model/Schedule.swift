@@ -8,14 +8,6 @@
 import Foundation
 
 struct Schedule {
-    enum RepeatType {
-        case check
-        case everyDay
-        case everyWeek
-        case everyMonth
-        case everyYear
-    }
-    
     let startDate: Date
     let doDate: Date
     let oneDay: Bool

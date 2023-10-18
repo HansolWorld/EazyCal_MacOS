@@ -17,13 +17,18 @@ struct CalendarCell: View {
     
     var body: some View {
         Text("\(monthStruct().dayInt)")
+            .customStyle(.date)
             .foregroundColor(textColor(type: monthStruct().monthType))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background {
                 Color.white
             }
             .popover(isPresented: $isShow) {
-                AddSchedulerView()
+                ZStack {
+                    Color.white
+                        .scaleEffect(1.5)
+                    AddSchedulerView()
+                }
             }
             .onTapGesture(count: 2) {
                 isShow.toggle()

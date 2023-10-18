@@ -15,7 +15,7 @@ struct CategoryLabel: View {
             RoundedRectangle(cornerRadius: 4)
                 .frame(width: 4, height: 16)
             Text(category.name)
-                .font(.category)
+                .customStyle(.body)
                 .foregroundStyle(.black)
             Spacer()
             Button(action: {

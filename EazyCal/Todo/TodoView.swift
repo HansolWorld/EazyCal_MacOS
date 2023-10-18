@@ -15,7 +15,7 @@ struct TodoView: View {
         VStack(spacing: 15) {
             HStack {
                 Text(mode.title)
-                    .font(.semiTitle)
+                    .customStyle(.subtitle)
                 Spacer()
                 Button(action: {
                     
