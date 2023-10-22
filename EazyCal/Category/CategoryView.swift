@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CategoryView: View {
+    @State var isShow = false
     @StateObject private var categoryViewModel = CategoryViewModel()
 
     var body: some View {
@@ -15,17 +16,23 @@ struct CategoryView: View {
             HStack {
                 Text(IndexCategory.calendar.title)
                     .customStyle(.body)
+                    .foregroundStyle(.gray)
                 Spacer()
                 Button(action: {
-                    
+                    isShow = true
                 }) {
                     Image(systemName: SFSymbol.circlePlus.name)
+                        .tint(Color.background)
+                        .background {
+                            Circle()
+                                .foregroundStyle(Color.gray300)
+                                .scaleEffect(0.8)
+                        }
                 }
             }
-            .foregroundStyle(.gray)
             ScrollView {
                 ForEach(categoryViewModel.categories) { category in
-                    CategoryLabel(category: category)
+                    CategoryLabelView(category: category)
                 }
             }
         }

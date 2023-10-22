@@ -15,46 +15,47 @@ struct MainView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
-    private var hGrid = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    private var hGrid = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    @State var isTempleteShow: Bool = false
 
     var body: some View {
         ZStack {
             Color.background
-            HStack() {
-                LazyHGrid(rows: hGrid) {
+            HStack(spacing: 0) {
+                GeometryReader { geometry in
                     VStack {
-                        CategoryView()
-                        Divider()
+                        VStack {
+                            CategoryView()
+                            Divider()
+                        }
+                        .frame(height: geometry.size.height/4)
+                        VStack {
+                            TemplateView()
+                            Divider()
+                        }
+                        .frame(height: geometry.size.height/4)
+                        .onTapGesture {
+                            isTempleteShow = true
+                        }
+                        .popover(isPresented: $isTempleteShow) {
+                            Text("Coming Soon")
+                                .padding()
+                        }
+                        VStack {
+                            TodoView(mode: .Todo)
+                        }
+                        .frame(height: geometry.size.height/2)
                     }
-                    VStack {
-                        TemplateView()
-                        Divider()
-                    }
-                    VStack {
-                        TodoView(mode: .futureTodo)
-                        Divider()
-                    }
-                    VStack {
-                        TodoView(mode: .Todo)
+                    .padding(.vertical)
+                    .background {
+                        Color.white
                     }
                 }
-                .padding(.vertical)
-                .background {
-                    Color.white
-                }
-                Spacer()
+                .frame(maxWidth: 300)
                 CalenderView()
             }
         }
         .ignoresSafeArea()
-        .onAppear {
-            for family: String in UIFont.familyNames {
-                print(family)
-                for names : String in UIFont.fontNames(forFamilyName: family){
-                    print("=== \(names)")
-                }
-            }
-        }
 //        NavigationView {
 //            List {
 //                ForEach(items) { item in

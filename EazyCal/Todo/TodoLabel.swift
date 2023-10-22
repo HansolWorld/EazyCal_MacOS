@@ -37,7 +37,7 @@ struct TodoLabel: View {
                     }
                 }
             Spacer()
-            Text(caclulatorDay())
+            Text(todo.date, style: .offset)
                 .customStyle(.caption)
                 .foregroundStyle(.gray)
         }
@@ -53,19 +53,19 @@ struct TodoLabel: View {
         }
     }
 
-    func caclulatorDay() -> String{
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: Date(), to: todo.date)
-        guard let daysDifference = components.day else { return ""}
-        
-        if daysDifference < 0 {
-            return "\(abs(daysDifference))일 지남"
-        } else if daysDifference == 0 {
-            return "오늘"
-        } else {
-            return "\(daysDifference)일 전"
-        }
-    }
+//    func caclulatorDay() -> String{
+//        let calendar = Calendar.current
+//        let components = calendar.dateComponents([.day], from: Date(), to: todo.date)
+//        guard let daysDifference = components.day else { return ""}
+//        
+//        if daysDifference < 0 {
+//            return "\(abs(daysDifference))일 지남"
+//        } else if daysDifference == 0 {
+//            return "오늘"
+//        } else {
+//            return "\(daysDifference)일 전"
+//        }
+//    }
 }
 
 #Preview {

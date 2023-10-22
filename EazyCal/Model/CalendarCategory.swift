@@ -33,6 +33,10 @@ extension CalendarCategory: Identifiable, Hashable {
 }
 
 extension CalendarCategory {
+    static func dummyCategory(to index: Int) -> CalendarCategory {
+        return dummyCategories[index]
+    }
+    
     static let dummyCategories = [
         CalendarCategory(name: "기본 캘린더", color: "Blue", isCheck: true),
         CalendarCategory(name: "사이드 프로젝트", color: "Puple", isCheck: true),

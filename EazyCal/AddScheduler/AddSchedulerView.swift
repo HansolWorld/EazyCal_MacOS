@@ -35,49 +35,39 @@ enum RepeatType: CaseIterable {
 struct AddSchedulerView: View {
 //    let schedule: Schedule
     @State var isOn = false
-    @State var startDate = Date()
-    @State var doDate = Date()
+    @State var startDate: Date
+    @State var doDate: Date
     @State var repeatDate = RepeatType.everyDay
-    @State var todo = ""
+    @State var todos:[String] = []
+    @State var category = CalendarCategory.dummyCategories[0]
     
     var body: some View {
         VStack(alignment: .leading) {
             Text("새로운 일정")
                 .customStyle(.body2)
+                .foregroundStyle(Color.gray300)
             Divider()
-            Toggle("종일", isOn: $isOn)
-            HStack {
-                Text("시작")
-                    .customStyle(.caption)
-                DatePicker("시작", selection: $startDate)
-                    .labelsHidden()
-                    .colorMultiply(.gray300)
-            }
-            DatePicker("종료", selection: $doDate)
-                .colorMultiply(.gray300)
-            HStack {
-                Text("반복")
-                Spacer()
-                Picker("반복", selection: $repeatDate) {
-                    ForEach(RepeatType.allCases, id:\.self) { repeatType in
-                        Text(repeatType.title)
-                    }
+                .frame(height: 0.5)
+                .frame(maxWidth: .infinity)
+                .background {
+                    Color.gray200
                 }
-                .colorMultiply(.gray300)
-                .pickerStyle(.segmented)
-            }
-            HStack {
-                Text("할 일")
-                Spacer()
-                TextField("할 일을 입력하세요", text: $todo)
-                    .colorMultiply(.gray300)
-            }
-            Text("카테고리")
+            CustomToggle(title: "종일", isOn: $isOn)
+            CustomDatePicker(title: "시작", date: $startDate)
+            CustomDatePicker(title: "종료", date: $doDate)
+            RepeatSelectedButton(title: "반복", selected: $repeatDate)
+            CustomTextField(title: "할 일", todos: $todos)
+            CustomPicker(title: "카테고리", categoryList: CalendarCategory.dummyCategories, selected: $category)
         }
         .padding()
     }
 }
 
 #Preview {
-    AddSchedulerView()
+    ZStack {
+        Color.white
+            .scaleEffect(1.5)
+        AddSchedulerView(startDate: Date(), doDate: Date())
+            .previewLayout(.sizeThatFits)
+    }
 }

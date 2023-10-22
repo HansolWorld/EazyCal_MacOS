@@ -8,5 +8,6 @@
 import Foundation
 
 class TodoViewModel: ObservableObject {
+    @Published var schedules: [Schedule] = Schedule.dummySchedule
     @Published var todos: [Todo] = Todo.dummyTodos
 }

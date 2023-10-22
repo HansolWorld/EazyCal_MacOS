@@ -10,7 +10,6 @@ import Foundation
 enum IndexCategory {
     case calendar
     case template
-    case futureTodo
     case Todo
     
     var title: String {
@@ -19,8 +18,6 @@ enum IndexCategory {
             return "캘린더"
         case .template:
             return "템플릿"
-        case .futureTodo:
-            return "예정된 일"
         case .Todo:
             return "할 일"
         }

@@ -20,21 +20,21 @@ enum CustomTextStyle {
     var font: Font {
         switch self {
         case .title:
-            return .custom("SpoqaHanSansNeo-Bold", size: 26)
+            return .custom("SpoqaHanSansNeo-Bold", size: 24)
         case .subtitle:
-            return .custom("SpoqaHanSansNeo-Medium", size: 17)
+            return .custom("SpoqaHanSansNeo-Medium", size: 15)
         case .day:
-            return .custom("SpoqaHanSansNeo-Regular", size: 17)
-        case .body:
-            return .custom("SpoqaHanSansNeo-Regular", size: 16)
-        case .body2:
             return .custom("SpoqaHanSansNeo-Regular", size: 15)
-        case .date:
-            return .custom("SpoqaHanSansNeo-Regular", size: 16)
-        case .caption:
+        case .body:
             return .custom("SpoqaHanSansNeo-Regular", size: 14)
+        case .body2:
+            return .custom("SpoqaHanSansNeo-Regular", size: 13)
+        case .date:
+            return .custom("SpoqaHanSansNeo-Regular", size: 14)
+        case .caption:
+            return .custom("SpoqaHanSansNeo-Regular", size: 12)
         case .caption2:
-            return .custom("SpoqaHanSansNeo-Medium", size: 12)
+            return .custom("SpoqaHanSansNeo-Medium", size: 10)
         }
     }
     
@@ -52,22 +52,21 @@ enum CustomTextStyle {
     var letterHeight: CGFloat {
         switch self {
         case .title, .day, .date:
-            return 22
+            return 20
         case .subtitle:
-            return 21
-        case .body:
             return 19
+        case .body:
+            return 17
         case .body2:
-            return 15
+            return 13
         case .caption:
-            return 16
+            return 14
         case .caption2:
-            return 15
+            return 13
         }
     }
 }
 
-// Custom modifier for applying the style
 extension Text {
     func customStyle(_ style: CustomTextStyle) -> some View {
         return self

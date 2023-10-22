@@ -16,6 +16,11 @@
 		FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */; };
 		FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */; };
 		FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */; };
+		FF54FA2D2ADFA8D400996AC9 /* RepeatSelectedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */; };
+		FF54FA2F2ADFB30300996AC9 /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */; };
+		FF54FA312ADFB57D00996AC9 /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */; };
+		FF54FA332ADFB87700996AC9 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA322ADFB87700996AC9 /* CustomTextField.swift */; };
+		FF54FA352ADFC69100996AC9 /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA342ADFC69100996AC9 /* CustomPicker.swift */; };
 		FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57590D2ADB9A86001E588F /* CategoryLabel.swift */; };
 		FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759102ADB9CC3001E588F /* SFSymbol.swift */; };
 		FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759122ADB9EEF001E588F /* TemplateLabel.swift */; };
@@ -38,6 +43,7 @@
 		FF57595A2ADC1B51001E588F /* Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759592ADC1B51001E588F /* Month.swift */; };
 		FF6B63622ADD67A400CB33A0 /* AddSchedulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */; };
 		FF6B63642ADE088300CB33A0 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6B63632ADE088300CB33A0 /* Schedule.swift */; };
+		FF6BE0B92AE205CD00CB7397 /* CaledarCategoryLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +59,11 @@
 		FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Medium.otf"; sourceTree = "<group>"; };
 		FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Bold.otf"; sourceTree = "<group>"; };
 		FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Regular.otf"; sourceTree = "<group>"; };
+		FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatSelectedButton.swift; sourceTree = "<group>"; };
+		FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
+		FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
+		FF54FA322ADFB87700996AC9 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		FF54FA342ADFC69100996AC9 /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
 		FF57590D2ADB9A86001E588F /* CategoryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabel.swift; sourceTree = "<group>"; };
 		FF5759102ADB9CC3001E588F /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
 		FF5759122ADB9EEF001E588F /* TemplateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateLabel.swift; sourceTree = "<group>"; };
@@ -75,6 +86,7 @@
 		FF5759592ADC1B51001E588F /* Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Month.swift; sourceTree = "<group>"; };
 		FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSchedulerView.swift; sourceTree = "<group>"; };
 		FF6B63632ADE088300CB33A0 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
+		FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaledarCategoryLabelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,7 +123,6 @@
 				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
 				FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */,
 				FF41EB012AD8CCB9002FD4A9 /* MainView.swift */,
-				FF54FA2B2ADF7C8F00996AC9 /* fonts */,
 				FF57591C2ADBAEB0001E588F /* CoreData */,
 				FF5759192ADBA56C001E588F /* Model */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
@@ -149,6 +160,7 @@
 				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
 				FF57591D2ADBAFDA001E588F /* CategoryView.swift */,
 				FF5759212ADBC1A2001E588F /* CategoryViewModel.swift */,
+				FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -186,6 +198,7 @@
 		FF57590F2ADB9CB3001E588F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				FF54FA2B2ADF7C8F00996AC9 /* fonts */,
 				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
 				FF5759102ADB9CC3001E588F /* SFSymbol.swift */,
 				FF5759142ADB9FF0001E588F /* FontStyle.swift */,
@@ -196,11 +209,11 @@
 		FF5759192ADBA56C001E588F /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FF57591A2ADBA578001E588F /* Importance.swift */,
 				FF57591F2ADBB068001E588F /* CalendarCategory.swift */,
-				FF5759272ADBC3B8001E588F /* Template.swift */,
-				FF5759292ADBC92F001E588F /* Todo.swift */,
+				FF57591A2ADBA578001E588F /* Importance.swift */,
 				FF57592F2ADBCD7F001E588F /* IndexCategory.swift */,
+				FF5759292ADBC92F001E588F /* Todo.swift */,
+				FF5759272ADBC3B8001E588F /* Template.swift */,
 				FF5759592ADC1B51001E588F /* Month.swift */,
 				FF6B63632ADE088300CB33A0 /* Schedule.swift */,
 			);
@@ -220,6 +233,11 @@
 			isa = PBXGroup;
 			children = (
 				FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */,
+				FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */,
+				FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */,
+				FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */,
+				FF54FA322ADFB87700996AC9 /* CustomTextField.swift */,
+				FF54FA342ADFC69100996AC9 /* CustomPicker.swift */,
 			);
 			path = AddScheduler;
 			sourceTree = "<group>";
@@ -299,6 +317,7 @@
 			files = (
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FF5759582ADC1AC1001E588F /* CalendarCell.swift in Sources */,
+				FF54FA2D2ADFA8D400996AC9 /* RepeatSelectedButton.swift in Sources */,
 				FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */,
 				FF5759242ADBC320001E588F /* TemplateView.swift in Sources */,
 				FF41EB092AD8CCBB002FD4A9 /* Persistence.swift in Sources */,
@@ -310,8 +329,10 @@
 				FF5759322ADBCE90001E588F /* TodoViewModel.swift in Sources */,
 				FF5759262ADBC33B001E588F /* TemplateViewModel.swift in Sources */,
 				FF6B63642ADE088300CB33A0 /* Schedule.swift in Sources */,
+				FF54FA332ADFB87700996AC9 /* CustomTextField.swift in Sources */,
 				FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */,
 				FF5759202ADBB068001E588F /* CalendarCategory.swift in Sources */,
+				FF54FA2F2ADFB30300996AC9 /* CustomDatePicker.swift in Sources */,
 				FF5759222ADBC1A3001E588F /* CategoryViewModel.swift in Sources */,
 				FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */,
 				FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */,
@@ -322,6 +343,9 @@
 				FF57595A2ADC1B51001E588F /* Month.swift in Sources */,
 				FF57592A2ADBC92F001E588F /* Todo.swift in Sources */,
 				FF5759562ADC0F0A001E588F /* CalendarViewModel.swift in Sources */,
+				FF54FA312ADFB57D00996AC9 /* CustomToggle.swift in Sources */,
+				FF54FA352ADFC69100996AC9 /* CustomPicker.swift in Sources */,
+				FF6BE0B92AE205CD00CB7397 /* CaledarCategoryLabelView.swift in Sources */,
 				FF41EB002AD8CCB9002FD4A9 /* EazyCalApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -467,6 +491,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -503,6 +528,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

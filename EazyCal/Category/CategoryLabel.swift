@@ -7,16 +7,13 @@
 
 import SwiftUI
 
-struct CategoryLabel: View {
+
+struct CategoryLabelView: View {
     @ObservedObject var category: CalendarCategory
     
     var body: some View {
         HStack(spacing: 8) {
-            RoundedRectangle(cornerRadius: 4)
-                .frame(width: 4, height: 16)
-            Text(category.name)
-                .customStyle(.body)
-                .foregroundStyle(.black)
+            CalendarCategoryLabelView(title: category.name, color: category.color)
             Spacer()
             Button(action: {
                 category.isCheck.toggle()
@@ -38,5 +35,5 @@ struct CategoryLabel: View {
 }
 
 #Preview {
-    CategoryLabel(category: CalendarCategory(name: "기본 캘린더", color: "Blue", isCheck: false))
+    CategoryLabelView(category: CalendarCategory(name: "기본 캘린더", color: "Blue", isCheck: false))
 }
