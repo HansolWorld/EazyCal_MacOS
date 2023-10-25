@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct CalendarCategoryLabelView: View {
-    let title: String
-    let color: String
+    var title: String
+    var color: CGColor
     
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: SFSymbol.poweron.name)
                 .fontWeight(.heavy)
-                .foregroundStyle(Color(color))
+                .foregroundStyle(Color(cgColor: color))
             Text(title)
                 .customStyle(.body)
                 .foregroundStyle(.black)
@@ -24,5 +24,5 @@ struct CalendarCategoryLabelView: View {
 }
 
 #Preview {
-    CalendarCategoryLabelView(title: CalendarCategory.dummyCategory(to: 0).name, color: CalendarCategory.dummyCategory(to: 0).color)
+    CalendarCategoryLabelView(title: "title", color: CGColor(gray: 1, alpha: 1))
 }

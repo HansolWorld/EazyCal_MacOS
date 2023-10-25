@@ -9,7 +9,11 @@ import SwiftUI
 
 struct TodoView: View {
     let mode: IndexCategory
-    @StateObject private var todoViewModel = TodoViewModel()
+    @State var isShow = false
+    @State var newTodo = ""
+    @State var highlight = false
+    @ObservedObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var eventStore: EventStore
 
     var body: some View {
         VStack(spacing: 15) {
@@ -19,7 +23,7 @@ struct TodoView: View {
                     .foregroundStyle(.gray)
                 Spacer()
                 Button(action: {
-                    
+                    isShow = true
                 }) {
                     Image(systemName: SFSymbol.circlePlus.name)
                         .tint(Color.background)
@@ -28,39 +32,38 @@ struct TodoView: View {
                                 .foregroundStyle(Color.gray300)
                                 .scaleEffect(0.8)
                         }
+                        .popover(isPresented: $isShow) {
+                            AddNewTodoView(title: $newTodo, highlight: $highlight)
+                        }
+                        .onChange(of: isShow) {
+                            if isShow == false, newTodo != "" {
+                                Task {
+                                    await eventStore.createNewReminder(title: newTodo, date: nil, highlight: highlight)
+                                    await calendarViewModel.todos(eventStore: eventStore)
+                                    newTodo = ""
+                                    highlight = false
+                                }
+                            }
+                        }
                 }
             }
             ScrollView {
-                ForEach(todoViewModel.schedules.filter { $0.todos.count != 0 }, id: \.self) { schedule in
-                    VStack {
-                        HStack {
-                            CalendarCategoryLabelView(title: schedule.title, color: schedule.category.color)
-                                .foregroundStyle(Color(schedule.category.color))
-                            Spacer()
-                            Text(schedule.startDate, style: .date)
-                                .customStyle(.caption)
-                                .foregroundStyle(.gray300)
-                        }
-                        ForEach(schedule.todos, id: \.self) { todo in
-                            TodoLabel(todo: todo)
-                        }
-                    }
-                    .padding()
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(schedule.category.color))
-                            .opacity(0.1)
-                    }
+                ForEach(calendarViewModel.filterSchedule(), id: \.eventIdentifier) { schedule in
+                    ScheduleTodoCellView(schedule: schedule, calendarViewModel: calendarViewModel)
                 }
-                ForEach(todoViewModel.todos, id: \.self) { todo in
-                        TodoLabel(todo: todo)
+                ForEach(calendarViewModel.todo, id:\.calendarItemIdentifier) { todo in
+                    TodoLabel(todo: todo)
                 }
             }
         }
         .padding(.horizontal)
+        .task {
+            await calendarViewModel.loadAllSchedule(eventStore: eventStore)
+            await calendarViewModel.todos(eventStore: eventStore)
+        }
     }
 }
 
 #Preview {
-    TodoView(mode: IndexCategory.Todo)
+    TodoView(mode: IndexCategory.Todo, calendarViewModel: CalendarViewModel())
 }

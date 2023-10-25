@@ -17,11 +17,11 @@ struct CustomTextField: View {
             HStack {
                 Text(title)
                     .customStyle(.caption)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.calendarBlack)
                 Spacer()
                 TextField("할 일을 입력하세요.", text: $todo)
                     .font(CustomTextStyle.caption.font)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.calendarBlack)
                     .multilineTextAlignment(.trailing)
             }
             withAnimation() {
@@ -59,7 +59,7 @@ struct CustomTextField: View {
             ForEach(todos, id: \.self) { todo in
                 Text(todo)
                     .customStyle(.caption)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.calendarBlack)
             }
         }
     }

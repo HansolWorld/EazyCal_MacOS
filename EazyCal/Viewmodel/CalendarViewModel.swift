@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import EventKit
 
 class CalendarViewModel: ObservableObject {
     let calendar = Calendar.current
     let dateFormatter = DateFormatter()
-    @Published var schedules: [Schedule] = Schedule.dummySchedule
+    
+    @Published var categories: [EKCalendar] = []
+    @Published var allSchedules: [EKEvent] = []
+    @Published var schedules: [EKEvent] = []
+    @Published var todo: [EKReminder] = []
     @Published var date = Date()
+    @Published var templates: [Template] = Template.dummyTemplates
     
     func monthYearString() -> String {
         dateFormatter.dateFormat = "yyyy년 MM월"
@@ -72,31 +78,31 @@ class CalendarViewModel: ObservableObject {
         return calendar.component(.month, from: date)
     }
     
-    func calculateSchedulesLayers() -> [(Schedule, Int)] {
-        var layers: [(Schedule, Int)] = []
+    func calculateSchedulesLayers() -> [(EKEvent, Int)] {
+        var layers: [(EKEvent, Int)] = []
         
-        for schedule in schedules { // 전체 스케쥴 -> 하나식 확인
-            let startDate = schedule.startDate
-            let doDate = schedule.doDate
+        for schedule in schedules {
+            let startDate = schedule.startDate ?? Date()
+            let doDate = schedule.endDate ?? Date()
             
-            var layer = Array(repeating: 0, count: schedules.count) // 이미 데이터가 있는 층을 확인하기 위한 더미 layer만들고
+            var layer = Array(repeating: 0, count: schedules.count)
             
-            for (existingSchedule, existingLayer) in layers { // 이미 확인한 스케쥴
-                let existingStartDate = existingSchedule.startDate
-                let existingDoDate = existingSchedule.doDate
+            for (existingSchedule, existingLayer) in layers {
+                let existingStartDate = existingSchedule.startDate ?? Date()
+                let existingDoDate = existingSchedule.endDate ?? Date()
                 
                 if startDate <= existingDoDate && existingStartDate <= doDate {
                     layer[existingLayer - 1] = 1
                 }
             }
             let currentLayer = layer.firstIndex(of: 0) ?? 0
-            layers.append((schedule, currentLayer+1)) // 하나의 루프가 끝날때마다 하나의 스케쥴이 layer에 들어가요
+            layers.append((schedule, currentLayer+1))
         }
 
         return layers
     }
     
-    func schedules(monthStruct: Month, year: Int, month: Int, scheduler: [(Schedule, Int)]) -> [(Schedule, Int)] {
+    func schedules(monthStruct: Month, year: Int, month: Int, scheduler: [(EKEvent, Int)]) -> [(EKEvent, Int)] {
         let currentDate: Date
         
         if monthStruct.monthType == .Previous {
@@ -110,7 +116,7 @@ class CalendarViewModel: ObservableObject {
         let schedules = scheduler.filter({ schedule, index in
             let date1WithoutTime = calendar.startOfDay(for: schedule.startDate)
             let date2WithoutTime = calendar.startOfDay(for: currentDate)
-            let date3WithoutTime = calendar.startOfDay(for: schedule.doDate)
+            let date3WithoutTime = calendar.startOfDay(for: schedule.endDate)
 
             if date1WithoutTime <= date2WithoutTime && date2WithoutTime <= date3WithoutTime {
                 return true
@@ -133,5 +139,33 @@ class CalendarViewModel: ObservableObject {
         } else {
             return Date()
         }
+    }
+    
+    @MainActor
+    func loadAllSchedule(eventStore: EventStore) async {
+        self.allSchedules = await eventStore.loadEvents(forDate: Date(), calendars: categories.filter {Locale.checkList.contains($0.calendarIdentifier)})
+    }
+    
+    @MainActor
+    func loadSchedule(eventStore: EventStore) async {
+        self.schedules = await eventStore.loadEvents(forDate: date, calendars: categories.filter {Locale.checkList.contains($0.calendarIdentifier)})
+    }
+    
+    func filterSchedule() -> [EKEvent] {
+        let todoInSchedule = self.allSchedules.filter {
+            guard let notes = $0.notes else { return false }
+            return notes.split(separator: "☐").count > 1
+        }
+        
+        return todoInSchedule
+    }
+    
+    func todosInSchedule(schedule: EKEvent) -> [String] {
+        return schedule.notes!.components(separatedBy: "\n")
+    }
+    
+    @MainActor
+    func todos(eventStore: EventStore) async {
+        self.todo = await eventStore.loadAllReminders()
     }
 }

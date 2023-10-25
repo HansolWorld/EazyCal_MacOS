@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CalenderView: View {
-    @StateObject var calendarViewModel = CalendarViewModel()
     @State var mode = true
     @State var isShow = false
+    @ObservedObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var eventStore: EventStore
     
     var body: some View {
         VStack {
@@ -26,7 +27,6 @@ struct CalenderView: View {
             VStack {
                 DayOfWeek
                 CalendarGrid
-                    .padding()
                     .background {
                         RoundedRectangle(cornerRadius: 16)
                             .foregroundStyle(.white)
@@ -41,6 +41,9 @@ struct CalenderView: View {
         HStack(spacing: 16) {
             Button(action: {
                 previousMonth()
+                Task {
+                    await calendarViewModel.loadSchedule(eventStore: eventStore)
+                }
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
                     .font(CustomTextStyle.title.font)
@@ -56,6 +59,9 @@ struct CalenderView: View {
                 .foregroundStyle(.black)
             Button(action: {
                 nextMonth()
+                Task {
+                    await calendarViewModel.loadSchedule(eventStore: eventStore)
+                }
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
                     .font(CustomTextStyle.title.font)
@@ -105,7 +111,7 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers()
-        
+
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
                 HStack(spacing: 0) {
@@ -117,28 +123,22 @@ struct CalenderView: View {
                             daysInMonth: daysInMonth,
                             daysInPrevMonth: daysInPreviousMonth
                         )
-                        
+
                         CalendarCell(
-                            calendarViewModel: calendarViewModel,
-                            schedules: 
-                                calendarViewModel.schedules(
-                                    monthStruct: month,
-                                    year: calendarViewModel.year(),
-                                    month: calendarViewModel.month(),
-                                    scheduler: schedules
-                                ),
+                            schedules: calendarViewModel.schedules(
+                                monthStruct: month,
+                                year: calendarViewModel.year(),
+                                month: calendarViewModel.month(),
+                                scheduler: schedules
+                            ),
                             month: month,
-                            isToday:
-                                checkToday(
-                                    count: count,
-                                    start: start
-                                ),
+                            isToday: checkToday(count: count, start: start),
                             count: count,
                             start: start,
                             daysInMonth: daysInMonth,
-                            daysInPrevMonth: daysInPreviousMonth
+                            daysInPrevMonth: daysInPreviousMonth,
+                            calendarViewModel: calendarViewModel
                         )
-                        
                         if column != 7 {
                             Divider()
                         }
@@ -148,6 +148,9 @@ struct CalenderView: View {
                     Divider()
                 }
             }
+        }
+        .task {
+            await calendarViewModel.loadSchedule(eventStore: eventStore)
         }
     }
     
@@ -189,5 +192,5 @@ struct CalenderView: View {
 }
 
 #Preview {
-    CalenderView()
+    CalenderView(calendarViewModel: CalendarViewModel())
 }

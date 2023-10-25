@@ -2,15 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>캘린더에 접근하기 위한 권한</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>미리알림에 접근하기 위한 권한</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpoqaHanSansNeo-Bold.otf</string>
 		<string>SpoqaHanSansNeo-Medium.otf</string>
 		<string>SpoqaHanSansNeo-Regular.otf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

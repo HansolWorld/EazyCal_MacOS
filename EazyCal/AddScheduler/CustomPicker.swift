@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import EventKit
 
 struct CustomPicker: View {
     let title: String
-    let categoryList: [CalendarCategory]
+    @State var categoryList: [EKCalendar]
     @State var isShow = false
-    @Binding var selected: CalendarCategory
+    @Binding var selected: EKCalendar
     
     var body: some View {
         HStack {
@@ -24,8 +25,8 @@ struct CustomPicker: View {
                 HStack {
                     RoundedRectangle(cornerRadius: 4)
                         .frame(width: 4, height: 16)
-                        .foregroundStyle(Color(selected.color))
-                    Text(selected.name)
+                        .foregroundStyle(Color(cgColor: selected.cgColor))
+                    Text(selected.title)
                         .customStyle(.caption)
                         .foregroundStyle(.black)
                     Image(systemName: SFSymbol.chevronRight.name)
@@ -34,7 +35,7 @@ struct CustomPicker: View {
             }
             .popover(isPresented: $isShow) {
                 VStack(alignment: .leading) {
-                    ForEach(categoryList, id: \.self) { category in
+                    ForEach(categoryList, id: \.calendarIdentifier) { category in
                         Button(action: {
                             selected = category
                             isShow = false
@@ -42,8 +43,8 @@ struct CustomPicker: View {
                             HStack {
                                 RoundedRectangle(cornerRadius: 4)
                                     .frame(width: 4, height: 16)
-                                    .foregroundStyle(Color(category.color))
-                                Text(category.name)
+                                    .foregroundStyle(Color(cgColor: category.cgColor))
+                                Text(category.title)
                                     .customStyle(.caption)
                                     .foregroundStyle(.black)
                             }
@@ -57,5 +58,5 @@ struct CustomPicker: View {
 }
 
 #Preview {
-    CustomPicker(title: "카테고리", categoryList: CalendarCategory.dummyCategories, selected: .constant(CalendarCategory(name: "개인일", color: "Blue", isCheck: true)))
+    CustomPicker(title: "캘린더", categoryList: [], selected: .constant(EKCalendar()))
 }

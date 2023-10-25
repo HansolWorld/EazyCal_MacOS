@@ -6,26 +6,47 @@
 //
 
 import SwiftUI
+import EventKit
 
+
+class Locale {
+    static var checkList: [String] {
+        get {
+            return UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
+        }
+        set(newValue) {
+            UserDefaults.standard.set(newValue, forKey: "checkedCategory")
+        }
+    }
+}
 
 struct CategoryLabelView: View {
-    @ObservedObject var category: CalendarCategory
+    @Binding var checkedCategory: [String]
+    let category: EKCalendar
     
     var body: some View {
-        HStack(spacing: 8) {
-            CalendarCategoryLabelView(title: category.name, color: category.color)
-            Spacer()
-            Button(action: {
-                category.isCheck.toggle()
-            }) {
+        Button(action: {
+            if checkedCategory.contains(category.calendarIdentifier) {
+                guard let categoryIdIndex = Locale.checkList.firstIndex(of: category.calendarIdentifier) else { return }
+                Locale.checkList.remove(at: categoryIdIndex)
+                
+                checkedCategory = Locale.checkList
+            } else {
+                Locale.checkList.append(category.calendarIdentifier)
+                checkedCategory = Locale.checkList
+            }
+        }) {
+            HStack(spacing: 8) {
+                CalendarCategoryLabelView(title: category.title, color: category.cgColor)
+                Spacer()
                 Image(systemName: checkToImageName())
             }
         }
-        .foregroundStyle(Color(category.color))
+        .foregroundStyle(Color(cgColor: category.cgColor))
     }
     
     func checkToImageName() -> String {
-        switch self.category.isCheck {
+        switch checkedCategory.contains(category.calendarIdentifier) {
         case true:
             return SFSymbol.check.name
         case false:
@@ -35,5 +56,5 @@ struct CategoryLabelView: View {
 }
 
 #Preview {
-    CategoryLabelView(category: CalendarCategory(name: "기본 캘린더", color: "Blue", isCheck: false))
+    CategoryLabelView(checkedCategory: .constant([]), category: EKCalendar())
 }

@@ -15,7 +15,7 @@ struct CustomToggle: View {
         HStack {
             Text(title)
                 .customStyle(.caption)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.calendarBlack)
             Spacer()
             Button(action: {
                 isOn.toggle()
@@ -24,7 +24,7 @@ struct CustomToggle: View {
                     ZStack(alignment: .center) {
                         Capsule()
                             .frame(width: 30, height: 20)
-                            .foregroundStyle(isOn ? Color.blue : Color.gray200)
+                            .foregroundStyle(isOn ? Color.calendarBlue : Color.gray200)
                         Circle()
                             .frame(width: 14, height: 14)
                             .foregroundStyle(Color.white)

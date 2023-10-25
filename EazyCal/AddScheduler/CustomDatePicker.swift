@@ -15,7 +15,7 @@ struct CustomDatePicker: View {
         HStack {
             Text(title)
                 .customStyle(.caption)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.calendarBlack)
             Spacer()
             Text(formatDate(date: date))
                 .customStyle(.caption)

@@ -9,14 +9,9 @@ import SwiftUI
 import CoreData
 
 struct MainView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
     private var hGrid = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     @State var isTempleteShow: Bool = false
+    @StateObject var calendarViewModel = CalendarViewModel()
 
     var body: some View {
         ZStack {
@@ -25,7 +20,7 @@ struct MainView: View {
                 GeometryReader { geometry in
                     VStack {
                         VStack {
-                            CategoryView()
+                            CategoryView(calendarViewModel: calendarViewModel)
                             Divider()
                         }
                         .frame(height: geometry.size.height/4)
@@ -42,9 +37,9 @@ struct MainView: View {
                                 .padding()
                         }
                         VStack {
-                            TodoView(mode: .Todo)
+                            TodoView(mode: .Todo, calendarViewModel: calendarViewModel)
                         }
-                        .frame(height: geometry.size.height/2)
+                        .frame(maxHeight: .infinity)
                     }
                     .padding(.vertical)
                     .background {
@@ -52,60 +47,10 @@ struct MainView: View {
                     }
                 }
                 .frame(maxWidth: 300)
-                CalenderView()
+                CalenderView(calendarViewModel: calendarViewModel)
             }
         }
         .ignoresSafeArea()
-//        NavigationView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-//                    } label: {
-//                        Text(item.timestamp!, formatter: itemFormatter)
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    EditButton()
-//                }
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//            Text("Select an item")
-//        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
     }
 }
 
@@ -117,5 +62,6 @@ private let itemFormatter: DateFormatter = {
 }()
 
 #Preview {
-    MainView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    MainView()
+        .environmentObject(EventStore())
 }

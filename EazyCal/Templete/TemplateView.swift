@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TemplateView: View {
-    @StateObject private var templateViewModel = TemplateViewModel()
+//    @StateObject private var templateViewModel = TemplateViewModel()
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
     var body: some View {
@@ -32,9 +32,9 @@ struct TemplateView: View {
             }
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(templateViewModel.templates) { template in
-                        TemplateLabel(template: template)
-                    }
+//                    ForEach(templateViewModel.templates) { template in
+//                        TemplateLabel(template: template)
+//                    }
                 }
             }
         }

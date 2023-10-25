@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct EazyCalApp: App {
-    let persistenceController = PersistenceController.shared
-
+    @StateObject var eventStore = EventStore()
+    
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(eventStore)
         }
     }
 }

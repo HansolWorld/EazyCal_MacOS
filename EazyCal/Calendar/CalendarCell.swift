@@ -6,72 +6,81 @@
 //
 
 import SwiftUI
+import EventKit
 
 struct CalendarCell: View {
-    @ObservedObject var calendarViewModel: CalendarViewModel
-    @State var isShow = false
-    let schedules: [(Schedule, Int)]
+    let schedules: [(EKEvent, Int)]
     let month: Month
     let isToday: Bool
     let count : Int
     let start : Int
     let daysInMonth : Int
     let daysInPrevMonth : Int
+    @ObservedObject var calendarViewModel: CalendarViewModel
+    @EnvironmentObject var eventStore: EventStore
+    
+    @State var isShow = false
+    
     
     var body: some View {
         VStack(alignment: .leading) {
             Text("\(month.dayInt)")
                 .customStyle(.date)
-                .foregroundColor(textColor(type: month.monthType))
+                .foregroundColor(count % 7 == 1 ? Color.calendarRed : textColor(type: month.monthType))
                 .padding(4)
                 .background {
                     if self.isToday {
                         Circle()
-                            .fill(Color.blue)
+                            .fill(Color.calendarBlue)
                     }
                 }
+            Spacer()
             
             ForEach(1...4, id: \.self) { index in
-                if let scheduleTuple = schedules.first(where: { $0.1 == index }) { // index =1 [(schedule1, 1), (schedule2, 4)]
-                    
-                    if day(date: scheduleTuple.0.startDate) == month.dayInt && day(date: scheduleTuple.0.doDate) == month.dayInt {
-                        CalendarCategoryLabelView(title: scheduleTuple.0.title, color: scheduleTuple.0.category.color)
+                if let scheduleTuple = schedules.first(where: { $0.1 == index }) {
+                    if (day(date: scheduleTuple.0.startDate) == month.dayInt) && (day(date: scheduleTuple.0.endDate) == month.dayInt) {
+                        CalendarCategoryLabelView(title: scheduleTuple.0.title, color: scheduleTuple.0.calendar.cgColor)
                             .font(CustomTextStyle.body2.font)
                             .padding(4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background {
-                                Rectangle()
-                                    .fill(Color(scheduleTuple.0.category.color))
-                                    .opacity(0.1)
-                                    .cornerRadius(8, corners: .topLeft)
-                                    .cornerRadius(8, corners: .topRight)
-                                    .cornerRadius(8, corners: .bottomLeft)
-                                    .cornerRadius(8, corners: .bottomRight)
+                                if scheduleTuple.0.isAllDay {
+                                    Rectangle()
+                                        .fill(Color(cgColor: scheduleTuple.0.calendar.cgColor))
+                                        .opacity(0.1)
+                                        .cornerRadius(8, corners: .topLeft)
+                                        .cornerRadius(8, corners: .topRight)
+                                        .cornerRadius(8, corners: .bottomLeft)
+                                        .cornerRadius(8, corners: .bottomRight)
+                                }
                             }
-                    }
-                    else if day(date: scheduleTuple.0.startDate) == month.dayInt {
-                        CalendarCategoryLabelView(title: scheduleTuple.0.title, color: scheduleTuple.0.category.color)
+                    } else if day(date: scheduleTuple.0.startDate) == month.dayInt {
+                        CalendarCategoryLabelView(title: scheduleTuple.0.title, color: scheduleTuple.0.calendar.cgColor)
                             .font(CustomTextStyle.body2.font)
                             .padding(4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background {
-                                Rectangle()
-                                    .fill(Color(scheduleTuple.0.category.color))
-                                    .opacity(0.1)
-                                    .cornerRadius(8, corners: .topLeft)
-                                    .cornerRadius(8, corners: .bottomLeft)
+                                if scheduleTuple.0.isAllDay {
+                                    Rectangle()
+                                        .fill(Color(cgColor: scheduleTuple.0.calendar.cgColor))
+                                        .opacity(0.1)
+                                        .cornerRadius(8, corners: .topLeft)
+                                        .cornerRadius(8, corners: .bottomLeft)
+                                }
                             }
-                    } else if day(date: scheduleTuple.0.doDate) == month.dayInt {
+                    } else if day(date: scheduleTuple.0.endDate) == month.dayInt {
                         Text(" ")
                             .customStyle(.body)
                             .padding(4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background {
-                                Rectangle()
-                                    .fill(Color(scheduleTuple.0.category.color))
-                                    .opacity(0.1)
-                                    .cornerRadius(8, corners: .topRight)
-                                    .cornerRadius(8, corners: .bottomRight)
+                                if scheduleTuple.0.isAllDay {
+                                    Rectangle()
+                                        .fill(Color(cgColor: scheduleTuple.0.calendar.cgColor))
+                                        .opacity(0.1)
+                                        .cornerRadius(8, corners: .topRight)
+                                        .cornerRadius(8, corners: .bottomRight)
+                                }
                             }
                     } else {
                         Text(" ")
@@ -79,25 +88,24 @@ struct CalendarCell: View {
                             .padding(4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background {
-                                Rectangle()
-                                    .fill(Color(scheduleTuple.0.category.color))
-                                    .opacity(0.1)
+                                if scheduleTuple.0.isAllDay {
+                                    Rectangle()
+                                        .fill(Color(cgColor: scheduleTuple.0.calendar.cgColor))
+                                        .opacity(0.1)
+                                }
                             }
-                        
                     }
-                    
-
                 } else {
                     Text(" ")
                         .customStyle(.body)
                         .padding(4)
                 }
             }
-            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background {
-            Color.white
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white)
                 .onTapGesture(count: 2) {
                     isShow.toggle()
                 }
@@ -117,15 +125,25 @@ struct CalendarCell: View {
                         year: calendarViewModel.year(),
                         month: calendarViewModel.month(),
                         day: month.dayInt
-                    )
+                    ),
+                    categories: eventStore.calendaries,
+                    category: eventStore.calendaries.first ?? EKCalendar(),
+                    calendarViewModel: calendarViewModel
                 )
             }
         }
     }
     
-    
     func textColor(type: MonthType) -> Color {
-        return type == MonthType.Current ? self.isToday ? Color.white : Color.black : Color.gray
+        if type == MonthType.Current {
+            if self.isToday {
+                return Color.white
+            } else {
+                return Color.calendarBlack
+            }
+        } else {
+            return Color.gray
+        }
     }
     
     func day(date: Date) -> Int {
@@ -153,5 +171,5 @@ struct RoundedCorner: Shape {
 }
 
 #Preview {
-    CalendarCell(calendarViewModel: CalendarViewModel(), schedules: [], month: Month(monthType: .Current, dayInt: 1), isToday: false, count: 1, start: 1, daysInMonth: 1, daysInPrevMonth: 1)
+    CalendarCell(schedules: [], month: Month(monthType: .Current, dayInt: 1), isToday: true, count: 1, start: 1, daysInMonth: 1, daysInPrevMonth: 1, calendarViewModel: CalendarViewModel())
 }

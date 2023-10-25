@@ -16,7 +16,7 @@ struct RepeatSelectedButton: View {
         HStack {
             Text(title)
                 .customStyle(.caption)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.calendarBlack)
             Spacer()
             HStack {
                 ForEach(RepeatType.allCases, id: \.self) { buttonCase in
@@ -45,5 +45,5 @@ struct RepeatSelectedButton: View {
 }
 
 #Preview {
-    RepeatSelectedButton(title: "반복", selected: .constant(RepeatType.check))
+    RepeatSelectedButton(title: "반복", selected: .constant(RepeatType.oneDay))
 }
