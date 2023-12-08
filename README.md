@@ -1,1 +1,1 @@
-# eazt_cal
+# eazy_cal
