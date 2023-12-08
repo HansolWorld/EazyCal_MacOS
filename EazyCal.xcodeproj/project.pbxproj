@@ -11,38 +11,41 @@
 		FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559932AE637DF00F4E25F /* RepeatType.swift */; };
 		FF1559962AE65B2700F4E25F /* EventStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559952AE65B2700F4E25F /* EventStoreError.swift */; };
 		FF1559982AE65C1300F4E25F /* EventStore+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559972AE65C1300F4E25F /* EventStore+Auth.swift */; };
-		FF15599C2AE67AAE00F4E25F /* AddNewCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15599B2AE67AAE00F4E25F /* AddNewCategoryView.swift */; };
 		FF20DD202AE75D2300C93B43 /* AddNewTodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF20DD1F2AE75D2300C93B43 /* AddNewTodoView.swift */; };
 		FF20DD222AE8BDEA00C93B43 /* ScheduleTodoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF20DD212AE8BDEA00C93B43 /* ScheduleTodoCellView.swift */; };
 		FF41EB002AD8CCB9002FD4A9 /* EazyCalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */; };
-		FF41EB022AD8CCB9002FD4A9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF41EB012AD8CCB9002FD4A9 /* MainView.swift */; };
+		FF41EB022AD8CCB9002FD4A9 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF41EB012AD8CCB9002FD4A9 /* Home.swift */; };
 		FF41EB042AD8CCBB002FD4A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */; };
 		FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF41EB062AD8CCBB002FD4A9 /* Preview Assets.xcassets */; };
+		FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF478D702AEA39A20073EF32 /* CalendarTabView.swift */; };
+		FF478D752AEA42DE0073EF32 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */; };
 		FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */; };
 		FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */; };
 		FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */; };
 		FF54FA2D2ADFA8D400996AC9 /* RepeatSelectedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */; };
-		FF54FA2F2ADFB30300996AC9 /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */; };
-		FF54FA312ADFB57D00996AC9 /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */; };
-		FF54FA332ADFB87700996AC9 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA322ADFB87700996AC9 /* CustomTextField.swift */; };
 		FF54FA352ADFC69100996AC9 /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA342ADFC69100996AC9 /* CustomPicker.swift */; };
 		FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57590D2ADB9A86001E588F /* CategoryLabel.swift */; };
 		FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759102ADB9CC3001E588F /* SFSymbol.swift */; };
 		FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759122ADB9EEF001E588F /* TemplateLabel.swift */; };
-		FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759142ADB9FF0001E588F /* FontStyle.swift */; };
 		FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759162ADBA50F001E588F /* TodoLabel.swift */; };
 		FF57591B2ADBA578001E588F /* Importance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591A2ADBA578001E588F /* Importance.swift */; };
-		FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591D2ADBAFDA001E588F /* CategoryView.swift */; };
+		FF57591E2ADBAFDA001E588F /* CalendarCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57591D2ADBAFDA001E588F /* CalendarCategoryView.swift */; };
 		FF5759242ADBC320001E588F /* TemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759232ADBC320001E588F /* TemplateView.swift */; };
-		FF5759282ADBC3B8001E588F /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759272ADBC3B8001E588F /* Template.swift */; };
 		FF57592C2ADBCC94001E588F /* TodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57592B2ADBCC94001E588F /* TodoView.swift */; };
 		FF5759302ADBCD7F001E588F /* IndexCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57592F2ADBCD7F001E588F /* IndexCategory.swift */; };
 		FF5759542ADC0D83001E588F /* CalenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759532ADC0D83001E588F /* CalenderView.swift */; };
-		FF5759562ADC0F0A001E588F /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759552ADC0F0A001E588F /* CalendarViewModel.swift */; };
+		FF5759562ADC0F0A001E588F /* EventStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759552ADC0F0A001E588F /* EventStoreManager.swift */; };
 		FF5759582ADC1AC1001E588F /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759572ADC1AC1001E588F /* CalendarCell.swift */; };
 		FF57595A2ADC1B51001E588F /* Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5759592ADC1B51001E588F /* Month.swift */; };
 		FF6B63622ADD67A400CB33A0 /* AddSchedulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */; };
 		FF6BE0B92AE205CD00CB7397 /* CaledarCategoryLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */; };
+		FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC1E6DF2B0DD96E00CBCA88 /* CellViewType.swift */; };
+		FFC1E6E32B0E06FB00CBCA88 /* EditSchedulePopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC1E6E22B0E06FB00CBCA88 /* EditSchedulePopoverView.swift */; };
+		FFC1E6E62B13495A00CBCA88 /* ScheduleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC1E6E52B13495A00CBCA88 /* ScheduleListView.swift */; };
+		FFDBD7812B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */; };
+		FFDBD7832B01D35C00AB2A57 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7822B01D35C00AB2A57 /* Template.swift */; };
+		FFDBD7892B01E32F00AB2A57 /* CalendarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */; };
+		FFF59D2A2B01A2CA0071761E /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF59D292B01A2CA0071761E /* TabButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,41 +53,44 @@
 		FF1559932AE637DF00F4E25F /* RepeatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatType.swift; sourceTree = "<group>"; };
 		FF1559952AE65B2700F4E25F /* EventStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStoreError.swift; sourceTree = "<group>"; };
 		FF1559972AE65C1300F4E25F /* EventStore+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventStore+Auth.swift"; sourceTree = "<group>"; };
-		FF15599B2AE67AAE00F4E25F /* AddNewCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewCategoryView.swift; sourceTree = "<group>"; };
 		FF20DD1F2AE75D2300C93B43 /* AddNewTodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewTodoView.swift; sourceTree = "<group>"; };
 		FF20DD212AE8BDEA00C93B43 /* ScheduleTodoCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTodoCellView.swift; sourceTree = "<group>"; };
 		FF41EAFC2AD8CCB9002FD4A9 /* EazyCal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EazyCal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalApp.swift; sourceTree = "<group>"; };
-		FF41EB012AD8CCB9002FD4A9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		FF41EB012AD8CCB9002FD4A9 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FF41EB062AD8CCBB002FD4A9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EazyCal.entitlements; sourceTree = "<group>"; };
 		FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FF478D702AEA39A20073EF32 /* CalendarTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTabView.swift; sourceTree = "<group>"; };
+		FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Medium.otf"; sourceTree = "<group>"; };
 		FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Bold.otf"; sourceTree = "<group>"; };
 		FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Regular.otf"; sourceTree = "<group>"; };
 		FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatSelectedButton.swift; sourceTree = "<group>"; };
-		FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
-		FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
-		FF54FA322ADFB87700996AC9 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		FF54FA342ADFC69100996AC9 /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
 		FF57590D2ADB9A86001E588F /* CategoryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabel.swift; sourceTree = "<group>"; };
 		FF5759102ADB9CC3001E588F /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
 		FF5759122ADB9EEF001E588F /* TemplateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateLabel.swift; sourceTree = "<group>"; };
-		FF5759142ADB9FF0001E588F /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
 		FF5759162ADBA50F001E588F /* TodoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLabel.swift; sourceTree = "<group>"; };
 		FF57591A2ADBA578001E588F /* Importance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Importance.swift; sourceTree = "<group>"; };
-		FF57591D2ADBAFDA001E588F /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
+		FF57591D2ADBAFDA001E588F /* CalendarCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategoryView.swift; sourceTree = "<group>"; };
 		FF5759232ADBC320001E588F /* TemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateView.swift; sourceTree = "<group>"; };
-		FF5759272ADBC3B8001E588F /* Template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
 		FF57592B2ADBCC94001E588F /* TodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoView.swift; sourceTree = "<group>"; };
 		FF57592F2ADBCD7F001E588F /* IndexCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexCategory.swift; sourceTree = "<group>"; };
 		FF5759532ADC0D83001E588F /* CalenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalenderView.swift; sourceTree = "<group>"; };
-		FF5759552ADC0F0A001E588F /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		FF5759552ADC0F0A001E588F /* EventStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStoreManager.swift; sourceTree = "<group>"; };
 		FF5759572ADC1AC1001E588F /* CalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
 		FF5759592ADC1B51001E588F /* Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Month.swift; sourceTree = "<group>"; };
 		FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSchedulerView.swift; sourceTree = "<group>"; };
 		FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaledarCategoryLabelView.swift; sourceTree = "<group>"; };
+		FFC1E6DF2B0DD96E00CBCA88 /* CellViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewType.swift; sourceTree = "<group>"; };
+		FFC1E6E22B0E06FB00CBCA88 /* EditSchedulePopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSchedulePopoverView.swift; sourceTree = "<group>"; };
+		FFC1E6E52B13495A00CBCA88 /* ScheduleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleListView.swift; sourceTree = "<group>"; };
+		FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategoryPopoverView.swift; sourceTree = "<group>"; };
+		FFDBD7822B01D35C00AB2A57 /* Template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
+		FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategory.swift; sourceTree = "<group>"; };
+		FFF59D292B01A2CA0071761E /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,16 +110,9 @@
 				FF15598E2AE5FA8000F4E25F /* EventStore.swift */,
 				FF1559972AE65C1300F4E25F /* EventStore+Auth.swift */,
 				FF1559952AE65B2700F4E25F /* EventStoreError.swift */,
+				FF5759552ADC0F0A001E588F /* EventStoreManager.swift */,
 			);
 			path = Store;
-			sourceTree = "<group>";
-		};
-		FF1559902AE60C0200F4E25F /* Viewmodel */ = {
-			isa = PBXGroup;
-			children = (
-				FF5759552ADC0F0A001E588F /* CalendarViewModel.swift */,
-			);
-			path = Viewmodel;
 			sourceTree = "<group>";
 		};
 		FF41EAF32AD8CCB9002FD4A9 = {
@@ -138,16 +137,11 @@
 				FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */,
 				FF41EB0D2AD8CCBB002FD4A9 /* EazyCal.entitlements */,
 				FF41EAFF2AD8CCB9002FD4A9 /* EazyCalApp.swift */,
-				FF41EB012AD8CCB9002FD4A9 /* MainView.swift */,
+				FF41EB012AD8CCB9002FD4A9 /* Home.swift */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
 				FF15598D2AE5FA6C00F4E25F /* Store */,
+				FFDBD77D2B01A73700AB2A57 /* View */,
 				FF5759192ADBA56C001E588F /* Model */,
-				FF5759092ADB9A50001E588F /* Category */,
-				FF1559902AE60C0200F4E25F /* Viewmodel */,
-				FF57590A2ADB9A5D001E588F /* Templete */,
-				FF57590B2ADB9A65001E588F /* Todo */,
-				FF57590C2ADB9A6A001E588F /* Calendar */,
-				FF6B63602ADD678C00CB33A0 /* AddScheduler */,
 				FF41EB052AD8CCBB002FD4A9 /* Preview Content */,
 			);
 			path = EazyCal;
@@ -171,33 +165,12 @@
 			path = fonts;
 			sourceTree = "<group>";
 		};
-		FF5759092ADB9A50001E588F /* Category */ = {
-			isa = PBXGroup;
-			children = (
-				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
-				FF57591D2ADBAFDA001E588F /* CategoryView.swift */,
-				FF15599B2AE67AAE00F4E25F /* AddNewCategoryView.swift */,
-				FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */,
-			);
-			path = Category;
-			sourceTree = "<group>";
-		};
-		FF57590A2ADB9A5D001E588F /* Templete */ = {
-			isa = PBXGroup;
-			children = (
-				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
-				FF5759232ADBC320001E588F /* TemplateView.swift */,
-			);
-			path = Templete;
-			sourceTree = "<group>";
-		};
 		FF57590B2ADB9A65001E588F /* Todo */ = {
 			isa = PBXGroup;
 			children = (
-				FF5759162ADBA50F001E588F /* TodoLabel.swift */,
 				FF57592B2ADBCC94001E588F /* TodoView.swift */,
+				FF5759162ADBA50F001E588F /* TodoLabel.swift */,
 				FF20DD212AE8BDEA00C93B43 /* ScheduleTodoCellView.swift */,
-				FF20DD1F2AE75D2300C93B43 /* AddNewTodoView.swift */,
 			);
 			path = Todo;
 			sourceTree = "<group>";
@@ -205,8 +178,14 @@
 		FF57590C2ADB9A6A001E588F /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
-				FF5759572ADC1AC1001E588F /* CalendarCell.swift */,
 				FF5759532ADC0D83001E588F /* CalenderView.swift */,
+				FF5759572ADC1AC1001E588F /* CalendarCell.swift */,
+				FF6BE0B82AE205CD00CB7397 /* CaledarCategoryLabelView.swift */,
+				FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */,
+				FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */,
+				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
+				FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */,
+				FF54FA342ADFC69100996AC9 /* CustomPicker.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -217,7 +196,6 @@
 				FF54FA2B2ADF7C8F00996AC9 /* fonts */,
 				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
 				FF5759102ADB9CC3001E588F /* SFSymbol.swift */,
-				FF5759142ADB9FF0001E588F /* FontStyle.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -225,26 +203,49 @@
 		FF5759192ADBA56C001E588F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */,
 				FF57592F2ADBCD7F001E588F /* IndexCategory.swift */,
 				FF57591A2ADBA578001E588F /* Importance.swift */,
-				FF5759272ADBC3B8001E588F /* Template.swift */,
 				FF5759592ADC1B51001E588F /* Month.swift */,
 				FF1559932AE637DF00F4E25F /* RepeatType.swift */,
+				FFDBD7822B01D35C00AB2A57 /* Template.swift */,
+				FFC1E6DF2B0DD96E00CBCA88 /* CellViewType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		FF6B63602ADD678C00CB33A0 /* AddScheduler */ = {
+		FFC1E6E12B0E06F000CBCA88 /* PopoverView */ = {
 			isa = PBXGroup;
 			children = (
+				FFC1E6E22B0E06FB00CBCA88 /* EditSchedulePopoverView.swift */,
 				FF6B63612ADD67A400CB33A0 /* AddSchedulerView.swift */,
-				FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */,
-				FF54FA2E2ADFB30300996AC9 /* CustomDatePicker.swift */,
-				FF54FA302ADFB57D00996AC9 /* CustomToggle.swift */,
-				FF54FA322ADFB87700996AC9 /* CustomTextField.swift */,
-				FF54FA342ADFC69100996AC9 /* CustomPicker.swift */,
+				FF20DD1F2AE75D2300C93B43 /* AddNewTodoView.swift */,
 			);
-			path = AddScheduler;
+			path = PopoverView;
+			sourceTree = "<group>";
+		};
+		FFC1E6E42B13494600CBCA88 /* ScheduleList */ = {
+			isa = PBXGroup;
+			children = (
+				FFC1E6E52B13495A00CBCA88 /* ScheduleListView.swift */,
+			);
+			path = ScheduleList;
+			sourceTree = "<group>";
+		};
+		FFDBD77D2B01A73700AB2A57 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FFF59D292B01A2CA0071761E /* TabButton.swift */,
+				FF478D702AEA39A20073EF32 /* CalendarTabView.swift */,
+				FF57591D2ADBAFDA001E588F /* CalendarCategoryView.swift */,
+				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
+				FF5759232ADBC320001E588F /* TemplateView.swift */,
+				FFC1E6E12B0E06F000CBCA88 /* PopoverView */,
+				FF57590C2ADB9A6A001E588F /* Calendar */,
+				FF57590B2ADB9A65001E588F /* Todo */,
+				FFC1E6E42B13494600CBCA88 /* ScheduleList */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,11 +285,12 @@
 			};
 			buildConfigurationList = FF41EAF72AD8CCB9002FD4A9 /* Build configuration list for PBXProject "EazyCal" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = FF41EAF32AD8CCB9002FD4A9;
 			productRefGroup = FF41EAFD2AD8CCB9002FD4A9 /* Products */;
@@ -320,37 +322,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */,
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
+				FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */,
 				FF5759582ADC1AC1001E588F /* CalendarCell.swift in Sources */,
 				FF54FA2D2ADFA8D400996AC9 /* RepeatSelectedButton.swift in Sources */,
 				FF5759172ADBA50F001E588F /* TodoLabel.swift in Sources */,
 				FF5759242ADBC320001E588F /* TemplateView.swift in Sources */,
-				FF5759152ADB9FF0001E588F /* FontStyle.swift in Sources */,
 				FF20DD222AE8BDEA00C93B43 /* ScheduleTodoCellView.swift in Sources */,
 				FF5759302ADBCD7F001E588F /* IndexCategory.swift in Sources */,
 				FF6B63622ADD67A400CB33A0 /* AddSchedulerView.swift in Sources */,
-				FF5759282ADBC3B8001E588F /* Template.swift in Sources */,
+				FFDBD7812B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift in Sources */,
 				FF57592C2ADBCC94001E588F /* TodoView.swift in Sources */,
-				FF15599C2AE67AAE00F4E25F /* AddNewCategoryView.swift in Sources */,
 				FF1559982AE65C1300F4E25F /* EventStore+Auth.swift in Sources */,
-				FF54FA332ADFB87700996AC9 /* CustomTextField.swift in Sources */,
 				FF5759132ADB9EEF001E588F /* TemplateLabel.swift in Sources */,
 				FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */,
-				FF54FA2F2ADFB30300996AC9 /* CustomDatePicker.swift in Sources */,
-				FF57591E2ADBAFDA001E588F /* CategoryView.swift in Sources */,
+				FF57591E2ADBAFDA001E588F /* CalendarCategoryView.swift in Sources */,
 				FF1559962AE65B2700F4E25F /* EventStoreError.swift in Sources */,
 				FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */,
+				FFDBD7892B01E32F00AB2A57 /* CalendarCategory.swift in Sources */,
+				FFF59D2A2B01A2CA0071761E /* TabButton.swift in Sources */,
 				FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */,
+				FFC1E6E32B0E06FB00CBCA88 /* EditSchedulePopoverView.swift in Sources */,
 				FF57591B2ADBA578001E588F /* Importance.swift in Sources */,
 				FF5759542ADC0D83001E588F /* CalenderView.swift in Sources */,
-				FF41EB022AD8CCB9002FD4A9 /* MainView.swift in Sources */,
+				FF41EB022AD8CCB9002FD4A9 /* Home.swift in Sources */,
 				FF57595A2ADC1B51001E588F /* Month.swift in Sources */,
-				FF5759562ADC0F0A001E588F /* CalendarViewModel.swift in Sources */,
+				FF5759562ADC0F0A001E588F /* EventStoreManager.swift in Sources */,
+				FFC1E6E62B13495A00CBCA88 /* ScheduleListView.swift in Sources */,
 				FF20DD202AE75D2300C93B43 /* AddNewTodoView.swift in Sources */,
-				FF54FA312ADFB57D00996AC9 /* CustomToggle.swift in Sources */,
 				FF54FA352ADFC69100996AC9 /* CustomPicker.swift in Sources */,
+				FFDBD7832B01D35C00AB2A57 /* Template.swift in Sources */,
 				FF6BE0B92AE205CD00CB7397 /* CaledarCategoryLabelView.swift in Sources */,
 				FF41EB002AD8CCB9002FD4A9 /* EazyCalApp.swift in Sources */,
+				FF478D752AEA42DE0073EF32 /* CalendarViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,33 +488,34 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EazyCal/EazyCal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"EazyCal/Preview Content\"";
 				DEVELOPMENT_TEAM = KRY967CND6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EazyCal/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EazyCal;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sol.EazyCal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -520,33 +526,35 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EazyCal/EazyCal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"EazyCal/Preview Content\"";
 				DEVELOPMENT_TEAM = KRY967CND6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EazyCal/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EazyCal;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sol.EazyCal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
