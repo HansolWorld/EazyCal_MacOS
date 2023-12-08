@@ -17,29 +17,27 @@ extension EventStore {
         }
     }
     
-    func isAccessPermission(store: EKEventStore) async throws -> Bool {
+    func isAccessPermission() async throws {
         switch EKEventStore.authorizationStatus(for: .event) {
         case .notDetermined:
-            return try await requestFullAccess()
+            try await requestFullAccess()
         case .restricted:
-            throw EventStoreError.restricted
+            try await requestFullAccess()
         case .denied:
-            throw EventStoreError.denied
+            try await requestFullAccess()
         case .fullAccess:
-            return true
-        case .writeOnly:
-            return true
+            print("seccess")
         default:
-            throw EventStoreError.unknown
+            try await requestFullAccess()
         }
     }
     
-    private func requestFullAccess() async throws -> Bool {
+    private func requestFullAccess() async throws {
         if #available(iOS 17.0, *) {
-            return try await eventStore.requestFullAccessToEvents()
+            try await self.eventStore.requestFullAccessToEvents()
         } else {
             // Fall back on earlier versions.
-            return try await eventStore.requestAccess(to: .event)
+            try await self.eventStore.requestAccess(to: .event)
         }
     }
 }
