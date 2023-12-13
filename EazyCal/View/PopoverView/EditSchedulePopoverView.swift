@@ -46,23 +46,27 @@ struct EditSchedulePopoverView: View {
                     .toggleStyle(BackgroundToggleStyle())
                     .labelsHidden()
             }
-            HStack {
-                Text("시작")
-                    .font(.body)
-                    .foregroundStyle(Color.gray400)
-                Spacer()
-                DatePicker("", selection: $editStartDate, displayedComponents: [.date, .hourAndMinute])
-                    .labelsHidden()
-                    .foregroundStyle(Color.calendarBlack)
-            }
-            HStack {
-                Text("종료")
-                    .font(.body)
-                    .foregroundStyle(Color.gray400)
-                Spacer()
-                DatePicker("", selection: $editDoDate, displayedComponents: [.date, .hourAndMinute])
-                    .labelsHidden()
-                    .foregroundStyle(Color.calendarBlack)
+            if !editIsAllDay {
+                VStack {
+                    HStack {
+                        Text("시작")
+                            .font(.body)
+                            .foregroundStyle(Color.gray400)
+                        Spacer()
+                        DatePicker("", selection: $editStartDate, displayedComponents: [.date, .hourAndMinute])
+                            .labelsHidden()
+                            .foregroundStyle(Color.calendarBlack)
+                    }
+                    HStack {
+                        Text("종료")
+                            .font(.body)
+                            .foregroundStyle(Color.gray400)
+                        Spacer()
+                        DatePicker("", selection: $editDoDate, displayedComponents: [.date, .hourAndMinute])
+                            .labelsHidden()
+                            .foregroundStyle(Color.calendarBlack)
+                    }
+                }
             }
             RepeatSelectedButton(title: "반복", selected: $editRepeatDate)
             CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $editCategory)
