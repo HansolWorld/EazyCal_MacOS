@@ -76,12 +76,6 @@ struct CalendarCell: View {
                             isShow.toggle()
                         }
                         .shadow(radius: 2)
-                } else {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.white)
-                        .onTapGesture(count: 2) {
-                            isShow.toggle()
-                        }
                 }
             }
             .popover(isPresented: $isShow) {

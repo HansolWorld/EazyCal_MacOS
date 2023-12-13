@@ -12,6 +12,7 @@ struct CalendarCategoryLabelView: View {
     let schedule: EKEvent
     let viewType: CellViewType
     
+    @State var isSelected = false
     @State var isEdit = false
     @State var requestSchedule: EKEvent?
     @State var deleteSchedule = false
@@ -58,20 +59,31 @@ struct CalendarCategoryLabelView: View {
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                         .padding(.horizontal, 4)
                 }
-                
+            } else {
+                if selectedEvent == schedule {
+                    UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
+                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .padding(.horizontal, 4)
+                }
             }
         }
-        .onTapGesture {
-            isEdit = true
-        }
-        .onChange(of: isEdit, { oldValue, newValue in
-            switch isEdit {
-            case false:
-                selectedEvent = nil
-            case true:
-                withAnimation {
-                    selectedEvent = schedule
-                }
+        .gesture(TapGesture(count: 2).onEnded {
+            if selectedEvent == schedule {
+                isEdit = true
+            } else {
+                isEdit = false
+            }
+        })
+        .simultaneousGesture(TapGesture().onEnded {
+            withAnimation {
+                selectedEvent = schedule
+            }
+        })
+        .onChange(of: selectedEvent, { oldValue, newValue in
+            if selectedEvent == schedule {
+                isSelected = true
+            } else {
+                isSelected = false
             }
         })
         .popover(isPresented: $isEdit) {

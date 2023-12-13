@@ -28,6 +28,9 @@ struct CalenderView: View {
                     .background {
                         RoundedRectangle(cornerRadius: 16)
                             .foregroundStyle(.white)
+                            .onTapGesture {
+                                selectedEvent = nil
+                            }
                     }
             }
             .frame(maxHeight: .infinity)
