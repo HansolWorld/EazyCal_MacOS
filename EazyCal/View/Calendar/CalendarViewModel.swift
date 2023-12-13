@@ -87,17 +87,30 @@ class CalendarViewModel: ObservableObject {
             var layer = Array(repeating: 0, count: schedules.count)
             
             for (existingSchedule, existingLayer) in layers {
-                let existingStartDate = existingSchedule.startDate ?? Date()
+                var existingStartDate = existingSchedule.startDate ?? Date()
                 let existingStartDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: existingStartDate)
 
-                let existingDoDate = existingSchedule.endDate ?? Date()
-                let existingDoDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: existingDoDate)
+                var existingDoDate = existingSchedule.endDate ?? Date()
+                existingDoDate = calendarCurrent.date(byAdding: .second, value: -1, to: existingDoDate) ?? Date()
+                let existingDoDateComponent = calendarCurrent.dateComponents([.year, .month, .day, .hour, .minute, .second], from: existingDoDate)
                 
                 if let startDate = calendarCurrent.date(from: startDateComponent),
                    let doDate = calendarCurrent.date(from: doDateComponent),
                    let existingStartDate = calendarCurrent.date(from: existingStartDateComponent),
                    let existingDoDate = calendarCurrent.date(from: existingDoDateComponent) {
-                    if startDate <= existingDoDate && existingStartDate <= doDate {
+                    if startDate <= existingDoDate &&  doDate > existingStartDate {
+                        
+                        
+                        if schedule.title == "쇼케이스" {
+                            print(schedule.title)
+                            print(existingStartDate)
+                            print(existingDoDate)
+                            print(existingSchedule.title)
+                            print(startDate)
+                            print(doDate)
+                            print(layer)
+                        }
+                        
                         layer[existingLayer - 1] = 1
                     }
                 }
@@ -132,16 +145,16 @@ class CalendarViewModel: ObservableObject {
         
         if let newDate = calendar.date(from: dateComponents) {
             currentDate = newDate
-        } else {
-            print("??????????????")
         }
         
+        
         let schedules = scheduler.filter({ schedule, index in
-            let date1WithoutTime = calendar.startOfDay(for: schedule.startDate)
-            let date2WithoutTime = calendar.startOfDay(for: currentDate)
-            let date3WithoutTime = calendar.startOfDay(for: schedule.endDate)
+            let startDate = calendar.startOfDay(for: schedule.startDate)
+            let currentDate = calendar.startOfDay(for: currentDate)
+            let endDate = schedule.endDate ?? startDate
             
-            if date1WithoutTime <= date2WithoutTime && date2WithoutTime <= date3WithoutTime {
+            
+            if startDate <= currentDate && currentDate < endDate {
                 return true
             } else {
                 return false

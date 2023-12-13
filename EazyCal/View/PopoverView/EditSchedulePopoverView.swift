@@ -25,13 +25,14 @@ struct EditSchedulePopoverView: View {
     @State var editStartDate: Date
     @State var editDoDate: Date
     @State var editRepeatDate: RepeatType
+    @State var editURL: String
     @State var editTodo = Todo(title: "")
     @State var editTodos: [Todo]
     @State var editCategory: EKCalendar
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
-        VStack(alignment: .leading) {
+        LazyVStack(alignment: .leading) {
             TextField("일정 수정", text: $editTitle)
                 .font(.title3)
                 .foregroundStyle(Color.gray400)
@@ -70,6 +71,11 @@ struct EditSchedulePopoverView: View {
             }
             RepeatSelectedButton(title: "반복", selected: $editRepeatDate)
             CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $editCategory)
+//            HStack {
+//                TextEditor(text: $editURL)
+//                    .font(.title3)
+//                    .foregroundStyle(Color.gray400)
+//            }
             Text("할 일")
                 .font(.body)
                 .foregroundStyle(Color.gray400)
@@ -101,6 +107,7 @@ struct EditSchedulePopoverView: View {
                     }
             }
         }
+        .frame(width: 200)
         .padding()
         .onDisappear {
             event.title = editTitle

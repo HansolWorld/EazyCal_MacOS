@@ -165,7 +165,9 @@ struct CalendarCell: View {
     }
     
     func cellViewType(_ schedule: EKEvent, _ month: Month) -> CellViewType {
-        if (day(date: schedule.startDate) == month.dayInt) && (day(date: schedule.endDate) == month.dayInt) {
+        let endDate = Calendar.current.date(byAdding: .second, value: -1, to: schedule.endDate) ?? schedule.endDate!
+        
+        if (day(date: schedule.startDate) == month.dayInt) && (day(date: endDate) == month.dayInt) {
             return .OneDate
         } else if day(date: schedule.startDate) == month.dayInt {
             return .StartDate

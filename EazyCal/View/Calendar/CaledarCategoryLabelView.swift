@@ -94,6 +94,7 @@ struct CalendarCategoryLabelView: View {
                 editStartDate: schedule.startDate,
                 editDoDate: schedule.endDate,
                 editRepeatDate: RepeatType.oneDay,
+                editURL: schedule.url?.absoluteString ?? "",
                 editTodos: todos(),
                 editCategory: schedule.calendar
             )
