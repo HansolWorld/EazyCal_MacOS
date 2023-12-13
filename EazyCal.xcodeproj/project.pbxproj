@@ -19,9 +19,6 @@
 		FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF41EB062AD8CCBB002FD4A9 /* Preview Assets.xcassets */; };
 		FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF478D702AEA39A20073EF32 /* CalendarTabView.swift */; };
 		FF478D752AEA42DE0073EF32 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */; };
-		FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */; };
-		FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */; };
-		FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */; };
 		FF54FA2D2ADFA8D400996AC9 /* RepeatSelectedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */; };
 		FF54FA352ADFC69100996AC9 /* CustomPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF54FA342ADFC69100996AC9 /* CustomPicker.swift */; };
 		FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF57590D2ADB9A86001E588F /* CategoryLabel.swift */; };
@@ -64,9 +61,6 @@
 		FF41EB0E2AD8CCBB002FD4A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF478D702AEA39A20073EF32 /* CalendarTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTabView.swift; sourceTree = "<group>"; };
 		FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
-		FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Medium.otf"; sourceTree = "<group>"; };
-		FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Bold.otf"; sourceTree = "<group>"; };
-		FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SpoqaHanSansNeo-Regular.otf"; sourceTree = "<group>"; };
 		FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatSelectedButton.swift; sourceTree = "<group>"; };
 		FF54FA342ADFC69100996AC9 /* CustomPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPicker.swift; sourceTree = "<group>"; };
 		FF57590D2ADB9A86001E588F /* CategoryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabel.swift; sourceTree = "<group>"; };
@@ -155,16 +149,6 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		FF54FA2B2ADF7C8F00996AC9 /* fonts */ = {
-			isa = PBXGroup;
-			children = (
-				FF54FA262ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf */,
-				FF54FA252ADF7C8600996AC9 /* SpoqaHanSansNeo-Medium.otf */,
-				FF54FA272ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf */,
-			);
-			path = fonts;
-			sourceTree = "<group>";
-		};
 		FF57590B2ADB9A65001E588F /* Todo */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,7 +177,6 @@
 		FF57590F2ADB9CB3001E588F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				FF54FA2B2ADF7C8F00996AC9 /* fonts */,
 				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
 				FF5759102ADB9CC3001E588F /* SFSymbol.swift */,
 			);
@@ -309,9 +292,6 @@
 			files = (
 				FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */,
 				FF41EB042AD8CCBB002FD4A9 /* Assets.xcassets in Resources */,
-				FF54FA282ADF7C8700996AC9 /* SpoqaHanSansNeo-Medium.otf in Resources */,
-				FF54FA292ADF7C8700996AC9 /* SpoqaHanSansNeo-Bold.otf in Resources */,
-				FF54FA2A2ADF7C8700996AC9 /* SpoqaHanSansNeo-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

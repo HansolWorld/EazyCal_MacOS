@@ -47,8 +47,9 @@ struct CalenderView: View {
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
                     .font(.body)
+                    .fontWeight(.bold)
                     .foregroundStyle(.gray300)
-                    .padding(8)
+                    .padding(12)
                     .background {
                         Circle()
                             .foregroundStyle(Color.white)
@@ -69,8 +70,9 @@ struct CalenderView: View {
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
                     .font(.body)
+                    .fontWeight(.bold)
                     .foregroundStyle(.gray300)
-                    .padding(8)
+                    .padding(12)
                     .background {
                         Circle()
                             .foregroundStyle(Color.white)
@@ -88,7 +90,8 @@ struct CalenderView: View {
                 Text("오늘")
                     .font(.body)
                     .foregroundStyle(.gray300)
-                    .padding(8)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
                     .background {
                         Capsule()
                             .foregroundStyle(.white)
