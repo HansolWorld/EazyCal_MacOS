@@ -76,6 +76,13 @@ struct CalendarCell: View {
                             isShow.toggle()
                         }
                         .shadow(radius: 2)
+                } else {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture(count: 2) {
+                            isShow.toggle()
+                        }
                 }
             }
             .popover(isPresented: $isShow) {
@@ -132,10 +139,37 @@ struct CalendarCell: View {
                             calendar: ekCalendar
                         )
                     }
+                    
+                    self.currentDragTemplate = nil
                 } else {
                     print("currentDragTemplate 왜 nil일까?")
                 }
-                currentDragTemplate = nil
+                
+                if let selectedEvent {
+                    var addMonth = 0
+                    if month.monthType == .Previous {
+                        addMonth = -1
+                    } else if month.monthType == .Next {
+                        addMonth = 1
+                    }
+                    
+                    var currentDateComponents = DateComponents(
+                        year: calendarViewModel.year(),
+                        month: calendarViewModel.month() + addMonth,
+                        day: month.dayInt
+                    )
+                    let currentDate = Calendar.current.date(from: currentDateComponents)!
+                    let offsetComps = Calendar.current.dateComponents([.day], from: selectedEvent.startDate, to: currentDate)
+                    
+                    selectedEvent.startDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.startDate)
+                    selectedEvent.endDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.endDate)
+                    
+                    Task {
+                        try await eventManager.updateEvent(ekEvent: selectedEvent)
+                    }
+                    
+                    self.selectedEvent = nil
+                }
                 return true
             })
         }

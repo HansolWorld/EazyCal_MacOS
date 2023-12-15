@@ -79,6 +79,10 @@ struct CalendarCategoryLabelView: View {
                 selectedEvent = schedule
             }
         })
+        .onDrag { () -> NSItemProvider in
+            selectedEvent = schedule
+            return NSItemProvider(object: schedule.eventIdentifier as NSString)
+        }
         .onChange(of: selectedEvent, { oldValue, newValue in
             if selectedEvent == schedule {
                 isSelected = true

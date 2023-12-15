@@ -99,18 +99,6 @@ class CalendarViewModel: ObservableObject {
                    let existingStartDate = calendarCurrent.date(from: existingStartDateComponent),
                    let existingDoDate = calendarCurrent.date(from: existingDoDateComponent) {
                     if startDate <= existingDoDate &&  doDate > existingStartDate {
-                        
-                        
-                        if schedule.title == "쇼케이스" {
-                            print(schedule.title)
-                            print(existingStartDate)
-                            print(existingDoDate)
-                            print(existingSchedule.title)
-                            print(startDate)
-                            print(doDate)
-                            print(layer)
-                        }
-                        
                         layer[existingLayer - 1] = 1
                     }
                 }
