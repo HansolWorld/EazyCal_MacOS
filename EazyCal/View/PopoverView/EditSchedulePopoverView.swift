@@ -82,11 +82,19 @@ struct EditSchedulePopoverView: View {
             
             ForEach(editTodos.indices, id:\.self) { index in
                 HStack {
-                    Image(systemName: SFSymbol.circle.name)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 12, height: 12)
-                        .foregroundStyle(Color.calendarBlue)
+                    Button(action: {
+                        var todo = editTodos[index]
+                        todo.isComplete.toggle()
+                        editTodos[index] = todo
+                    }) {
+                        Image(systemName: editTodos[index].isComplete ? SFSymbol.checkCircle.name : SFSymbol.circle.name)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color.calendarBlue)
+                    }
+                    .buttonStyle(.plain)
+                    
                     TextField("", text: $editTodos[index].title)
                         .foregroundStyle(Color.gray400)
                         .textFieldStyle(.plain)

@@ -87,7 +87,7 @@ class CalendarViewModel: ObservableObject {
             var layer = Array(repeating: 0, count: schedules.count)
             
             for (existingSchedule, existingLayer) in layers {
-                var existingStartDate = existingSchedule.startDate ?? Date()
+                let existingStartDate = existingSchedule.startDate ?? Date()
                 let existingStartDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: existingStartDate)
 
                 var existingDoDate = existingSchedule.endDate ?? Date()

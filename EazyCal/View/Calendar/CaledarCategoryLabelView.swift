@@ -67,6 +67,7 @@ struct CalendarCategoryLabelView: View {
                 }
             }
         }
+        .contentShape(Rectangle())
         .gesture(TapGesture(count: 2).onEnded {
             if selectedEvent == schedule {
                 isEdit = true

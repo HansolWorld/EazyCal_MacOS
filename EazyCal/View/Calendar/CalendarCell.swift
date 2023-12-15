@@ -153,7 +153,7 @@ struct CalendarCell: View {
                         addMonth = 1
                     }
                     
-                    var currentDateComponents = DateComponents(
+                    let currentDateComponents = DateComponents(
                         year: calendarViewModel.year(),
                         month: calendarViewModel.month() + addMonth,
                         day: month.dayInt
