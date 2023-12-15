@@ -98,6 +98,15 @@ struct EditSchedulePopoverView: View {
                     TextField("", text: $editTodos[index].title)
                         .foregroundStyle(Color.gray400)
                         .textFieldStyle(.plain)
+                    
+                    Button(action: {
+                        editTodos.remove(at: index)
+                    }) {
+                        Image(systemName: SFSymbol.minus.name)
+                            .font(.body)
+                            .foregroundStyle(Color.calendarRed)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             HStack {
