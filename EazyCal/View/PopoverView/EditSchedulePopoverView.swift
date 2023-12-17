@@ -80,48 +80,53 @@ struct EditSchedulePopoverView: View {
                 .font(.body)
                 .foregroundStyle(Color.gray400)
             
-            ForEach(editTodos.indices, id:\.self) { index in
-                HStack {
-                    Button(action: {
-                        var todo = editTodos[index]
-                        todo.isComplete.toggle()
-                        editTodos[index] = todo
-                    }) {
-                        Image(systemName: editTodos[index].isComplete ? SFSymbol.checkCircle.name : SFSymbol.circle.name)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 12, height: 12)
-                            .foregroundStyle(Color.calendarBlue)
+            VStack(spacing: 8) {
+                ForEach(editTodos.indices, id:\.self) { index in
+                    HStack {
+                        Button(action: {
+                            let todo = editTodos[index]
+                            todo.isComplete.toggle()
+                            editTodos[index] = todo
+                        }) {
+                            Image(systemName: editTodos[index].isComplete ? SFSymbol.checkCircle.name : SFSymbol.circle.name)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 12, height: 12)
+                                .foregroundStyle(Color.calendarBlue)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        TextField("", text: $editTodos[index].title)
+                            .foregroundStyle(Color.gray400)
+                            .textFieldStyle(.plain)
+                        
+                        Button(action: {
+                            editTodos.remove(at: index)
+                        }) {
+                            Image(systemName: SFSymbol.minus.name)
+                                .font(.body)
+                                .fontWeight(.heavy)
+                                .foregroundStyle(Color.calendarRed)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
-                    
-                    TextField("", text: $editTodos[index].title)
+                }
+                
+                HStack {
+                    Image(systemName: SFSymbol.circle.name)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 12, height: 12)
+                        .foregroundStyle(Color.calendarBlue)
+                    TextField("새로운 할일", text: $editTodo.title)
                         .foregroundStyle(Color.gray400)
                         .textFieldStyle(.plain)
-                    
-                    Button(action: {
-                        editTodos.remove(at: index)
-                    }) {
-                        Image(systemName: SFSymbol.minus.name)
-                            .font(.body)
-                            .foregroundStyle(Color.calendarRed)
-                    }
-                    .buttonStyle(.plain)
+                        .onSubmit {
+                            editTodos.append(editTodo)
+                            editTodo = Todo(title: "")
+                        }
                 }
-            }
-            HStack {
-                Image(systemName: SFSymbol.circle.name)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 12, height: 12)
-                    .foregroundStyle(Color.calendarBlue)
-                TextField("새로운 할일", text: $editTodo.title)
-                    .foregroundStyle(Color.gray400)
-                    .textFieldStyle(.plain)
-                    .onSubmit {
-                        editTodos.append(editTodo)
-                        editTodo = Todo(title: "")
-                    }
             }
         }
         .frame(width: 200)
