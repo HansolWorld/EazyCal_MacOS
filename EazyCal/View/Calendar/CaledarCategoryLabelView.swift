@@ -13,6 +13,7 @@ struct CalendarCategoryLabelView: View {
     let viewType: CellViewType
     
     @State var isSelected = false
+    @State var isHover = false
     @State var isEdit = false
     @State var requestSchedule: EKEvent?
     @State var deleteSchedule = false
@@ -68,7 +69,7 @@ struct CalendarCategoryLabelView: View {
             }
         }
         .contentShape(Rectangle())
-        .gesture(TapGesture(count: 2).onEnded {
+        .onTapGesture(count: 2, perform: {
             if selectedEvent == schedule {
                 isEdit = true
             } else {

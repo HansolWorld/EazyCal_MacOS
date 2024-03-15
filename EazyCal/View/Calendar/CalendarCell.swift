@@ -76,13 +76,17 @@ struct CalendarCell: View {
                             isShow.toggle()
                         }
                         .shadow(radius: 2)
-                } else {
+                } 
+                else {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.clear)
                         .contentShape(Rectangle())
                         .onTapGesture(count: 2) {
                             isShow.toggle()
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            selectedEvent = nil
+                        })
                 }
             }
             .popover(isPresented: $isShow) {
@@ -141,11 +145,7 @@ struct CalendarCell: View {
                     }
                     
                     self.currentDragTemplate = nil
-                } else {
-                    print("currentDragTemplate 왜 nil일까?")
-                }
-                
-                if let selectedEvent {
+                } else if let selectedEvent {
                     var addMonth = 0
                     if month.monthType == .Previous {
                         addMonth = -1
@@ -169,6 +169,7 @@ struct CalendarCell: View {
                     }
                     
                     self.selectedEvent = nil
+                } else {
                 }
                 return true
             })

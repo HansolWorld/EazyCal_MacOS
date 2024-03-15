@@ -20,6 +20,7 @@ class EventStoreManager: ObservableObject {
     @Published var todo: [EKReminder] = []
 
     init() {
+        guard self.eventStore.isFullAccessAuthorized else { return }
         Task {
             await self.loadCalendar()
             await self.loadEvents()
