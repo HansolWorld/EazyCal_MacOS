@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CalendarCategoryPopoverView: View {
     private let icons: [String] = ["🐶", "🌳", "🍚", "💼", "🔥", "⚽️", "🏖️", "💻", "💡", "💰", "💊", "🎁", "📚", "🩷", "🎄", "🎅"]
-    
+    let categoryCount: Int
     @State private var isHoverFirst = false
     @State private var isHoverSecond = false
     @Binding var isShow: Bool
@@ -18,26 +18,28 @@ struct CalendarCategoryPopoverView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Button(action: {
-                let newCategory = CalendarCategory(icon: getRandomIcon(), title: "무제")
-                context.insert(newCategory)
-                isShow = false
-            }) {
-                Text("새로운 카테고리")
-                    .font(.body)
-                    .foregroundStyle(isHoverFirst ? .white : .calendarBlack)
-            }
-            .contentShape(Rectangle())
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 3)
-            .padding(.horizontal, 7)
-            .buttonStyle(.plain)
-            .background {
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .fill(isHoverFirst ? .calendarBlue : .clear)
-            }
-            .onHover { hovering in
-                isHoverFirst = hovering
+            if categoryCount < 4 {
+                Button(action: {
+                    let newCategory = CalendarCategory(icon: getRandomIcon(), title: "무제")
+                    context.insert(newCategory)
+                    isShow = false
+                }) {
+                    Text("새로운 카테고리")
+                        .font(.body)
+                        .foregroundStyle(isHoverFirst ? .white : .calendarBlack)
+                }
+                .contentShape(Rectangle())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 3)
+                .padding(.horizontal, 7)
+                .buttonStyle(.plain)
+                .background {
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .fill(isHoverFirst ? .calendarBlue : .clear)
+                }
+                .onHover { hovering in
+                    isHoverFirst = hovering
+                }
             }
             
             Button(action: {
@@ -78,5 +80,5 @@ struct CalendarCategoryPopoverView: View {
 }
 
 #Preview {
-    CalendarCategoryPopoverView(isShow: .constant(true))
+    CalendarCategoryPopoverView(categoryCount: 2, isShow: .constant(true))
 }
