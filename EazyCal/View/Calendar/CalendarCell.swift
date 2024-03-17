@@ -133,7 +133,8 @@ struct CalendarCell: View {
                             isAllDay: currentDragTemplate.isAllDay,
                             startDate: startDate,
                             endDate: endDate,
-                            repeatDate: .oneDay,
+                            repeatDate: .oneDay, 
+                            url: nil,
                             notes: currentDragTemplate.todos,
                             calendar: ekCalendar
                         )
