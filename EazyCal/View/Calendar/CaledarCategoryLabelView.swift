@@ -127,6 +127,22 @@ struct CalendarCategoryLabelView: View {
                 }
             }
         }
+        .focusable()
+        .focusEffectDisabled()
+        .onKeyPress { key in
+            if key.key == KeyEquivalent("\u{7F}") {
+                if let selectedEvent {
+                    Task {
+                        try await self.eventManager.removeEvent(event: selectedEvent)
+                        self.selectedEvent = nil
+                    }
+                }
+            } else if key.key == .return {
+                isEdit = true
+            }
+            
+            return .handled
+        }
     }
     
     func repeatType(_ frequency: EKRecurrenceFrequency?) -> RepeatType {
