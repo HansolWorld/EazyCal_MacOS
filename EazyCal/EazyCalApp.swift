@@ -85,6 +85,7 @@ extension EventStoreManager {
         let center = NotificationCenter.default
         let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
 
+        guard eventStore.isFullAccessAuthorized else { return }
         for await _ in notifications {
             await self.loadCalendar()
             await self.loadEvents()
