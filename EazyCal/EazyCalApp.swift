@@ -38,8 +38,8 @@ struct EazyCalApp: App {
         }
     }()
     
-    @StateObject var calendarViewModel = CalendarViewModel()
     @StateObject private var storeManager: EventStoreManager = EventStoreManager()
+    @StateObject var calendarViewModel = CalendarViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -85,8 +85,8 @@ extension EventStoreManager {
         let center = NotificationCenter.default
         let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
 
+        guard eventStore.isFullAccessAuthorized else { return }
         for await _ in notifications {
-            guard eventStore.isFullAccessAuthorized else { return }
             await self.loadCalendar()
             await self.loadEvents()
             await self.loadReminder()

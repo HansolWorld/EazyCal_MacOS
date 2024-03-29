@@ -131,7 +131,6 @@ class EventStore: ObservableObject {
                 try eventStore.save(newReminder, commit: true)
             }
         } catch {
-            print(error)
         }
     }
     

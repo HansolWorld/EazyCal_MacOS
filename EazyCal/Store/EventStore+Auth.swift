@@ -26,7 +26,7 @@ extension EventStore {
         case .denied:
             try await requestFullAccess()
         case .fullAccess:
-            print("seccess")
+            print()
         default:
             try await requestFullAccess()
         }

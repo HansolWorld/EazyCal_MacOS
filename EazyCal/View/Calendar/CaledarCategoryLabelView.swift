@@ -12,6 +12,8 @@ struct CalendarCategoryLabelView: View {
     let schedule: EKEvent
     let viewType: CellViewType
     
+    @State var isSelected = false
+    @State var isHover = false
     @State var isEdit = false
     @State var requestSchedule: EKEvent?
     @State var deleteSchedule = false
@@ -58,20 +60,36 @@ struct CalendarCategoryLabelView: View {
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                         .padding(.horizontal, 4)
                 }
-                
+            } else {
+                if selectedEvent == schedule {
+                    UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
+                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .padding(.horizontal, 4)
+                }
             }
         }
-        .onTapGesture {
-            isEdit = true
+        .contentShape(Rectangle())
+        .onTapGesture(count: 2, perform: {
+            if selectedEvent == schedule {
+                isEdit = true
+            } else {
+                isEdit = false
+            }
+        })
+        .simultaneousGesture(TapGesture().onEnded {
+            withAnimation {
+                selectedEvent = schedule
+            }
+        })
+        .onDrag { () -> NSItemProvider in
+            selectedEvent = schedule
+            return NSItemProvider(object: schedule.eventIdentifier as NSString)
         }
-        .onChange(of: isEdit, { oldValue, newValue in
-            switch isEdit {
-            case false:
-                selectedEvent = nil
-            case true:
-                withAnimation {
-                    selectedEvent = schedule
-                }
+        .onChange(of: selectedEvent, { oldValue, newValue in
+            if selectedEvent == schedule {
+                isSelected = true
+            } else {
+                isSelected = false
             }
         })
         .popover(isPresented: $isEdit) {
@@ -82,6 +100,7 @@ struct CalendarCategoryLabelView: View {
                 editStartDate: schedule.startDate,
                 editDoDate: schedule.endDate,
                 editRepeatDate: RepeatType.oneDay,
+                editURL: schedule.url?.absoluteString ?? "",
                 editTodos: todos(),
                 editCategory: schedule.calendar
             )
