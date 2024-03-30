@@ -75,38 +75,43 @@ class CalendarViewModel: ObservableObject {
     }
     
     func calculateSchedulesLayers(schedules: [EKEvent]) -> [(EKEvent, Int)] {
-        let calendarCurrent = Calendar.current
+        var calendarCurrent = Calendar.current
+        schedules.forEach { schedule in
+            print(schedule.title!, schedule.startDate!, schedule.endDate!)
+        }
         var layers: [(EKEvent, Int)] = []
         
         for schedule in schedules {
+            let componentSet: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute]
             let startDate = schedule.startDate ?? Date()
-            let startDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: startDate)
-            let doDate = schedule.endDate ?? Date()
-            let doDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: doDate)
+            let startDateComponent = calendarCurrent.dateComponents(componentSet, from: startDate)
+            let endDate = schedule.endDate ?? Date()
+            let endDateComponent = calendarCurrent.dateComponents(componentSet, from: endDate)
             
             var layer = Array(repeating: 0, count: schedules.count)
-            
             for (existingSchedule, existingLayer) in layers {
                 let existingStartDate = existingSchedule.startDate ?? Date()
-                let existingStartDateComponent = calendarCurrent.dateComponents([.year, .month, .day], from: existingStartDate)
+                let existingStartDateComponent = calendarCurrent.dateComponents(componentSet, from: existingStartDate)
 
                 var existingDoDate = existingSchedule.endDate ?? Date()
                 existingDoDate = calendarCurrent.date(byAdding: .second, value: -1, to: existingDoDate) ?? Date()
-                let existingDoDateComponent = calendarCurrent.dateComponents([.year, .month, .day, .hour, .minute, .second], from: existingDoDate)
+                let existingDoDateComponent = calendarCurrent.dateComponents(componentSet, from: existingDoDate)
                 
-                if let startDate = calendarCurrent.date(from: startDateComponent),
-                   let doDate = calendarCurrent.date(from: doDateComponent),
-                   let existingStartDate = calendarCurrent.date(from: existingStartDateComponent),
-                   let existingDoDate = calendarCurrent.date(from: existingDoDateComponent) {
-                    if startDate <= existingDoDate &&  doDate > existingStartDate {
-                        layer[existingLayer - 1] = 1
-                    }
+                print(schedule.title, existingSchedule.title, "\(startDateComponent.year!)\(String(format: "%02d", startDateComponent.month!))\(String(format: "%02d", startDateComponent.day!))\(String(format: "%02d", startDateComponent.hour!))\(String(format: "%02d", startDateComponent.minute!))", "\(existingDoDateComponent.year!)\(String(format: "%02d", existingDoDateComponent.month!))\(String(format: "%02d", existingDoDateComponent.day!))\(String(format: "%02d", existingDoDateComponent.hour!))\(String(format: "%02d", existingDoDateComponent.minute!))")
+                
+                if "\(startDateComponent.year!)\(String(format: "%02d", startDateComponent.month!))\(String(format: "%02d", startDateComponent.day!))\(String(format: "%02d", startDateComponent.hour!))\(String(format: "%02d", startDateComponent.minute!))" <= "\(existingDoDateComponent.year!)\(String(format: "%02d", existingDoDateComponent.month!))\(String(format: "%02d", existingDoDateComponent.day!))\(String(format: "%02d", existingDoDateComponent.hour!))\(String(format: "%02d", existingDoDateComponent.minute!))" {
+                    layer[existingLayer - 1] = 1
+                    print(existingLayer)
                 }
             }
-            
+
+            print(schedule.title!)
+            print(layer)
+
             let currentLayer = layer.firstIndex(of: 0) ?? 0
             layers.append((schedule, currentLayer+1))
         }
+
         return layers
     }
     
