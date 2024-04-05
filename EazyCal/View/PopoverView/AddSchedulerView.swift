@@ -18,6 +18,7 @@ struct AddSchedulerView: View {
     @State var todos:[String] = []
     @State var category: EKCalendar
     @State var url: String = ""
+    @State var linkURL: URL?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -56,7 +57,27 @@ struct AddSchedulerView: View {
             }
             RepeatSelectedButton(title: "반복", selected: $repeatDate)
             CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $category)
-            TextField("URL", text: $url)
+            
+            HStack {
+                Text("URL")
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                TextField("입력 후 엔터를 눌러주세요", text: $url)
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                    .textFieldStyle(.plain)
+                    .onSubmit {
+                        linkURL = URL(string: url)
+                        url = ""
+                    }
+            }
+            if let linkURL {
+                Link(destination: linkURL) {
+                    Text(url)
+                        .font(.body)
+                }
+            }
+            
             Text("할 일")
                 .font(.body)
                 .foregroundStyle(Color.gray400)
@@ -99,7 +120,7 @@ struct AddSchedulerView: View {
                             startDate: startDate,
                             endDate: doDate,
                             repeatDate: repeatDate,
-                            url: url,
+                            url: linkURL,
                             notes: todos,
                             calendar: category
                         )

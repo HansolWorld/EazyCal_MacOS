@@ -147,7 +147,7 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
-
+        
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
                 HStack(spacing: 0) {

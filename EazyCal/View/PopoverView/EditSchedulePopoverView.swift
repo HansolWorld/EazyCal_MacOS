@@ -26,6 +26,7 @@ struct EditSchedulePopoverView: View {
     @State var editDoDate: Date
     @State var editRepeatDate: RepeatType
     @State var editURL: String
+    @State var linkURL: URL?
     @State var editTodo = Todo(title: "")
     @State var editTodos: [Todo]
     @State var editCategory: EKCalendar
@@ -71,11 +72,27 @@ struct EditSchedulePopoverView: View {
             }
             RepeatSelectedButton(title: "반복", selected: $editRepeatDate)
             CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $editCategory)
-//            HStack {
-//                TextEditor(text: $editURL)
-//                    .font(.title3)
-//                    .foregroundStyle(Color.gray400)
-//            }
+
+            HStack {
+                Text("URL")
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                TextField("수정 후 엔터를 눌러주세요", text: $editURL)
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                    .textFieldStyle(.plain)
+                    .onSubmit {
+                        linkURL = URL(string: editURL)
+                        editURL = ""
+                    }
+            }
+            if let linkURL {
+                Link(destination: linkURL) {
+                    Text(editURL)
+                        .font(.body)
+                }
+            }
+            
             Text("할 일")
                 .font(.body)
                 .foregroundStyle(Color.gray400)
@@ -136,6 +153,7 @@ struct EditSchedulePopoverView: View {
             event.isAllDay = editIsAllDay
             event.startDate = editStartDate
             event.endDate = editDoDate
+            event.url = linkURL
             switch editRepeatDate {
             case .oneDay:
                 event.recurrenceRules = nil
