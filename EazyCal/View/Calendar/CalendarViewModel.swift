@@ -82,34 +82,35 @@ class CalendarViewModel: ObservableObject {
         var layers: [(EKEvent, Int)] = []
         
         for schedule in schedules {
-            let componentSet: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute]
+            let componentSet: Set<Calendar.Component> = [.month, .day]
+            
             let startDate = schedule.startDate ?? Date()
             let startDateComponent = calendarCurrent.dateComponents(componentSet, from: startDate)
+            let (startMonth, startDay) = (startDateComponent.month, startDateComponent.day)
+            
             let endDate = schedule.endDate ?? Date()
             let endDateComponent = calendarCurrent.dateComponents(componentSet, from: endDate)
+            let (endMonth, endDay) = (endDateComponent.month, endDateComponent.day)
             
             var layer = Array(repeating: 0, count: schedules.count)
             for (existingSchedule, existingLayer) in layers {
                 let existingStartDate = existingSchedule.startDate ?? Date()
                 let existingStartDateComponent = calendarCurrent.dateComponents(componentSet, from: existingStartDate)
-
-                var existingDoDate = existingSchedule.endDate ?? Date()
-                existingDoDate = calendarCurrent.date(byAdding: .second, value: -1, to: existingDoDate) ?? Date()
-                let existingDoDateComponent = calendarCurrent.dateComponents(componentSet, from: existingDoDate)
+                let (existingStartMonth, existingStartDay) = (existingStartDateComponent.month, existingStartDateComponent.day)
                 
-                print(schedule.title, existingSchedule.title, "\(startDateComponent.year!)\(String(format: "%02d", startDateComponent.month!))\(String(format: "%02d", startDateComponent.day!))\(String(format: "%02d", startDateComponent.hour!))\(String(format: "%02d", startDateComponent.minute!))", "\(existingDoDateComponent.year!)\(String(format: "%02d", existingDoDateComponent.month!))\(String(format: "%02d", existingDoDateComponent.day!))\(String(format: "%02d", existingDoDateComponent.hour!))\(String(format: "%02d", existingDoDateComponent.minute!))")
+                let existingEndDate = existingSchedule.endDate ?? Date()
+                let existingEndDateComponent = calendarCurrent.dateComponents(componentSet, from: existingEndDate)
+                let (existingEndMonth, existingEndDay) = (existingEndDateComponent.month, existingEndDateComponent.day)
                 
-                if "\(startDateComponent.year!)\(String(format: "%02d", startDateComponent.month!))\(String(format: "%02d", startDateComponent.day!))\(String(format: "%02d", startDateComponent.hour!))\(String(format: "%02d", startDateComponent.minute!))" <= "\(existingDoDateComponent.year!)\(String(format: "%02d", existingDoDateComponent.month!))\(String(format: "%02d", existingDoDateComponent.day!))\(String(format: "%02d", existingDoDateComponent.hour!))\(String(format: "%02d", existingDoDateComponent.minute!))" {
+                if 
+                    (startMonth == existingStartMonth && startDay == existingStartDay && startDate >= existingStartDate)
+                    || (endMonth == existingEndMonth && endDay == existingEndDay && endDate >= existingEndDate)
+                    || (startMonth == existingEndMonth && startDay == existingEndDay)
+                {
                     layer[existingLayer - 1] = 1
                     print(existingLayer)
                 }
             }
-
-            print(schedule.title!)
-            print(layer)
-
-            let currentLayer = layer.firstIndex(of: 0) ?? 0
-            layers.append((schedule, currentLayer+1))
         }
 
         return layers
