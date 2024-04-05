@@ -75,10 +75,7 @@ class CalendarViewModel: ObservableObject {
     }
     
     func calculateSchedulesLayers(schedules: [EKEvent]) -> [(EKEvent, Int)] {
-        var calendarCurrent = Calendar.current
-        schedules.forEach { schedule in
-            print(schedule.title!, schedule.startDate!, schedule.endDate!)
-        }
+        let calendarCurrent = Calendar.current
         var layers: [(EKEvent, Int)] = []
         
         for schedule in schedules {
@@ -108,9 +105,11 @@ class CalendarViewModel: ObservableObject {
                     || (startMonth == existingEndMonth && startDay == existingEndDay)
                 {
                     layer[existingLayer - 1] = 1
-                    print(existingLayer)
                 }
             }
+            
+            let currentLayer = layer.firstIndex(of: 0) ?? 0
+            layers.append((schedule, currentLayer+1))
         }
 
         return layers
@@ -148,7 +147,7 @@ class CalendarViewModel: ObservableObject {
             let endDate = schedule.endDate ?? startDate
             
             
-            if startDate <= currentDate && currentDate < endDate {
+            if startDate <= currentDate && currentDate <= endDate {
                 return true
             } else {
                 return false

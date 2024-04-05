@@ -75,8 +75,8 @@ class EventStoreManager: ObservableObject {
         return todoInSchedule
     }
     
-    func saveEvent(title: String, isAllDay: Bool, startDate: Date?, endDate: Date?, repeatDate: RepeatType, url: String?, notes: [String], calendar: EKCalendar) async throws {
-        try await eventStore.saveEvent(title: title, isAllDay: isAllDay, startDate: startDate, endDate: endDate, repeatDate: repeatDate, url: URL(string: url ?? ""), notes: notes, calendar: calendar)
+    func saveEvent(title: String, isAllDay: Bool, startDate: Date?, endDate: Date?, repeatDate: RepeatType, url: URL?, notes: [String], calendar: EKCalendar) async throws {
+        try await eventStore.saveEvent(title: title, isAllDay: isAllDay, startDate: startDate, endDate: endDate, repeatDate: repeatDate, url: url, notes: notes, calendar: calendar)
     }
     
     func updateEvent(ekEvent: EKEvent) async throws {
