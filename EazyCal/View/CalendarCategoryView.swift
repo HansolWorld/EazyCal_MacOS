@@ -40,8 +40,11 @@ struct CalendarCategoryView: View {
                     Image(systemName: SFSymbol.plus.name)
                         .foregroundStyle(Color.primaryBlue)
                         .popover(isPresented: $isAddPopoverShow) {
-                         CalendarCategoryPopoverView(isShow: $isAddPopoverShow)
-                                .environmentObject(eventManager)
+                            CalendarCategoryPopoverView(
+                                categoryCount: categories.count, 
+                                isShow: $isAddPopoverShow
+                            )
+                            .environmentObject(eventManager)
                         }
                 }
                 .buttonStyle(.plain)
@@ -129,8 +132,6 @@ struct CalendarCategoryView: View {
                         if let currentDragItem {
                             replaceCategory(category, droppingCalendar: currentDragItem)
                             self.selectTag = category
-                        } else {
-                            print("currentDragItem 왜 nil일까?")
                         }
                         currentDragItem = nil
                         return true

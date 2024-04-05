@@ -76,12 +76,17 @@ struct CalendarCell: View {
                             isShow.toggle()
                         }
                         .shadow(radius: 2)
-                } else {
+                } 
+                else {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.white)
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
                         .onTapGesture(count: 2) {
                             isShow.toggle()
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            selectedEvent = nil
+                        })
                 }
             }
             .popover(isPresented: $isShow) {
@@ -133,15 +138,40 @@ struct CalendarCell: View {
                             isAllDay: currentDragTemplate.isAllDay,
                             startDate: startDate,
                             endDate: endDate,
-                            repeatDate: .oneDay,
+                            repeatDate: .oneDay, 
+                            url: nil,
                             notes: currentDragTemplate.todos,
                             calendar: ekCalendar
                         )
                     }
+                    
+                    self.currentDragTemplate = nil
+                } else if let selectedEvent {
+                    var addMonth = 0
+                    if month.monthType == .Previous {
+                        addMonth = -1
+                    } else if month.monthType == .Next {
+                        addMonth = 1
+                    }
+                    
+                    let currentDateComponents = DateComponents(
+                        year: calendarViewModel.year(),
+                        month: calendarViewModel.month() + addMonth,
+                        day: month.dayInt
+                    )
+                    let currentDate = Calendar.current.date(from: currentDateComponents)!
+                    let offsetComps = Calendar.current.dateComponents([.day], from: selectedEvent.startDate, to: currentDate)
+                    
+                    selectedEvent.startDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.startDate)
+                    selectedEvent.endDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.endDate)
+                    
+                    Task {
+                        try await eventManager.updateEvent(ekEvent: selectedEvent)
+                    }
+                    
+                    self.selectedEvent = nil
                 } else {
-                    print("currentDragTemplate 왜 nil일까?")
                 }
-                currentDragTemplate = nil
                 return true
             })
         }
@@ -171,7 +201,9 @@ struct CalendarCell: View {
     }
     
     func cellViewType(_ schedule: EKEvent, _ month: Month) -> CellViewType {
-        if (day(date: schedule.startDate) == month.dayInt) && (day(date: schedule.endDate) == month.dayInt) {
+        let endDate = Calendar.current.date(byAdding: .second, value: -1, to: schedule.endDate) ?? schedule.endDate!
+        
+        if (day(date: schedule.startDate) == month.dayInt) && (day(date: endDate) == month.dayInt) {
             return .OneDate
         } else if day(date: schedule.startDate) == month.dayInt {
             return .StartDate

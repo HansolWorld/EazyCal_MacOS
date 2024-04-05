@@ -25,13 +25,21 @@ struct EditSchedulePopoverView: View {
     @State var editStartDate: Date
     @State var editDoDate: Date
     @State var editRepeatDate: RepeatType
+    @State var editURL: String
+    var linkURL: URL? {
+        if !editURL.contains("http") {
+            return URL(string: "http://\(editURL)")
+        } else {
+            return URL(string: editURL)
+        }
+    }
     @State var editTodo = Todo(title: "")
     @State var editTodos: [Todo]
     @State var editCategory: EKCalendar
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
-        VStack(alignment: .leading) {
+        LazyVStack(alignment: .leading) {
             TextField("일정 수정", text: $editTitle)
                 .font(.title3)
                 .foregroundStyle(Color.gray400)
@@ -46,63 +54,108 @@ struct EditSchedulePopoverView: View {
                     .toggleStyle(BackgroundToggleStyle())
                     .labelsHidden()
             }
-            HStack {
-                Text("시작")
-                    .font(.body)
-                    .foregroundStyle(Color.gray400)
-                Spacer()
-                DatePicker("", selection: $editStartDate, displayedComponents: [.date, .hourAndMinute])
-                    .labelsHidden()
-                    .foregroundStyle(Color.calendarBlack)
-            }
-            HStack {
-                Text("종료")
-                    .font(.body)
-                    .foregroundStyle(Color.gray400)
-                Spacer()
-                DatePicker("", selection: $editDoDate, displayedComponents: [.date, .hourAndMinute])
-                    .labelsHidden()
-                    .foregroundStyle(Color.calendarBlack)
+            if !editIsAllDay {
+                VStack {
+                    HStack {
+                        Text("시작")
+                            .font(.body)
+                            .foregroundStyle(Color.gray400)
+                        Spacer()
+                        DatePicker("", selection: $editStartDate, displayedComponents: [.date, .hourAndMinute])
+                            .labelsHidden()
+                            .foregroundStyle(Color.calendarBlack)
+                    }
+                    HStack {
+                        Text("종료")
+                            .font(.body)
+                            .foregroundStyle(Color.gray400)
+                        Spacer()
+                        DatePicker("", selection: $editDoDate, displayedComponents: [.date, .hourAndMinute])
+                            .labelsHidden()
+                            .foregroundStyle(Color.calendarBlack)
+                    }
+                }
             }
             RepeatSelectedButton(title: "반복", selected: $editRepeatDate)
             CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $editCategory)
+
+            HStack {
+                Text("URL")
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                TextField("URL을 입려해주세요", text: $editURL)
+                    .font(.body)
+                    .foregroundStyle(Color.gray400)
+                    .textFieldStyle(.plain)
+            }
+            if !editURL.isEmpty, let linkURL {
+                Link(destination: linkURL) {
+                    Text(editURL)
+                        .font(.body)
+                }
+            }
+            
             Text("할 일")
                 .font(.body)
                 .foregroundStyle(Color.gray400)
             
-            ForEach(editTodos.indices, id:\.self) { index in
+            VStack(spacing: 8) {
+                ForEach(editTodos.indices, id:\.self) { index in
+                    HStack {
+                        Button(action: {
+                            let todo = editTodos[index]
+                            todo.isComplete.toggle()
+                            editTodos[index] = todo
+                        }) {
+                            Image(systemName: editTodos[index].isComplete ? SFSymbol.checkCircle.name : SFSymbol.circle.name)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 12, height: 12)
+                                .foregroundStyle(Color.calendarBlue)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        TextField("", text: $editTodos[index].title)
+                            .foregroundStyle(Color.gray400)
+                            .textFieldStyle(.plain)
+                        
+                        Button(action: {
+                            editTodos.remove(at: index)
+                        }) {
+                            Image(systemName: SFSymbol.minus.name)
+                                .font(.body)
+                                .fontWeight(.heavy)
+                                .foregroundStyle(Color.calendarRed)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                
                 HStack {
                     Image(systemName: SFSymbol.circle.name)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 12, height: 12)
                         .foregroundStyle(Color.calendarBlue)
-                    TextField("", text: $editTodos[index].title)
+                    TextField("새로운 할일", text: $editTodo.title)
                         .foregroundStyle(Color.gray400)
                         .textFieldStyle(.plain)
+                        .onSubmit {
+                            editTodos.append(editTodo)
+                            editTodo = Todo(title: "")
+                        }
                 }
             }
-            HStack {
-                Image(systemName: SFSymbol.circle.name)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 12, height: 12)
-                    .foregroundStyle(Color.calendarBlue)
-                TextField("새로운 할일", text: $editTodo.title)
-                    .foregroundStyle(Color.gray400)
-                    .textFieldStyle(.plain)
-                    .onSubmit {
-                        editTodos.append(editTodo)
-                        editTodo = Todo(title: "")
-                    }
-            }
         }
+        .frame(width: 200)
         .padding()
         .onDisappear {
             event.title = editTitle
             event.isAllDay = editIsAllDay
             event.startDate = editStartDate
             event.endDate = editDoDate
+            event.url = linkURL
             switch editRepeatDate {
             case .oneDay:
                 event.recurrenceRules = nil

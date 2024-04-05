@@ -131,7 +131,6 @@ class EventStore: ObservableObject {
                 try eventStore.save(newReminder, commit: true)
             }
         } catch {
-            print(error)
         }
     }
     
@@ -153,7 +152,7 @@ class EventStore: ObservableObject {
     }
     
     
-    func saveEvent(title: String, isAllDay: Bool, startDate: Date?, endDate: Date?, repeatDate: RepeatType, notes: [String], calendar: EKCalendar) async throws {
+    func saveEvent(title: String, isAllDay: Bool, startDate: Date?, endDate: Date?, repeatDate: RepeatType, url: URL?, notes: [String], calendar: EKCalendar) async throws {
         let event = EKEvent(eventStore: self.eventStore)
         event.title = title
         event.isAllDay = isAllDay
@@ -161,6 +160,7 @@ class EventStore: ObservableObject {
         event.endDate = endDate
         event.notes = notes.map { "☐" + $0 }.joined(separator: "\n")
         event.calendar = calendar
+        event.url = url
         
         switch repeatDate {
         case .oneDay:
