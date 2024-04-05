@@ -150,12 +150,13 @@ struct EditSchedulePopoverView: View {
         }
         .frame(width: 200)
         .padding()
+        .focusable()
         .onDisappear {
             event.title = editTitle
             event.isAllDay = editIsAllDay
             event.startDate = editStartDate
             event.endDate = editDoDate
-            event.url = linkURL
+            event.url = URL(string: editURL)
             switch editRepeatDate {
             case .oneDay:
                 event.recurrenceRules = nil

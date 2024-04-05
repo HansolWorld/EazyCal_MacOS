@@ -122,7 +122,7 @@ struct AddSchedulerView: View {
                             startDate: startDate,
                             endDate: doDate,
                             repeatDate: repeatDate,
-                            url: linkURL,
+                            url: URL(string: url),
                             notes: todos,
                             calendar: category
                         )

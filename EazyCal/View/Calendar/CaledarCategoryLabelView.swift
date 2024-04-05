@@ -130,18 +130,22 @@ struct CalendarCategoryLabelView: View {
         .focusable()
         .focusEffectDisabled()
         .onKeyPress { key in
-            if key.key == KeyEquivalent("\u{7F}") {
-                if let selectedEvent {
-                    Task {
-                        try await self.eventManager.removeEvent(event: selectedEvent)
-                        self.selectedEvent = nil
+            if !isEdit {
+                if key.key == KeyEquivalent("\u{7F}"), !isEdit {
+                    if let selectedEvent {
+                        Task {
+                            try await self.eventManager.removeEvent(event: selectedEvent)
+                            self.selectedEvent = nil
+                        }
                     }
+                } else if key.key == .return {
+                    isEdit = true
                 }
-            } else if key.key == .return {
-                isEdit = true
+                
+                return .handled
             }
             
-            return .handled
+            return .ignored
         }
     }
     
