@@ -18,7 +18,13 @@ struct AddSchedulerView: View {
     @State var todos:[String] = []
     @State var category: EKCalendar
     @State var url: String = ""
-    @State var linkURL: URL?
+    var linkURL: URL? {
+        if !url.contains("http") {
+            return URL(string: "http://\(url)")
+        } else {
+            return URL(string: url)
+        }
+    }
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -62,16 +68,12 @@ struct AddSchedulerView: View {
                 Text("URL")
                     .font(.body)
                     .foregroundStyle(Color.gray400)
-                TextField("입력 후 엔터를 눌러주세요", text: $url)
+                TextField("URL을 입력해주세요", text: $url)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
-                    .onSubmit {
-                        linkURL = URL(string: url)
-                        url = ""
-                    }
             }
-            if let linkURL {
+            if !url.isEmpty, let linkURL {
                 Link(destination: linkURL) {
                     Text(url)
                         .font(.body)

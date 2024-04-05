@@ -26,7 +26,13 @@ struct EditSchedulePopoverView: View {
     @State var editDoDate: Date
     @State var editRepeatDate: RepeatType
     @State var editURL: String
-    @State var linkURL: URL?
+    var linkURL: URL? {
+        if !editURL.contains("http") {
+            return URL(string: "http://\(editURL)")
+        } else {
+            return URL(string: editURL)
+        }
+    }
     @State var editTodo = Todo(title: "")
     @State var editTodos: [Todo]
     @State var editCategory: EKCalendar
@@ -77,16 +83,12 @@ struct EditSchedulePopoverView: View {
                 Text("URL")
                     .font(.body)
                     .foregroundStyle(Color.gray400)
-                TextField("수정 후 엔터를 눌러주세요", text: $editURL)
+                TextField("URL을 입려해주세요", text: $editURL)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
-                    .onSubmit {
-                        linkURL = URL(string: editURL)
-                        editURL = ""
-                    }
             }
-            if let linkURL {
+            if !editURL.isEmpty, let linkURL {
                 Link(destination: linkURL) {
                     Text(editURL)
                         .font(.body)
