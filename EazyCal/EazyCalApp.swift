@@ -23,7 +23,7 @@ struct EazyCalApp: App {
             
             // This code will only run if the persistent store is empty.
             let calendarCategories = [
-                CalendarCategory(icon: "🗄️", title: "전체"),
+                CalendarCategory(icon: "🗄️", title: "전체", isSelected: true),
                 CalendarCategory(icon: "🗑️", title: "미등록")
             ]
             
