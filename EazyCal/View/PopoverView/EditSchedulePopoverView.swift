@@ -83,7 +83,7 @@ struct EditSchedulePopoverView: View {
                 Text("URL")
                     .font(.body)
                     .foregroundStyle(Color.gray400)
-                TextField("URL을 입려해주세요", text: $editURL)
+                TextField("URL을 입력해주세요", text: $editURL)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
