@@ -20,7 +20,13 @@ class EventStore: ObservableObject {
             guard try await eventStore.requestFullAccessToEvents() else { return []}
             
             let calendars = self.eventStore.calendars(for: .event)
-            result = calendars
+            let notTitle = calendars.filter { $0.title == "무제" || $0.title == "Untitled" }
+            let existTitle = calendars.filter { $0.title != "무제" && $0.title != "Untitled" }
+            
+            result += existTitle.sorted(by: {
+                    $0.title < $1.title
+            })
+            result += notTitle
         } catch {
             return []
         }
