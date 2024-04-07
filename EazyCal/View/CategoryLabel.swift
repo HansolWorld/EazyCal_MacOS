@@ -20,9 +20,6 @@ struct CategoryLabelView: View {
     @Binding var currentDragItem: EKCalendar?
     @EnvironmentObject var eventManager: EventStoreManager
     
-    @Environment(\.modelContext) private var context
-    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
-    
     var body: some View {
         Button(action: {
             var checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []

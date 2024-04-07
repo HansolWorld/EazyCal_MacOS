@@ -154,9 +154,16 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
+        let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
         let categorySchedules = schedules.filter {
-            if let category = categories.first(where: { $0.isSelected == true} )?.calendars {
-                return category.contains($0.0.calendar.calendarIdentifier)
+            if let category = categories.first(where: { $0.isSelected == true} ) {
+                if category.title == "전체" {
+                    return true
+                } else if category.title == "미등록" {
+                    return !categoriedCalendar.contains( $0.0.calendar.calendarIdentifier)
+                } else {
+                    return category.calendars.contains($0.0.calendar.calendarIdentifier)
+                }
             }
             
             return false
