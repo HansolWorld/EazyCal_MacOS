@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 import EventKit
 
 struct CategoryLabelView: View {
@@ -20,26 +19,20 @@ struct CategoryLabelView: View {
     @Binding var currentDragItem: EKCalendar?
     @EnvironmentObject var eventManager: EventStoreManager
     
-    @Environment(\.modelContext) private var context
-    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
-    
     var body: some View {
         Button(action: {
-            var checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
+            var checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
             
-            if checkedCalendar.contains(calendar.calendarIdentifier) {
-                checkedCalendar.removeAll { $0 == calendar.calendarIdentifier }
+            if checkedCategory.contains(calendar.calendarIdentifier) {
+                checkedCategory.removeAll { $0 == calendar.calendarIdentifier }
             } else {
-                checkedCalendar.append(calendar.calendarIdentifier)
+                checkedCategory.append(calendar.calendarIdentifier)
             }
             
-            UserDefaults.standard.set(checkedCalendar, forKey: "checkedCategory")
-            
-            let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-            let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
+            UserDefaults.standard.set(checkedCategory, forKey: "checkedCategory")
             
             Task {
-                await eventManager.loadEvents(calenderNames: calenderNames)
+                await eventManager.loadEvents()
             }
         }) {
             HStack(spacing: 10) {

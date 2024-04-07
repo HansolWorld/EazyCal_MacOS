@@ -23,7 +23,7 @@ struct EazyCalApp: App {
             
             // This code will only run if the persistent store is empty.
             let calendarCategories = [
-                CalendarCategory(icon: "🗄️", title: "전체", isSelected: true),
+                CalendarCategory(icon: "🗄️", title: "전체"),
                 CalendarCategory(icon: "🗑️", title: "미등록")
             ]
             
@@ -38,7 +38,7 @@ struct EazyCalApp: App {
         }
     }()
     
-    @StateObject private var storeManager = EventStoreManager()
+    @StateObject private var storeManager: EventStoreManager = EventStoreManager()
     @StateObject var calendarViewModel = CalendarViewModel()
     
     var body: some Scene {
@@ -47,6 +47,9 @@ struct EazyCalApp: App {
                 .environmentObject(storeManager)
                 .environmentObject(calendarViewModel)
                 .ignoresSafeArea(.all, edges: .all)
+                .task {
+                    await storeManager.listenForCalendarChanges()
+                }
                 .overlay {
                     if !storeManager.eventStore.isFullAccessAuthorized {
                         ZStack {
@@ -74,5 +77,20 @@ struct EazyCalApp: App {
         }
         .windowStyle(HiddenTitleBarWindowStyle())
         .modelContainer(appContainer)
+    }
+}
+
+extension EventStoreManager {
+    func listenForCalendarChanges() async {
+        let center = NotificationCenter.default
+        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
+
+        guard eventStore.isFullAccessAuthorized else { return }
+        for await _ in notifications {
+            await self.loadCalendar()
+            await self.loadEvents()
+            await self.loadReminder()
+            await self.loadUpcommingEvents()
+        }
     }
 }
