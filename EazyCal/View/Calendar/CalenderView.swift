@@ -166,6 +166,13 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
+        let categorySchedules = schedules.filter {
+            if let category = categories.first(where: { $0.isSelected == true} )?.calendars {
+                return category.contains($0.0.calendar.calendarIdentifier)
+            }
+            
+            return false
+        }
         
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
