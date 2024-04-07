@@ -55,10 +55,10 @@ class EventStoreManager: ObservableObject {
 //        self.allEvents = await eventStore.loadEvents(forDate: Date(), calendars: checkedCalendars)
 //    }
     
-    func loadEvents(calenderNames: Set<String>) async {
-        let checkedCalendars = calendars.filter { calenderNames.contains($0.calendarIdentifier) }
+    func loadEvents() async {
+        let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
+        let checkedCalendars = calendars.filter { checkedCalendar.contains($0.calendarIdentifier) }
         
-        print(checkedCalendars)
         self.events = await eventStore.loadEvents(forDate: date, calendars: checkedCalendars)
     }
     

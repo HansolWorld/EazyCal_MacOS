@@ -52,11 +52,7 @@ struct CalenderView: View {
                 previousMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
@@ -79,11 +75,7 @@ struct CalenderView: View {
                 nextMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
@@ -102,11 +94,7 @@ struct CalenderView: View {
                 calendarViewModel.date = Date()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Text("오늘")
@@ -192,7 +180,7 @@ struct CalenderView: View {
                                 monthStruct: month,
                                 year: calendarViewModel.year(),
                                 month: calendarViewModel.month(),
-                                scheduler: schedules
+                                scheduler: categorySchedules
                             ),
                             month: month,
                             isToday: checkToday(count: count, start: start),
@@ -260,14 +248,10 @@ struct CalenderView: View {
         let center = NotificationCenter.default
         let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
 
-        let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-        let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-        let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-        
         guard eventManager.eventStore.isFullAccessAuthorized else { return }
         for await _ in notifications {
             await eventManager.loadCalendar()
-            await eventManager.loadEvents(calenderNames: calenderNames)
+            await eventManager.loadEvents()
             await eventManager.loadReminder()
             await eventManager.loadUpcommingEvents()
         }

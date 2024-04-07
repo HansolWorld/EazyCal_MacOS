@@ -33,13 +33,8 @@ struct CategoryLabelView: View {
                 checkedCalendar.append(calendar.calendarIdentifier)
             }
             
-            UserDefaults.standard.set(checkedCalendar, forKey: "checkedCategory")
-            
-            let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-            let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-            
             Task {
-                await eventManager.loadEvents(calenderNames: calenderNames)
+                await eventManager.loadEvents()
             }
         }) {
             HStack(spacing: 10) {
