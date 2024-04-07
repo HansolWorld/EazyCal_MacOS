@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import EventKit
 
 struct CategoryLabelView: View {
@@ -21,15 +22,13 @@ struct CategoryLabelView: View {
     
     var body: some View {
         Button(action: {
-            var checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
+            var checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
             
-            if checkedCategory.contains(calendar.calendarIdentifier) {
-                checkedCategory.removeAll { $0 == calendar.calendarIdentifier }
+            if checkedCalendar.contains(calendar.calendarIdentifier) {
+                checkedCalendar.removeAll { $0 == calendar.calendarIdentifier }
             } else {
-                checkedCategory.append(calendar.calendarIdentifier)
+                checkedCalendar.append(calendar.calendarIdentifier)
             }
-            
-            UserDefaults.standard.set(checkedCategory, forKey: "checkedCategory")
             
             Task {
                 await eventManager.loadEvents()

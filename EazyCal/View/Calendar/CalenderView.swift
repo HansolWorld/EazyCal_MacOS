@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import EventKit
 
 struct CalenderView: View {
@@ -15,6 +16,9 @@ struct CalenderView: View {
     @State var selectedEvent: EKEvent?
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var eventManager: EventStoreManager
+    
+    @Environment(\.modelContext) private var context
+    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
     
     var body: some View {
         VStack {
@@ -34,6 +38,9 @@ struct CalenderView: View {
                     }
             }
             .frame(maxHeight: .infinity)
+        }
+        .task {
+            await listenForCalendarChanges()
         }
         .padding()
     }
@@ -147,6 +154,20 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
+        let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
+        let categorySchedules = schedules.filter {
+            if let category = categories.first(where: { $0.isSelected == true} ) {
+                if category.title == "전체" {
+                    return true
+                } else if category.title == "미등록" {
+                    return !categoriedCalendar.contains( $0.0.calendar.calendarIdentifier)
+                } else {
+                    return category.calendars.contains($0.0.calendar.calendarIdentifier)
+                }
+            }
+            
+            return false
+        }
         
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
@@ -166,7 +187,7 @@ struct CalenderView: View {
                                 monthStruct: month,
                                 year: calendarViewModel.year(),
                                 month: calendarViewModel.month(),
-                                scheduler: schedules
+                                scheduler: categorySchedules
                             ),
                             month: month,
                             isToday: checkToday(count: count, start: start),
@@ -228,6 +249,19 @@ struct CalenderView: View {
     
     func nextMonth() {
         calendarViewModel.plusMonth()
+    }
+    
+    func listenForCalendarChanges() async {
+        let center = NotificationCenter.default
+        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
+
+        guard eventManager.eventStore.isFullAccessAuthorized else { return }
+        for await _ in notifications {
+            await eventManager.loadCalendar()
+            await eventManager.loadEvents()
+            await eventManager.loadReminder()
+            await eventManager.loadUpcommingEvents()
+        }
     }
 }
 
