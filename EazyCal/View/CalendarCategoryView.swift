@@ -204,14 +204,9 @@ struct CalendarCategoryView: View {
                 selectCategory = categories.first(where: { $0.isSelected == true })
             }
             
-            
             let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
             let currentCalender = selectCategory?.calendars ?? []
             let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-            
-            print(selectCategory?.title)
-            print(currentCalender)
-            print(calenderNames)
             
             Task {
                 await eventManager.loadEvents(calenderNames: calenderNames)
