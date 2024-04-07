@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import EventKit
 
 @MainActor
@@ -18,11 +19,10 @@ class EventStoreManager: ObservableObject {
     @Published var events: [EKEvent] = []
     @Published var upcommingEvent: [EKEvent] = []
     @Published var todo: [EKReminder] = []
-
+    
     init() {
         Task {
             await self.loadCalendar()
-            await self.loadEvents()
             await self.loadUpcommingEvents()
             await self.loadReminder()
         }
@@ -49,15 +49,16 @@ class EventStoreManager: ObservableObject {
         try await eventStore.updateReminder(reminder: reminder)
     }
     
-    func loadAllEvents() async {
-        let checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-        let checkedCalendars = calendars.filter { checkedCategory.contains($0.calendarIdentifier) }
-        self.allEvents = await eventStore.loadEvents(forDate: Date(), calendars: checkedCalendars)
-    }
+//    func loadAllEvents() async {
+//        let checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
+//        let checkedCalendars = calendars.filter { checkedCategory.contains($0.calendarIdentifier) }
+//        self.allEvents = await eventStore.loadEvents(forDate: Date(), calendars: checkedCalendars)
+//    }
     
-    func loadEvents() async {
-        let checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-        let checkedCalendars = calendars.filter { checkedCategory.contains($0.calendarIdentifier) }
+    func loadEvents(calenderNames: Set<String>) async {
+        let checkedCalendars = calendars.filter { calenderNames.contains($0.calendarIdentifier) }
+        
+        print(checkedCalendars)
         self.events = await eventStore.loadEvents(forDate: date, calendars: checkedCalendars)
     }
     
