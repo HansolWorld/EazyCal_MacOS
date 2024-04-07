@@ -14,15 +14,13 @@ class CalendarCategory {
     var date: Date
     var icon: String
     var title: String
-    var isSelected: Bool?
     var calendars: [String]
     
-    init(id: UUID = UUID(), icon: String, title: String, isSelected: Bool? = false, calendars: [String] = []) {
+    init(id: UUID = UUID(), icon: String, title: String, calendars: [String] = []) {
         self.id = id
         self.date = Date()
         self.icon = icon
         self.title = title
-        self.isSelected = isSelected
         self.calendars = calendars
     }
 }

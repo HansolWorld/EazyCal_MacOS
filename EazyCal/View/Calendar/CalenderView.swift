@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 import EventKit
 
 struct CalenderView: View {
@@ -16,9 +15,6 @@ struct CalenderView: View {
     @State var selectedEvent: EKEvent?
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var eventManager: EventStoreManager
-    
-    @Environment(\.modelContext) private var context
-    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
     
     var body: some View {
         VStack {
@@ -39,9 +35,6 @@ struct CalenderView: View {
             }
             .frame(maxHeight: .infinity)
         }
-        .task {
-            await listenForCalendarChanges()
-        }
         .padding()
     }
     
@@ -52,11 +45,7 @@ struct CalenderView: View {
                 previousMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
@@ -79,11 +68,7 @@ struct CalenderView: View {
                 nextMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
@@ -102,11 +87,7 @@ struct CalenderView: View {
                 calendarViewModel.date = Date()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                    let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-                    let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                    
-                    await eventManager.loadEvents(calenderNames: calenderNames)
+                    await eventManager.loadEvents()
                 }
             }) {
                 Text("오늘")
@@ -166,13 +147,6 @@ struct CalenderView: View {
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
-        let categorySchedules = schedules.filter {
-            if let category = categories.first(where: { $0.isSelected == true} )?.calendars {
-                return category.contains($0.0.calendar.calendarIdentifier)
-            }
-            
-            return false
-        }
         
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
@@ -254,23 +228,6 @@ struct CalenderView: View {
     
     func nextMonth() {
         calendarViewModel.plusMonth()
-    }
-    
-    func listenForCalendarChanges() async {
-        let center = NotificationCenter.default
-        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
-
-        let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-        let currentCalender = categories.first { $0.isSelected == true }?.calendars ?? []
-        let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-        
-        guard eventManager.eventStore.isFullAccessAuthorized else { return }
-        for await _ in notifications {
-            await eventManager.loadCalendar()
-            await eventManager.loadEvents(calenderNames: calenderNames)
-            await eventManager.loadReminder()
-            await eventManager.loadUpcommingEvents()
-        }
     }
 }
 

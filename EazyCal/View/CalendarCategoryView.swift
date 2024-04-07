@@ -17,7 +17,7 @@ struct CalendarCategoryView: View {
     @State private var categoryIcon = ""
     @State private var categoryTitle = ""
     @State private var requestCategory: CalendarCategory?
-    @State private var selectCategory: CalendarCategory?
+    @State private var selectTag: CalendarCategory?
     @State private var editCategoryRequest: Bool = false
     @State private var deleteCategoryRequest: Bool = false
     @State private var currentDragItem: EKCalendar?
@@ -54,32 +54,9 @@ struct CalendarCategoryView: View {
                 ForEach(categories, id:\.id) { category in
                     Button(action: {
                         withAnimation {
-                            categories.forEach { element in
-                                if element == category {
-                                    element.isSelected = true
-                                } else {
-                                    element.isSelected = false
-                                }
-                                selectCategory = category
-                            }
-                            
-                            let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-                            let currentCalender = category.calendars
-                            let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-                            
-                            Task {
-                                await eventManager.loadEvents(calenderNames: calenderNames)
-                            }
+                            selectTag = category
                         }
                     }) {
-                        var isSeleted: Bool {
-                            if let selected = category.isSelected {
-                                return selected
-                            } else {
-                                return false
-                            }
-                        }
-                        
                         VStack {
                             Text(category.icon)
                                 .font(.system(size: 12))
@@ -88,9 +65,9 @@ struct CalendarCategoryView: View {
                                     RoundedRectangle(cornerRadius: 12)
                                         .fill(Color.background)
                                 }
-                                .opacity(isSeleted ? 1 : 0.5)
+                                .opacity(selectTag == category ? 1 : 0.5)
                                 .overlay {
-                                    if isSeleted {
+                                    if selectTag == category {
                                         RoundedRectangle(cornerRadius: 12)
                                             .stroke(Color.primaryBlue, lineWidth: 2)
                                     }
@@ -98,8 +75,8 @@ struct CalendarCategoryView: View {
                             Text(category.title)
                                 .lineLimit(1)
                                 .font(.subheadline)
-                                .fontWeight(isSeleted ? .bold : .regular)
-                                .foregroundStyle(isSeleted ? .primaryBlue : .gray400)
+                                .fontWeight(selectTag == category ? .bold : .regular)
+                                .foregroundStyle(selectTag == category ? .primaryBlue : .gray400)
                         }
                     }
                     .buttonStyle(.plain)
@@ -154,7 +131,7 @@ struct CalendarCategoryView: View {
                     .onDrop(of: [.text], isTargeted: nil, perform: { providers in
                         if let currentDragItem {
                             replaceCategory(category, droppingCalendar: currentDragItem)
-                            selectCategory = category
+                            self.selectTag = category
                         }
                         currentDragItem = nil
                         return true
@@ -166,13 +143,13 @@ struct CalendarCategoryView: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
                     let calendaries = eventManager.calendars.filter {
-                        if selectCategory?.title == "전체" {
+                        if selectTag?.title == "전체" {
                             return true
-                        } else if selectCategory?.title == "미등록" {
+                        } else if selectTag?.title == "미등록" {
                             return !categoriedCalendar.contains( $0.calendarIdentifier)
                         } else {
-                            if let selectCategory {
-                                return selectCategory.calendars.contains($0.calendarIdentifier)
+                            if let selectTag = selectTag {
+                                return selectTag.calendars.contains($0.calendarIdentifier)
                             } else {
                                 return false
                             }
@@ -193,31 +170,14 @@ struct CalendarCategoryView: View {
             }
         }
         .onAppear {
-            if categories.allSatisfy({ $0.isSelected == false }) {
-                categories.forEach { element in
-                    if element.title == "전체" {
-                        element.isSelected = true
-                    }
-                }
-                selectCategory = categories.first(where: { $0.title == "전체" })
-            } else {
-                selectCategory = categories.first(where: { $0.isSelected == true })
-            }
-            
-            let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-            let currentCalender = selectCategory?.calendars ?? []
-            let calenderNames = Set(checkedCalendar).intersection(Set(currentCalender))
-            
-            Task {
-                await eventManager.loadEvents(calenderNames: calenderNames)
-            }
+            selectTag = categories[0]
         }
     }
     
     
     func replaceCategory(_ category: CalendarCategory, droppingCalendar: EKCalendar) {
-        if selectCategory?.title != "전체" {
-            selectCategory?.calendars.removeAll(where: {$0 == droppingCalendar.calendarIdentifier})
+        if selectTag?.title != "전체" {
+            selectTag?.calendars.removeAll(where: {$0 == droppingCalendar.calendarIdentifier})
         }
         category.calendars.append(droppingCalendar.calendarIdentifier)
     }
