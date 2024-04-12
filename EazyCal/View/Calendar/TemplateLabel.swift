@@ -61,17 +61,15 @@ struct TemplateLabel: View {
         .frame(height: 32)
         .contextMenu {
             Button(action: {
-                editTemplateRequest = true
-            }) {
-                Text("수정")
-            }
-            Button(action: {
                 deleteTemplateRequest = true
             }) {
                 Text("삭제")
             }
         }
-        .popover(isPresented: $editTemplateRequest) {
+        .onTapGesture(count: 2) {
+            editTemplateRequest = true
+        }
+        .popover(isPresented: $editTemplateRequest, arrowEdge: .trailing) {
             VStack(alignment: .leading, spacing: 8) {
                 TextField("간편 일정", text: $newTitle)
                     .font(.title3)
