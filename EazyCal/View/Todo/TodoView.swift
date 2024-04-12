@@ -86,16 +86,19 @@ struct TodoView: View {
                                         isDateShow = true
                                     }
                                 }) {
-                                    Label(isDate ? "날짜 삭제" : "날짜 추가", systemImage: "calendar")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.gray400)
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 8)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(Color.gray400)
-                                                .opacity(0.1)
-                                        }
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "calendar")
+                                        Text(isDate ? "날짜 삭제" : "날짜 추가")
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundStyle(.gray400)
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 8)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(Color.gray400)
+                                            .opacity(0.1)
+                                    }
                                 }
                                 .buttonStyle(.plain)
                                 .popover(isPresented: $isDateShow) {
@@ -118,16 +121,19 @@ struct TodoView: View {
                                 Button(action: {
                                     isHighlightShow = true
                                 }) {
-                                    Text("!우선순위")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.gray400)
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 8)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .fill(Color.gray400)
-                                                .opacity(0.1)
-                                        }
+                                    HStack(spacing: 4) {
+                                        Text("!")
+                                        Text("우선순위")
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundStyle(.gray400)
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 8)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(Color.gray400)
+                                            .opacity(0.1)
+                                    }
                                 }
                                 .buttonStyle(.plain)
                                 .popover(isPresented: $isHighlightShow) {
@@ -164,7 +170,7 @@ struct TodoView: View {
                     }
                     .padding()
                     .background{
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 12)
                             .fill(Color.background)
                     }
                 }
