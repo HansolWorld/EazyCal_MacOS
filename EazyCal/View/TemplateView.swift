@@ -18,7 +18,7 @@ struct TemplateView: View {
     
     @Environment(\.modelContext) private var context
     @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
-    @Query(sort: \Template.date, animation: .snappy) private var templates: [Template]
+    @Query(sort: \Template.date, order: .reverse, animation: .snappy) private var templates: [Template]
 
     var body: some View {
         VStack(spacing: 15) {
