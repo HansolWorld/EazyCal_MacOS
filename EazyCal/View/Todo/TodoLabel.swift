@@ -66,7 +66,7 @@ struct TodoLabel: View {
                 Spacer()
                 Text(caclulatorDay())
                     .font(.caption)
-                    .foregroundStyle(.gray200)
+                    .foregroundStyle(.gray300)
             }
         }
     }

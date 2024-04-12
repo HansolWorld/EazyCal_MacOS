@@ -58,6 +58,7 @@ struct EditSchedulePopoverView: View {
                 VStack {
                     HStack {
                         Text("시작")
+                            .lineLimit(1)
                             .font(.body)
                             .foregroundStyle(Color.gray400)
                         Spacer()
@@ -67,6 +68,7 @@ struct EditSchedulePopoverView: View {
                     }
                     HStack {
                         Text("종료")
+                            .lineLimit(1)
                             .font(.body)
                             .foregroundStyle(Color.gray400)
                         Spacer()
@@ -148,7 +150,7 @@ struct EditSchedulePopoverView: View {
                 }
             }
         }
-        .frame(width: 200)
+        .frame(width: 220)
         .padding()
         .focusable()
         .onDisappear {
