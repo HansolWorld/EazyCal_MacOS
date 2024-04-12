@@ -61,17 +61,15 @@ struct TemplateLabel: View {
         .frame(height: 32)
         .contextMenu {
             Button(action: {
-                editTemplateRequest = true
-            }) {
-                Text("수정")
-            }
-            Button(action: {
                 deleteTemplateRequest = true
             }) {
                 Text("삭제")
             }
         }
-        .popover(isPresented: $editTemplateRequest) {
+        .onTapGesture(count: 2) {
+            editTemplateRequest = true
+        }
+        .popover(isPresented: $editTemplateRequest, arrowEdge: .trailing) {
             VStack(alignment: .leading, spacing: 8) {
                 TextField("간편 일정", text: $newTitle)
                     .font(.title3)
@@ -88,25 +86,28 @@ struct TemplateLabel: View {
                             .toggleStyle(BackgroundToggleStyle())
                             .labelsHidden()
                     }
-                    VStack {
-                        HStack {
-                            Text("시작")
-                                .font(.body)
-                                .foregroundStyle(Color.gray400)
-                            Spacer()
-                            DatePicker("", selection: $newStartDate, displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .foregroundStyle(Color.gray400)
+                    if !newIsAllDay {
+                        VStack {
+                            HStack {
+                                Text("시작")
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray400)
+                                Spacer()
+                                DatePicker("", selection: $newStartDate, displayedComponents: .hourAndMinute)
+                                    .labelsHidden()
+                                    .foregroundStyle(Color.gray400)
+                            }
+                            HStack {
+                                Text("종료")
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray400)
+                                Spacer()
+                                DatePicker("", selection: $newEndTime, displayedComponents: .hourAndMinute)
+                                    .labelsHidden()
+                                    .foregroundStyle(Color.gray400)
+                            }
                         }
-                        HStack {
-                            Text("종료")
-                                .font(.body)
-                                .foregroundStyle(Color.gray400)
-                            Spacer()
-                            DatePicker("", selection: $newEndTime, displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .foregroundStyle(Color.gray400)
-                        }
+                        .transition(.identity)
                     }
                     CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $calendar)
                     Text("할 일")
@@ -155,6 +156,7 @@ struct TemplateLabel: View {
             }
             .onDisappear {
                 template.title = newTitle
+                template.isAllDay = newIsAllDay
                 template.startTime = newStartDate
                 template.endTime = newEndTime
                 template.todos = newTodos
