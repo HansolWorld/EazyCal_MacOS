@@ -123,6 +123,8 @@ struct CategoryLabelView: View {
                     }
                 }
             }
+        } message: {
+            Text("이 캘린더를 삭제하면\n캘린더와 관련된 모든 이벤트도 삭제됩니다.")
         }
         .onHover { hovering in
             onHover = hovering
