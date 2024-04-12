@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
 		FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559932AE637DF00F4E25F /* RepeatType.swift */; };
 		FF1559962AE65B2700F4E25F /* EventStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559952AE65B2700F4E25F /* EventStoreError.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
 		FF15598E2AE5FA8000F4E25F /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FF1559932AE637DF00F4E25F /* RepeatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatType.swift; sourceTree = "<group>"; };
 		FF1559952AE65B2700F4E25F /* EventStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStoreError.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				FFC1E6E52B13495A00CBCA88 /* ScheduleListView.swift */,
+				FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */,
 			);
 			path = ScheduleList;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				FF1559962AE65B2700F4E25F /* EventStoreError.swift in Sources */,
 				FF5759112ADB9CC3001E588F /* SFSymbol.swift in Sources */,
 				FFDBD7892B01E32F00AB2A57 /* CalendarCategory.swift in Sources */,
+				FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */,
 				FFF59D2A2B01A2CA0071761E /* TabButton.swift in Sources */,
 				FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */,
 				FFC1E6E32B0E06FB00CBCA88 /* EditSchedulePopoverView.swift in Sources */,

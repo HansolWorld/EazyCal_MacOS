@@ -24,49 +24,10 @@ struct ScheduleListView: View {
                     let eventDict = dateToEvent(eventManager.upcommingEvent)
                     ForEach(eventDict.keys.sorted(), id:\.self) { dateString in
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(dateString)
-                                .font(.callout)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.gray400)
-                                .opacity(0.4)
-                                .id(dateString)
+                            UpcomingScheduleDateView(dateString)
                             if let events = eventDict[dateString] {
-                                ForEach(events, id:\.eventIdentifier) { event in
-                                    if let calendar = event.calendar {
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Image(systemName: SFSymbol.circleFill.name)
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(width: 6, height: 6)
-                                                    .fontWeight(.heavy)
-                                                    .foregroundStyle(Color(cgColor: calendar.cgColor))
-                                                Text(event.title)
-                                                    .font(.body)
-                                                    .foregroundStyle(Color.gray400)
-                                                    .lineLimit(1)
-                                            }
-                                            HStack {
-                                                if event.isAllDay || (Calendar.current.dateComponents([.day], from: event.startDate, to: event.endDate).day ?? 0 >= 1 && dateToString(event.endDate) != dateString ) {
-                                                    Text("종일")
-                                                    Spacer()
-                                                } else {
-                                                    Text(event.startDate, style: .time)
-                                                    Text("-")
-                                                    Text(event.endDate, style: .time)
-                                                    Spacer()
-                                                }
-                                            }
-                                            .font(.subheadline)
-                                            .foregroundStyle(Color.gray300)
-                                            .padding(.leading, 16)
-                                        }
-                                        .padding(12)
-                                        .background {
-                                            Color.background
-                                                .cornerRadius(12)
-                                        }
-                                    }
+                                ForEach(events, id:\.eventIdentifier) { schedule in
+                                    UpcomingScheduleView(schedule: schedule, dateString: dateString)
                                 }
                             }
                         }
@@ -75,6 +36,16 @@ struct ScheduleListView: View {
             }
         }
         .padding()
+    }
+     
+    @ViewBuilder
+    func UpcomingScheduleDateView(_ dateString: String) -> some View {
+        Text(dateString)
+            .font(.callout)
+            .fontWeight(.bold)
+            .foregroundStyle(.gray400)
+            .opacity(0.4)
+            .id(dateString)
     }
     
     func dateToEvent(_ schedule: [EKEvent]) -> [String: [EKEvent]] {
@@ -115,15 +86,14 @@ struct ScheduleListView: View {
         
         return result
     }
+}
+
+extension EKEvent: Identifiable {
     
-    func dateToString(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일 EEEE"
-        
-        return dateFormatter.string(from: date)
-    }
 }
 
 #Preview {
     ScheduleListView()
 }
+
+

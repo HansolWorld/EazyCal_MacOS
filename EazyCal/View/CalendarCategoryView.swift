@@ -13,7 +13,6 @@ struct CalendarCategoryView: View {
     private let gridItem = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     
     @State private var isAddPopoverShow = false
-    @State private var isEditPopoverShow = false
     @State private var categoryIcon = ""
     @State private var categoryTitle = ""
     @State private var requestCategory: CalendarCategory?
