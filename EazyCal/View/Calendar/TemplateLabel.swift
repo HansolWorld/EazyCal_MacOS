@@ -88,25 +88,28 @@ struct TemplateLabel: View {
                             .toggleStyle(BackgroundToggleStyle())
                             .labelsHidden()
                     }
-                    VStack {
-                        HStack {
-                            Text("시작")
-                                .font(.body)
-                                .foregroundStyle(Color.gray400)
-                            Spacer()
-                            DatePicker("", selection: $newStartDate, displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .foregroundStyle(Color.gray400)
+                    if !newIsAllDay {
+                        VStack {
+                            HStack {
+                                Text("시작")
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray400)
+                                Spacer()
+                                DatePicker("", selection: $newStartDate, displayedComponents: .hourAndMinute)
+                                    .labelsHidden()
+                                    .foregroundStyle(Color.gray400)
+                            }
+                            HStack {
+                                Text("종료")
+                                    .font(.body)
+                                    .foregroundStyle(Color.gray400)
+                                Spacer()
+                                DatePicker("", selection: $newEndTime, displayedComponents: .hourAndMinute)
+                                    .labelsHidden()
+                                    .foregroundStyle(Color.gray400)
+                            }
                         }
-                        HStack {
-                            Text("종료")
-                                .font(.body)
-                                .foregroundStyle(Color.gray400)
-                            Spacer()
-                            DatePicker("", selection: $newEndTime, displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .foregroundStyle(Color.gray400)
-                        }
+                        .transition(.identity)
                     }
                     CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $calendar)
                     Text("할 일")
@@ -155,6 +158,7 @@ struct TemplateLabel: View {
             }
             .onDisappear {
                 template.title = newTitle
+                template.isAllDay = newIsAllDay
                 template.startTime = newStartDate
                 template.endTime = newEndTime
                 template.todos = newTodos
