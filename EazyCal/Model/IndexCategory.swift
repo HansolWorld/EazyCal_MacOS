@@ -23,7 +23,7 @@ enum IndexCategory {
         case .readyTodo:
             return "준비할 일"
         case .Todo:
-            return "할 일"
+            return "미리알림"
         case .Upcomming:
             return "다가오는 일정"
         }
