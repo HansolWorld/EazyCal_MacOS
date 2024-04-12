@@ -39,11 +39,8 @@ struct CalendarCategoryView: View {
                     Image(systemName: SFSymbol.plus.name)
                         .foregroundStyle(Color.primaryBlue)
                         .popover(isPresented: $isAddPopoverShow) {
-                            CalendarCategoryPopoverView(
-                                categoryCount: categories.count, 
-                                isShow: $isAddPopoverShow
-                            )
-                            .environmentObject(eventManager)
+                            CalendarCategoryPopoverView(isShow: $isAddPopoverShow)
+                                .environmentObject(eventManager)
                         }
                 }
                 .buttonStyle(.plain)
