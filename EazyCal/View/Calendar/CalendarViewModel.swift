@@ -115,11 +115,6 @@ class CalendarViewModel: ObservableObject {
         return layers
     }
     
-    func todosInSchedule(schedule: EKEvent) -> [String] {
-        guard let notes = schedule.notes else { return [] }
-        return notes.components(separatedBy: "\n")
-    }
-    
     func schedules(monthStruct: Month, year: Int, month: Int, scheduler: [(EKEvent, Int)]) -> [(EKEvent, Int)] {
         var currentDate = stringToDate(year: year, month: month, day: 20)
         

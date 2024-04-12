@@ -29,12 +29,12 @@ struct TodoView: View {
                     Spacer()
                 }
                 ScrollView {
-                    LazyVStack(spacing: 16) {
-                        let upcommingTodoEvent = eventManager.filterEvents(events: eventManager.upcommingEvent)
-                        
-                        ForEach(upcommingTodoEvent, id: \.eventIdentifier) { schedule in
-                            ScheduleTodoCellView(schedule: schedule, scheduleTodos: calendarViewModel.todosInSchedule(schedule: schedule))
-                                .environmentObject(eventManager)
+                    VStack(spacing: 16) {
+                        ForEach(eventManager.upcommingEvent, id: \.eventIdentifier) { schedule in
+                            if let notes = schedule.notes, notes.contains("☐") {
+                                ScheduleTodoCellView(schedule: schedule)
+                                    .environmentObject(eventManager)
+                            }
                         }
                     }
                     .padding(.bottom, 24)

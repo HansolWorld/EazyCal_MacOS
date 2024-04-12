@@ -10,7 +10,6 @@ import EventKit
 
 struct ScheduleTodoCellView: View {
     var schedule: EKEvent
-    @State var scheduleTodos: [String]
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -32,9 +31,10 @@ struct ScheduleTodoCellView: View {
                     .foregroundStyle(.gray300)
             }
             
-            
-            ForEach(scheduleTodos.indices, id: \.self) { index in
+            let notes = splitTodo(by: schedule.notes ?? "")
+            ForEach(notes.indices, id: \.self) { index in
                 Button(action: {
+                    var scheduleTodos = splitTodo(by: schedule.notes ?? "")
                     let todo = scheduleTodos[index]
                     switch todo.contains("☑︎") {
                     case true:
@@ -54,7 +54,7 @@ struct ScheduleTodoCellView: View {
                 }) {
                     HStack {
                         
-                        let isCompletedTodo = scheduleTodos[index].contains("☑︎")
+                        let isCompletedTodo = notes[index].contains("☑︎")
                         switch isCompletedTodo {
                         case true:
                             Image(systemName: SFSymbol.checkCircle.name)
@@ -69,7 +69,7 @@ struct ScheduleTodoCellView: View {
                                 .frame(width: 12, height: 12)
                                 .foregroundStyle(.gray300)
                         }
-                        let text = scheduleTodos[index].replacingOccurrences(of: "☑︎", with: "").replacingOccurrences(of: "☐", with: "")
+                        let text = notes[index].replacingOccurrences(of: "☑︎", with: "").replacingOccurrences(of: "☐", with: "")
                         Text(text)
                             .font(.body)
                             .strikethrough(isCompletedTodo)
@@ -87,8 +87,12 @@ struct ScheduleTodoCellView: View {
                 .opacity(0.1)
         }
     }
+    
+    func splitTodo(by notes: String) -> [String] {
+        return notes.components(separatedBy: "\n")
+    }
 }
 
 #Preview {
-    ScheduleTodoCellView(schedule: EKEvent(), scheduleTodos: ["할일1", "할일2"])
+    ScheduleTodoCellView(schedule: EKEvent())
 }
