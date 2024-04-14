@@ -17,6 +17,7 @@ struct CalendarCell: View {
     let daysInMonth : Int
     let daysInPrevMonth : Int
     @State private var isHover = false
+    @State private var isMoreEventPopover = false
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
     @Binding var selectedEvent: EKEvent?
@@ -66,6 +67,25 @@ struct CalendarCell: View {
                         .foregroundStyle(Color.gray300)
                         .padding(.horizontal, 6)
                         .padding(.bottom, 4)
+                        .onTapGesture {
+                            isMoreEventPopover = true
+                        }
+                        .popover(isPresented: $isMoreEventPopover, arrowEdge: .trailing) {
+                            VStack(alignment: .leading) {
+                                ForEach(schedules, id:\.0) { schedule in
+                                    CalendarCategoryLabelView(
+                                        schedule: schedule.0,
+                                        viewType: .OneDate,
+                                        selectedEvent: $selectedEvent
+                                    )
+                                }
+                            }
+                            .padding(4)
+                            .background {
+                                Color.white
+                                    .scaleEffect(1.5)
+                            }
+                        }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -103,7 +123,7 @@ struct CalendarCell: View {
                     .environmentObject(eventManager)
                 }
             }
-            .onDrop(of: [.text], isTargeted: $isHover, perform: { providers in
+            .onDrop(of: [.text], isTargeted: $isHover) { providers in
                 if let currentDragTemplate, let ekCalendar = eventManager.calendars.first(where: {$0.calendarIdentifier == currentDragTemplate.calendarId}) {
                     
                     let calendar = Calendar.current
@@ -174,7 +194,7 @@ struct CalendarCell: View {
                 } else {
                 }
                 return true
-            })
+            }
         }
         .frame(minWidth: 80, minHeight: 80)
     }
