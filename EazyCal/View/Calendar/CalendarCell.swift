@@ -44,7 +44,8 @@ struct CalendarCell: View {
                 }
                 
                 ForEach(0...max(taskViewCount-2, 0), id: \.self) { index in
-                    if let scheduleTuple = schedules.first(where: { $0.1 == index+1 }) {
+                    if let scheduleTuple = schedules.first(where: { $0.1 == index+1 }), scheduleTuple.0.calendar != nil
+                    {
                         CalendarCategoryLabelView(
                             schedule: scheduleTuple.0,
                             viewType: cellViewType(scheduleTuple.0, month),

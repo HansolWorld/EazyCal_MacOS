@@ -21,6 +21,7 @@ struct CalendarCategoryLabelView: View {
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
+        let _ = print(schedule.calendar.cgColor)
         HStack(spacing: 5) {
             Image(systemName: SFSymbol.circleFill.name)
                 .resizable()
