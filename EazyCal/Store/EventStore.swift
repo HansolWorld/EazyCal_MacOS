@@ -163,7 +163,12 @@ class EventStore: ObservableObject {
         event.title = title
         event.isAllDay = isAllDay
         event.startDate = startDate
-        event.endDate = endDate
+        
+        if let startDate, let endDate, startDate > endDate {
+            event.endDate = startDate
+        } else {
+            event.endDate = endDate
+        }
         event.notes = notes.map { "☐" + $0 }.joined(separator: "\n")
         event.calendar = calendar
         event.url = url
