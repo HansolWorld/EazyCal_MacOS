@@ -51,7 +51,21 @@ struct TodoView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         ForEach($eventManager.todo, id:\.calendarItemIdentifier) { $todo in
-                            TodoLabel(editTodo: todo.title, todo: $todo, selectedId: $selectedId)
+                            
+                            let priority: String = {
+                                var newPriority = "기본"
+                                if todo.priority >= 6 && todo.priority <= 9  {
+                                    newPriority = "낮음"
+                                } else if todo.priority == 5 {
+                                    newPriority = "중간"
+                                } else if todo.priority >= 1 && todo.priority <= 4 {
+                                    newPriority = "높음"
+                                }
+                                
+                                return newPriority
+                            }()
+                            
+                            TodoLabel(editTodo: todo.title, newPriority: priority, todo: $todo, selectedId: $selectedId)
                                 .environmentObject(eventManager)
                         }
                         

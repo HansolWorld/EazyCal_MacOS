@@ -11,11 +11,10 @@ import EventKit
 struct TodoLabel: View {
     let highlights = ["기본", "낮음", "중간", "높음"]
     
-    let id = UUID().uuidString
     @State var isComplete = false
     @State var editTodo: String
     @State private var newDate = Date()
-    @State private var newPriority = "기본"
+    @State var newPriority: String
     @State private var isDateSelectedShow = false
     @State private var isPriorytySelectedShow = false
     @Binding var todo: EKReminder
@@ -75,7 +74,7 @@ struct TodoLabel: View {
                         .onChange(of: isFocus) { oldValue, newValue in
                             withAnimation {
                                 if newValue {
-                                    selectedId = id
+                                    selectedId = todo.calendarItemIdentifier
                                 }
                             }
                         }
@@ -90,18 +89,10 @@ struct TodoLabel: View {
                 if let date = todo.dueDateComponents?.date {
                     newDate = date
                 }
-                
-                if todo.priority >= 6 && todo.priority <= 9  {
-                    newPriority = "낮음"
-                } else if todo.priority == 5 {
-                    newPriority = "중간"
-                } else if todo.priority >= 1 && todo.priority <= 4 {
-                    newPriority = "높음"
-                }
             }
             
             
-            if selectedId == id {
+            if selectedId == todo.calendarItemIdentifier {
                 HStack {
                     HStack(spacing: 8) {
                         Button(action: {
@@ -135,7 +126,7 @@ struct TodoLabel: View {
                                     .font(.body)
                                     .labelsHidden()
                                     .foregroundStyle(Color.gray400)
-                                    .onChange(of: todo.dueDateComponents?.date) { _, newValue in
+                                    .onChange(of: newDate) { _, newValue in
                                         todo.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: newDate)
                                         
                                         Task {
@@ -186,21 +177,7 @@ struct TodoLabel: View {
                             VStack(spacing: 4) {
                                 ForEach(highlights, id: \.self) { text in
                                     Button(action: {
-                                        switch text {
-                                        case "낮음":
-                                            todo.priority = 9
-                                        case "중간":
-                                            todo.priority = 5
-                                        case "높음":
-                                            todo.priority = 1
-                                        default:
-                                            todo.priority = 0
-                                        }
-                                        
-                                        Task {
-                                            try await eventManager.updateReminder(reminder: todo)
-                                        }
-                                        
+                                        newPriority = text
                                         isPriorytySelectedShow = false
                                     }) {
                                         Text(text)
@@ -226,6 +203,23 @@ struct TodoLabel: View {
                                     .scaleEffect(1.5)
                             }
                         }
+                        .onChange(of: newPriority) { _, newValue in
+                            switch newValue {
+                            case "낮음":
+                                todo.priority = 9
+                            case "중간":
+                                todo.priority = 5
+                            case "높음":
+                                todo.priority = 1
+                            default:
+                                todo.priority = 0
+                            }
+                            
+                            Task {
+                                try await eventManager.updateReminder(reminder: todo)
+                            }
+
+                        }
                     }
                 }
             }
@@ -245,13 +239,19 @@ struct TodoLabel: View {
         guard let date = todo.dueDateComponents?.date else { return " " }
         
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: Date(), to: date)
-        guard let daysDifference = components.day else { return ""}
+
+        let components = calendar.dateComponents([.day, .hour], from: Date(), to: date)
+        guard let daysDifference = components.day else { return "" }
+        guard let hourDifference = components.hour else { return "" }
         
         if daysDifference < 0 {
             return "\(abs(daysDifference))일 지남"
         } else if daysDifference == 0 {
-            return "오늘"
+            if hourDifference > 0 {
+                return "\(hourDifference)시간 전"
+            } else {
+                return "\(abs(hourDifference))시간 지남"
+            }
         } else {
             return "\(daysDifference)일 전"
         }
@@ -259,5 +259,5 @@ struct TodoLabel: View {
 }
 
 #Preview {
-    TodoLabel(editTodo: "", todo: .constant(EKReminder()), selectedId: .constant(""))
+    TodoLabel(editTodo: "", newPriority: "기본", todo: .constant(EKReminder()), selectedId: .constant(""))
 }
