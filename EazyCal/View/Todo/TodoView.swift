@@ -10,6 +10,7 @@ import SwiftUI
 struct TodoView: View {
     
     let highlights = ["기본", "낮음", "중간", "높음"]
+    @State private var selectedId = ""
     @State var newTodo = ""
     @State var highlight = "기본"
     @State var isHighlightShow = false
@@ -49,8 +50,22 @@ struct TodoView: View {
                 }
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(eventManager.todo, id:\.calendarItemIdentifier) { todo in
-                            TodoLabel(todo: todo, editTodo: todo.title)
+                        ForEach($eventManager.todo, id:\.calendarItemIdentifier) { $todo in
+                            
+                            let priority: String = {
+                                var newPriority = "기본"
+                                if todo.priority >= 6 && todo.priority <= 9  {
+                                    newPriority = "낮음"
+                                } else if todo.priority == 5 {
+                                    newPriority = "중간"
+                                } else if todo.priority >= 1 && todo.priority <= 4 {
+                                    newPriority = "높음"
+                                }
+                                
+                                return newPriority
+                            }()
+                            
+                            TodoLabel(editTodo: todo.title, newPriority: priority, todo: $todo, selectedId: $selectedId)
                                 .environmentObject(eventManager)
                         }
                         
