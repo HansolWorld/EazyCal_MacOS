@@ -17,6 +17,7 @@ struct TodoView: View {
     @State var date = Date()
     @State var isDate = false
     @State var isDateShow = false
+    @FocusState private var isFocusedNewTodo: Bool
     @EnvironmentObject var eventManager: EventStoreManager
     @EnvironmentObject var calendarViewModel: CalendarViewModel
 
@@ -89,6 +90,14 @@ struct TodoView: View {
                                                 newTodo = ""
                                                 highlight = "기본"
                                                 isDate = false
+                                            }
+                                        }
+                                    }
+                                    .focused($isFocusedNewTodo)
+                                    .onChange(of: isFocusedNewTodo) { _, newValue in
+                                        withAnimation {
+                                            if newValue {
+                                                selectedId = ""
                                             }
                                         }
                                     }
