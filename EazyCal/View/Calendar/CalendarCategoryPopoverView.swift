@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CalendarCategoryPopoverView: View {
-    private let icons: [String] = ["🐶", "🌳", "🍚", "💼", "🔥", "⚽️", "🏖️", "💻", "💡", "💰", "💊", "🎁", "📚", "🩷", "🎄", "🎅"]
+    private let icons: [String] = ["😎", "☀️", "🌞", "🌻", "👗", "🍉", "🕶️", "⛱️", "🩳", "🧴", "👙", "🩲", "🩱"]
     @State private var isHoverFirst = false
     @State private var isHoverSecond = false
     @Binding var isShow: Bool
