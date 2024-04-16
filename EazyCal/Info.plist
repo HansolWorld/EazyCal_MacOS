@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>캘린더에 접근하기 위한 권한</string>
+	<string>캘린더의 이벤트를 보여주고, 이벤트를 생성하려면 권한이 필요합니다.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>미리알림에 접근하기 위한 권한</string>
+	<string>미리알림을 보여주고, 새로운 미리알림을 생성하려면 권한이 필요합니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SpoqaHanSansNeo-Bold.otf</string>
