@@ -160,7 +160,7 @@ struct CalenderView: View {
                 if category.title == "전체" {
                     return true
                 } else if category.title == "미등록" {
-                    return categoriedCalendar.contains($0.0.calendar?.calendarIdentifier ?? "")
+                    return !categoriedCalendar.contains($0.0.calendar?.calendarIdentifier ?? "")
                 } else {
                     return category.calendars.contains($0.0.calendar?.calendarIdentifier ?? "")
                 }
