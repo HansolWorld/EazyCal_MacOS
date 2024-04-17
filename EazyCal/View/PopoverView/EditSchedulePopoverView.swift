@@ -89,6 +89,7 @@ struct EditSchedulePopoverView: View {
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
+                    .multilineTextAlignment(.trailing)
             }
             if !editURL.isEmpty, let linkURL {
                 Link(destination: linkURL) {

@@ -36,7 +36,7 @@ struct CalendarCell: View {
                     Text("\(month.dayInt)")
                         .font(.callout)
                         .foregroundColor(textColor(type: month.monthType, count: count))
-                        .padding(8)
+                        .padding(3)
                         .background {
                             Circle()
                                 .fill(isToday ? Color.calendarBlue : Color.clear)
