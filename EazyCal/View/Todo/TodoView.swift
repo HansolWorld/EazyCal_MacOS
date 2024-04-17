@@ -85,7 +85,11 @@ struct TodoView: View {
                                     .onSubmit {
                                         if newTodo != "" {
                                             Task {
-                                                await eventManager.createNewReminder(title: newTodo, date: isDate ? date : nil, highlight: highlight)
+                                                do {
+                                                    try await eventManager.createNewReminder(title: newTodo, date: isDate ? date : nil, highlight: highlight)
+                                                } catch {
+                                                    print(error)
+                                                }
                                                 
                                                 newTodo = ""
                                                 highlight = "기본"

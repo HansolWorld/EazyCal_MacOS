@@ -60,7 +60,11 @@ struct CalendarCategoryView: View {
                             }
                             
                             Task {
-                                await eventManager.loadEvents()
+                                do {
+                                    try await eventManager.loadEvents()
+                                } catch {
+                                    print(error)
+                                }
                             }
                         }
                     }) {
@@ -197,7 +201,11 @@ struct CalendarCategoryView: View {
             }
             
             Task {
-                await eventManager.loadEvents()
+                do {
+                    try await eventManager.loadEvents()
+                } catch {
+                    print(error)
+                }
             }
         }
     }

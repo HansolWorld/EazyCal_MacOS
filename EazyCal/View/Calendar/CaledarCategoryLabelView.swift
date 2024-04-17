@@ -29,7 +29,7 @@ struct CalendarCategoryLabelView: View {
                 .fontWeight(.heavy)
                 .foregroundStyle(viewType == .Dating || viewType == .DoDate ? Color.clear : Color(cgColor: schedule.calendar.cgColor))
             Text(viewType == .Dating || viewType == .DoDate ? " " : schedule.title)
-                .font(.body)
+                .font(.callout)
                 .foregroundStyle(selectedEvent == schedule ? Color.white : Color.black)
                 .lineLimit(1)
         }

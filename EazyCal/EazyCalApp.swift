@@ -70,9 +70,36 @@ struct EazyCalApp: App {
                         EmptyView()
                     }
                 }
-                .preferredColorScheme(.light)
+                .preferredColorScheme(.light)   
+                .task {
+                    await listenForCalendarChanges()
+                }
+                .onChange(of: storeManager.eventStore.isFullAccessAuthorized) { oldValue, newValue in
+                    if !oldValue, newValue {
+                        Task {
+                            await listenForCalendarChanges()
+                        }
+                    }
+                }
         }
         .windowStyle(HiddenTitleBarWindowStyle())
         .modelContainer(appContainer)
+    }
+    
+    func listenForCalendarChanges() async {
+        let center = NotificationCenter.default
+        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
+
+        guard storeManager.eventStore.isFullAccessAuthorized else { return }
+        for await _ in notifications {
+            do {
+                try await storeManager.loadCalendar()
+                try await storeManager.loadEvents()
+                try await storeManager.loadReminder()
+                try await storeManager.loadUpcommingEvents()
+            } catch {
+                print(error)
+            }
+        }
     }
 }

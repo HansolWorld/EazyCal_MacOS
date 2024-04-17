@@ -31,7 +31,11 @@ struct CategoryLabelView: View {
             }
             
             Task {
-                await eventManager.loadEvents()
+                do {
+                    try await eventManager.loadEvents()
+                } catch {
+                    print(error)
+                }
             }
         }) {
             HStack(spacing: 10) {

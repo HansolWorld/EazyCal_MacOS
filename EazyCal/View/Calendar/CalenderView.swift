@@ -39,9 +39,6 @@ struct CalenderView: View {
             }
             .frame(maxHeight: .infinity)
         }
-        .task {
-            await listenForCalendarChanges()
-        }
         .padding()
     }
     
@@ -52,7 +49,11 @@ struct CalenderView: View {
                 previousMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    await eventManager.loadEvents()
+                    do {
+                        try await eventManager.loadEvents()
+                    } catch {
+                        print(error)
+                    }
                 }
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
@@ -75,7 +76,11 @@ struct CalenderView: View {
                 nextMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    await eventManager.loadEvents()
+                    do {
+                        try await eventManager.loadEvents()
+                    } catch {
+                        print(error)
+                    }
                 }
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
@@ -94,7 +99,11 @@ struct CalenderView: View {
                 calendarViewModel.date = Date()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    await eventManager.loadEvents()
+                    do {
+                        try await eventManager.loadEvents()
+                    } catch {
+                        print(error)
+                    }
                 }
             }) {
                 Text("오늘")
@@ -249,19 +258,6 @@ struct CalenderView: View {
     
     func nextMonth() {
         calendarViewModel.plusMonth()
-    }
-    
-    func listenForCalendarChanges() async {
-        let center = NotificationCenter.default
-        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
-
-        guard eventManager.eventStore.isFullAccessAuthorized else { return }
-        for await _ in notifications {
-            await eventManager.loadCalendar()
-            await eventManager.loadEvents()
-            await eventManager.loadReminder()
-            await eventManager.loadUpcommingEvents()
-        }
     }
 }
 

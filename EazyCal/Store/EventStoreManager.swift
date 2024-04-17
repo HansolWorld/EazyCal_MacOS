@@ -22,23 +22,27 @@ class EventStoreManager: ObservableObject {
     
     init() {
         Task {
-            await self.loadCalendar()
-            await self.loadUpcommingEvents()
-            await self.loadReminder()
+            do {
+                try await self.loadCalendar()
+                try await self.loadUpcommingEvents()
+                try await self.loadReminder()
+            } catch {
+                print(error)
+            }
         }
     }
     
-    func loadCalendar() async {
-        self.calendars = await eventStore.loadCalendars()
+    func loadCalendar() async throws {
+        self.calendars = try await eventStore.loadCalendars()
     }
     
     
-    func loadReminder() async {
-        self.todo = await eventStore.loadAllReminders()
+    func loadReminder() async throws {
+        self.todo = try await eventStore.loadAllReminders()
     }
     
-    func createNewReminder(title: String, date: Date?, highlight: String) async {
-        await eventStore.createNewReminder(title: title, date: date, highlight: highlight)
+    func createNewReminder(title: String, date: Date?, highlight: String) async throws {
+        try await eventStore.createNewReminder(title: title, date: date, highlight: highlight)
     }
     
     func completeReminder(reminder: EKReminder) async throws {
@@ -55,15 +59,15 @@ class EventStoreManager: ObservableObject {
 //        self.allEvents = await eventStore.loadEvents(forDate: Date(), calendars: checkedCalendars)
 //    }
     
-    func loadEvents() async {
+    func loadEvents() async throws {
         let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
         let checkedCalendars = calendars.filter { checkedCalendar.contains($0.calendarIdentifier) }
         
-        self.events = await eventStore.loadEvents(forDate: date, calendars: checkedCalendars)
+        self.events = try await eventStore.loadEvents(forDate: date, calendars: checkedCalendars)
     }
     
-    func loadUpcommingEvents() async {
-        self.upcommingEvent = await eventStore.loadUpcommingEvents()
+    func loadUpcommingEvents() async throws {
+        self.upcommingEvent = try await eventStore.loadUpcommingEvents()
     }
     
     

@@ -10,66 +10,50 @@ import EventKit
 class EventStore: ObservableObject {
     let eventStore = EKEventStore()
     
-    init() {
-        guard isFullAccessAuthorized else { return }
-    }
-    
-    func loadCalendars() async -> [EKCalendar]{
+    func loadCalendars() async throws -> [EKCalendar]{
         var result: [EKCalendar] = []
-        do {
-            guard try await eventStore.requestFullAccessToEvents() else { return []}
-            
-            let calendars = self.eventStore.calendars(for: .event)
-            let notTitle = calendars.filter { $0.title == "무제" || $0.title == "Untitled" }
-            let existTitle = calendars.filter { $0.title != "무제" && $0.title != "Untitled" }
-            
-            result += existTitle.sorted(by: {
-                    $0.title < $1.title
-            })
-            result += notTitle
-        } catch {
-            return []
-        }
+        guard try await eventStore.requestFullAccessToEvents() else { return []}
+        
+        let calendars = self.eventStore.calendars(for: .event)
+        let notTitle = calendars.filter { $0.title == "무제" || $0.title == "Untitled" }
+        let existTitle = calendars.filter { $0.title != "무제" && $0.title != "Untitled" }
+        
+        result += existTitle.sorted(by: {
+                $0.title < $1.title
+        })
+        result += notTitle
         
         return result
     }
 
-    func loadUpcommingEvents() async -> [EKEvent] {
-        do {
-            if try await eventStore.requestFullAccessToEvents() {
-                let calendars = self.eventStore.calendars(for: .event)
-                
-                let startOfDay = Calendar.current.startOfDay(for: Date())
-                let sevenDaysLater = startOfDay.addingTimeInterval(30 * 24 * 60 * 60)
-                
-                let predicate = self.eventStore.predicateForEvents(withStart: startOfDay, end: sevenDaysLater, calendars: calendars)
-                let events = self.eventStore.events(matching: predicate)
-                
-                return events
-            }
-        } catch {
-            return []
+    func loadUpcommingEvents() async throws -> [EKEvent] {
+        if try await eventStore.requestFullAccessToEvents() {
+            let calendars = self.eventStore.calendars(for: .event)
+            
+            let startOfDay = Calendar.current.startOfDay(for: Date())
+            let sevenDaysLater = startOfDay.addingTimeInterval(30 * 24 * 60 * 60)
+            
+            let predicate = self.eventStore.predicateForEvents(withStart: startOfDay, end: sevenDaysLater, calendars: calendars)
+            let events = self.eventStore.events(matching: predicate)
+            
+            return events
         }
         
         return []
     }
     
-    func loadAllEvents() async -> [EKEvent] {
-        do {
-            if try await eventStore.requestFullAccessToEvents() {
-                let calendars = self.eventStore.calendars(for: .event)
-                let predicate = self.eventStore.predicateForEvents(withStart: Date.distantPast, end: Date.distantFuture, calendars: calendars)
-                let events = self.eventStore.events(matching: predicate)
-                return events
-            }
-        } catch {
-            return []
+    func loadAllEvents() async throws -> [EKEvent] {
+        if try await eventStore.requestFullAccessToEvents() {
+            let calendars = self.eventStore.calendars(for: .event)
+            let predicate = self.eventStore.predicateForEvents(withStart: Date.distantPast, end: Date.distantFuture, calendars: calendars)
+            let events = self.eventStore.events(matching: predicate)
+            return events
         }
-        
+
         return []
     }
     
-    func loadEvents(forDate date: Date, calendars: [EKCalendar]) async -> [EKEvent] {
+    func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent] {
         var schedules:[EKEvent] = []
         
         let calendar = Calendar.current
@@ -78,32 +62,27 @@ class EventStore: ObservableObject {
         let startDate = calendar.date(byAdding: DateComponents(month: -1, day: 1), to: dateComponent)!
         let endDate = calendar.date(byAdding: DateComponents(month: 2, day: 0), to: dateComponent)!
 
-        do {
-            guard try await self.eventStore.requestFullAccessToEvents() else { return [] }
-            
-            let predicate = self.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
-            let events = self.eventStore.events(matching: predicate)
-            schedules = events.sorted(by: {$0.startDate < $1.startDate})
-        } catch {
-            return []
-        }
+        guard try await self.eventStore.requestFullAccessToEvents() else { return [] }
+        
+        let predicate = self.eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: calendars)
+        let events = self.eventStore.events(matching: predicate)
+        schedules = events.sorted(by: {$0.startDate < $1.startDate})
+    
         return schedules
     }
     
-    func loadAllReminders() async -> [EKReminder] {
+    func loadAllReminders() async throws -> [EKReminder] {
         var reminders: [EKReminder] = []
-        do {
-            guard try await eventStore.requestFullAccessToReminders() else { return [] }
-            let predicate = eventStore.predicateForReminders(in: nil)
-            reminders = try await eventStore.reminders(matching: predicate)
-        } catch {
-        }
-        
+
+        guard try await eventStore.requestFullAccessToReminders() else { return [] }
+        let predicate = eventStore.predicateForReminders(in: nil)
+        reminders = try await eventStore.reminders(matching: predicate)
+    
         reminders = reminders.filter { $0.isCompleted == false }
         return reminders
     }
     
-    func completeReminder(reminder: EKReminder) async throws{
+    func completeReminder(reminder: EKReminder) async throws {
         reminder.isCompleted = true
         
         try eventStore.save(reminder, commit: true)
@@ -113,30 +92,27 @@ class EventStore: ObservableObject {
         try eventStore.save(reminder, commit: true)
     }
     
-    func createNewReminder(title: String, date: Date?, highlight: String) async {
-        do {
-            if try await eventStore.requestFullAccessToReminders() {
-                let newReminder = EKReminder(eventStore: self.eventStore)
-                newReminder.title = title
-                
-                switch highlight {
-                case "낮음":
-                    newReminder.priority = 9
-                case "중간":
-                    newReminder.priority = 5
-                case "높음":
-                    newReminder.priority = 1
-                default:
-                    newReminder.priority = 0
-                }
-                
-                if let date = date {
-                    newReminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
-                }
-                newReminder.calendar = self.eventStore.defaultCalendarForNewReminders()
-                try eventStore.save(newReminder, commit: true)
+    func createNewReminder(title: String, date: Date?, highlight: String) async throws {
+        if try await eventStore.requestFullAccessToReminders() {
+            let newReminder = EKReminder(eventStore: self.eventStore)
+            newReminder.title = title
+            
+            switch highlight {
+            case "낮음":
+                newReminder.priority = 9
+            case "중간":
+                newReminder.priority = 5
+            case "높음":
+                newReminder.priority = 1
+            default:
+                newReminder.priority = 0
             }
-        } catch {
+            
+            if let date = date {
+                newReminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+            }
+            newReminder.calendar = self.eventStore.defaultCalendarForNewReminders()
+            try eventStore.save(newReminder, commit: true)
         }
     }
     
