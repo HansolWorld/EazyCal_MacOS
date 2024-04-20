@@ -11,6 +11,7 @@ import EventKit
 
 struct CalenderView: View {
     @Binding var currentDragTemplate: Template?
+    @Binding var isSide: Bool
     @State var mode = true
     @State var isShow = false
     @State var selectedEvent: EKEvent?
@@ -21,7 +22,7 @@ struct CalenderView: View {
     @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
     
     var body: some View {
-        VStack {
+        VStack(spacing: 19) {
             HStack {
                 MonthButton
                 Spacer()
@@ -39,12 +40,29 @@ struct CalenderView: View {
             }
             .frame(maxHeight: .infinity)
         }
-        .padding()
+        .padding(.top, 29)
+        .padding([.bottom, .horizontal], 23)
     }
     
     @ViewBuilder
     var MonthButton: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 15) {
+            Button(action: {
+                withAnimation {
+                    isSide.toggle()
+                }
+            }) {
+                Image(systemName: "sidebar.left")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(isSide ? Color.calendarBlue : Color.gray300)
+                    .padding(7)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(isSide ? Color.calendarBlue.opacity(0.1) : Color.white)
+                    }
+            }
+            .buttonStyle(.plain)
+            
             Button(action: {
                 previousMonth()
                 eventManager.date = calendarViewModel.date
@@ -262,6 +280,6 @@ struct CalenderView: View {
 }
 
 #Preview {
-    CalenderView(currentDragTemplate: .constant(nil))
+    CalenderView(currentDragTemplate: .constant(nil), isSide: .constant(false))
         .environmentObject(CalendarViewModel())
 }
