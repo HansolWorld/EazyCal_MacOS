@@ -54,11 +54,11 @@ struct CalenderView: View {
             }) {
                 Image(systemName: "sidebar.left")
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Color.calendarBlack)
+                    .foregroundStyle(isSide ? Color.calendarBlue : Color.gray300)
                     .padding(7)
                     .background {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.white)
+                            .fill(isSide ? Color.calendarBlue.opacity(0.1) : Color.white)
                     }
             }
             .buttonStyle(.plain)
