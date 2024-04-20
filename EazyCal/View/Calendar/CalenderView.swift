@@ -180,22 +180,23 @@ struct CalenderView: View {
         let start = staringSpacees == 0 ? staringSpacees + 7 : staringSpacees
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
-        let schedules = calendarViewModel.calculateSchedulesLayers(schedules: eventManager.events)
         let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
-        let categorySchedules = schedules.filter {
+        let categorySchedules = eventManager.events.filter {
             if let category = categories.first(where: { $0.isSelected == true} ) {
                 if category.title == "전체" {
                     return true
                 } else if category.title == "미등록" {
-                    return !categoriedCalendar.contains($0.0.calendar?.calendarIdentifier ?? "")
+                    return !categoriedCalendar.contains($0.calendar?.calendarIdentifier ?? "")
                 } else {
-                    return category.calendars.contains($0.0.calendar?.calendarIdentifier ?? "")
+                    return category.calendars.contains($0.calendar?.calendarIdentifier ?? "")
                 }
             }
             
             return false
         }
         
+        let schedules = calendarViewModel.calculateSchedulesLayers(schedules: categorySchedules)
+
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
                 HStack(spacing: 0) {
@@ -214,7 +215,7 @@ struct CalenderView: View {
                                 monthStruct: month,
                                 year: calendarViewModel.year(),
                                 month: calendarViewModel.month(),
-                                scheduler: categorySchedules
+                                scheduler: schedules
                             ),
                             month: month,
                             isToday: checkToday(count: count, start: start),
