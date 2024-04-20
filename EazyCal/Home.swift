@@ -12,50 +12,34 @@ struct Home: View {
     @State var currentDragTemplate: Template?
     @State var isSide = true
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            HStack(spacing: 0) {
-                    HStack(spacing:0) {
-                        VStack(spacing: 24) {
-                            TabButton(image: "calendar", title: "Calendar", selectedTab: $homeData.selectedTab)
-                            TabButton(image: "list.bullet", title: "List", selectedTab: $homeData.selectedTab)
-                            TabButton(image: "doc.plaintext", title: "ScheduleList", selectedTab: $homeData.selectedTab)
-                            Spacer()
-                        }
-                        .padding()
-                        .padding(.top, 30)
-                        
-                        if isSide {
-                            ZStack {
-                                switch homeData.selectedTab {
-                                case "Calendar":
-                                    CalendarTabView(currentDragTemplate: $currentDragTemplate)
-                                case "List":
-                                    TodoView()
-                                default:
-                                    ScheduleListView()
-                                }
-                            }
-                            .background(Color.white)
-                            .frame(maxWidth: 330-52)
-                        }ㅎ
+        HStack(spacing: 0) {
+            if isSide {
+                HStack(spacing:0) {
+                    VStack(spacing: 24) {
+                        TabButton(image: "calendar", title: "Calendar", selectedTab: $homeData.selectedTab)
+                        TabButton(image: "list.bullet", title: "List", selectedTab: $homeData.selectedTab)
+                        TabButton(image: "doc.plaintext", title: "ScheduleList", selectedTab: $homeData.selectedTab)
+                        Spacer()
                     }
-                
-                CalenderView(currentDragTemplate: $currentDragTemplate)
+                    .padding()
+                    .padding(.top, 30)
+                    
+                    ZStack {
+                        switch homeData.selectedTab {
+                        case "Calendar":
+                            CalendarTabView(currentDragTemplate: $currentDragTemplate)
+                        case "List":
+                            TodoView()
+                        default:
+                            ScheduleListView()
+                        }
+                    }
+                    .background(Color.white)
+                }
+                .frame(maxWidth: 330)
             }
             
-            Button(action: {
-                withAnimation {
-                    isSide.toggle()
-                }
-            }) {
-                Image(systemName: "sidebar.left")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 14)
-            }
-            .buttonStyle(.plain)
-            .padding(.leading, 70)
-            .padding(.top, 8)
+            CalenderView(currentDragTemplate: $currentDragTemplate, isSide: $isSide)
         }
         .background(Color.background)
         .environmentObject(homeData)
