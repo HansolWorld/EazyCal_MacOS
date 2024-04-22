@@ -17,6 +17,7 @@ struct TodoLabel: View {
     @State var newPriority: String
     @State private var isDateSelectedShow = false
     @State private var isPriorytySelectedShow = false
+    @State private var lastButtonPressTime: Date?
     @Binding var todo: EKReminder
     @Binding var selectedId: String
     @FocusState var isFocus: Bool
@@ -26,10 +27,14 @@ struct TodoLabel: View {
         VStack {
             HStack(spacing: 8) {
                 Button(action: {
-                    isComplete = true
+                    isComplete.toggle()
+                    lastButtonPressTime = Date()
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        Task {
-                            try await eventManager.completeReminder(reminder: todo)
+                        if isComplete, let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
+                            Task {
+                                try await eventManager.completeReminder(reminder: todo)
+                            }
                         }
                     }
                 }) {
