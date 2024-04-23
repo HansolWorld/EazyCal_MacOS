@@ -9,7 +9,8 @@ import SwiftUI
 import EventKit
 
 struct ScheduleTodoCellView: View {
-    var schedule: EKEvent
+    @Binding var schedule: EKEvent
+    @State private var lastButtonPressTime: Date?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -47,9 +48,15 @@ struct ScheduleTodoCellView: View {
                     
                     newNotes += scheduleTodos
                     schedule.notes = newNotes.joined(separator: "\n")
-
-                    Task {
-                        try await eventManager.updateEvent(ekEvent:schedule)
+                    
+                    lastButtonPressTime = Date()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        if let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
+                            Task {
+                                try await eventManager.updateEvent(ekEvent:schedule)
+                            }
+                        }
                     }
                 }) {
                     HStack {
@@ -94,5 +101,5 @@ struct ScheduleTodoCellView: View {
 }
 
 #Preview {
-    ScheduleTodoCellView(schedule: EKEvent())
+    ScheduleTodoCellView(schedule: .constant(EKEvent()))
 }

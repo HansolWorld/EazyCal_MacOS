@@ -30,6 +30,8 @@ struct CategoryLabelView: View {
                 checkedCalendar.append(calendar.calendarIdentifier)
             }
             
+            UserDefaults.standard.set(checkedCalendar, forKey: "checkedCategory")
+            
             Task {
                 do {
                     try await eventManager.loadEvents()

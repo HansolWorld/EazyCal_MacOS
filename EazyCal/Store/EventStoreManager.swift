@@ -53,12 +53,6 @@ class EventStoreManager: ObservableObject {
         try await eventStore.updateReminder(reminder: reminder)
     }
     
-//    func loadAllEvents() async {
-//        let checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-//        let checkedCalendars = calendars.filter { checkedCategory.contains($0.calendarIdentifier) }
-//        self.allEvents = await eventStore.loadEvents(forDate: Date(), calendars: checkedCalendars)
-//    }
-    
     func loadEvents() async throws {
         let checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
         let checkedCalendars = calendars.filter { checkedCalendar.contains($0.calendarIdentifier) }

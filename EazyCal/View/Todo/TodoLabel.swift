@@ -27,13 +27,15 @@ struct TodoLabel: View {
         VStack {
             HStack(spacing: 8) {
                 Button(action: {
-                    isComplete.toggle()
-                    lastButtonPressTime = Date()
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        if isComplete, let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
-                            Task {
-                                try await eventManager.completeReminder(reminder: todo)
+                    withAnimation {
+                        isComplete.toggle()
+                        lastButtonPressTime = Date()
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            if isComplete, let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
+                                Task {
+                                    try await eventManager.completeReminder(reminder: todo)
+                                }
                             }
                         }
                     }

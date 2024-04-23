@@ -32,9 +32,9 @@ struct TodoView: View {
                 }
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(eventManager.upcommingEvent, id: \.eventIdentifier) { schedule in
+                        ForEach($eventManager.upcommingEvent, id: \.eventIdentifier) { $schedule in
                             if let notes = schedule.notes, notes.contains("☐") {
-                                ScheduleTodoCellView(schedule: schedule)
+                                ScheduleTodoCellView(schedule: $schedule)
                                     .environmentObject(eventManager)
                             }
                         }
