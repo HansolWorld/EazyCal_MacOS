@@ -9,7 +9,7 @@ import SwiftUI
 import EventKit
 
 struct TodoLabel: View {
-    let highlights = ["기본", "낮음", "중간", "높음"]
+    let highlights = [String(localized: "IMPORTANCE_DEFAULT"), String(localized: "LOW"), String(localized: "MID"), String(localized: "HIGH")]
     
     @State var isComplete = false
     @State var editTodo: String
@@ -66,7 +66,7 @@ struct TodoLabel: View {
                             .font(.body)
                             .foregroundStyle(.red)
                     }
-                    TextField("할일 변경", text: $editTodo)
+                    TextField(String(localized: "REMINDER_EDIT"), text: $editTodo)
                         .font(.body)
                         .foregroundStyle(.black)
                         .strikethrough(todo.isCompleted)
@@ -110,7 +110,7 @@ struct TodoLabel: View {
                                 if todo.dueDateComponents?.date != nil {
                                     Text(newDate, style: .date)
                                 } else {
-                                    Text("날짜 추가")
+                                    Text(String(localized: "DATE_ADD"))
                                 }
                             }
                             .font(.subheadline)
@@ -126,7 +126,7 @@ struct TodoLabel: View {
                         .buttonStyle(.plain)
                         .popover(isPresented: $isDateSelectedShow) {
                             HStack {
-                                Text("날짜")
+                                Text(String(localized: "DATE"))
                                     .foregroundStyle(Color.calendarBlack)
                                     .font(.body)
                                 DatePicker("", selection: $newDate)
@@ -152,20 +152,20 @@ struct TodoLabel: View {
                             isPriorytySelectedShow = true
                         }) {
                             HStack(spacing: 4) {
-                                if newPriority == "낮음" {
+                                if newPriority == String(localized: "LOW") {
                                     Text("!")
-                                } else if newPriority == "중간" {
+                                } else if newPriority == String(localized: "MID") {
                                     Text("!!")
-                                } else if newPriority == "높음" {
+                                } else if newPriority == String(localized: "HIGH") {
                                     Text("!!!")
                                 } else {
                                     Text("-")
                                 }
                                 
-                                if newPriority != "기본" {
+                                if newPriority != String(localized: "IMPORTANCE_DEFAULT") {
                                     Text(newPriority)
                                 } else {
-                                    Text("기본")
+                                    Text(String(localized: "IMPORTANCE_DEFAULT"))
                                 }
                                 
                             }
@@ -212,11 +212,11 @@ struct TodoLabel: View {
                         }
                         .onChange(of: newPriority) { _, newValue in
                             switch newValue {
-                            case "낮음":
+                            case String(localized: "LOW"):
                                 todo.priority = 9
-                            case "중간":
+                            case String(localized: "MID"):
                                 todo.priority = 5
-                            case "높음":
+                            case String(localized: "HIGH"):
                                 todo.priority = 1
                             default:
                                 todo.priority = 0
@@ -254,15 +254,15 @@ struct TodoLabel: View {
         guard let hourDifference = components.hour else { return "" }
         
         if daysDifference < 0 {
-            return "\(abs(daysDifference))일 지남"
+            return String(localized: "\(abs(daysDifference)) PAST_DATE")
         } else if daysDifference == 0 {
             if hourDifference > 0 {
-                return "\(hourDifference)시간 전"
+                return String(localized: "\(hourDifference) BEFORE_TIME")
             } else {
-                return "\(abs(hourDifference))시간 지남"
+                return String(localized: "\(abs(hourDifference)) PAST_TIME")
             }
         } else {
-            return "\(daysDifference)일 전"
+            return String(localized: "\(daysDifference) BEFORE_DATE")
         }
     }
 }

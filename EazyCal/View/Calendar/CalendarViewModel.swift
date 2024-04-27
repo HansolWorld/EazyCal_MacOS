@@ -16,7 +16,7 @@ class CalendarViewModel: ObservableObject {
     //    @Published var templates: [Template] = Template.dummyTemplates
     
     func monthYearString() -> String {
-        dateFormatter.dateFormat = "yyyy년 MM월"
+        dateFormatter.dateFormat = String(localized: "DATE_FORMAT")
         return dateFormatter.string(from: self.date)
     }
     

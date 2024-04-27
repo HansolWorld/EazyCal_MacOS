@@ -43,6 +43,7 @@
 		FFDBD7812B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */; };
 		FFDBD7832B01D35C00AB2A57 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7822B01D35C00AB2A57 /* Template.swift */; };
 		FFDBD7892B01E32F00AB2A57 /* CalendarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */; };
+		FFE4B8F42BDBE41E00411F5C /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = FFE4B8F32BDBE41E00411F5C /* Localizable.xcstrings */; };
 		FFF59D2A2B01A2CA0071761E /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF59D292B01A2CA0071761E /* TabButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,7 @@
 		FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategoryPopoverView.swift; sourceTree = "<group>"; };
 		FFDBD7822B01D35C00AB2A57 /* Template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
 		FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategory.swift; sourceTree = "<group>"; };
+		FFE4B8F32BDBE41E00411F5C /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		FFF59D292B01A2CA0071761E /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +183,7 @@
 			children = (
 				FF41EB032AD8CCBB002FD4A9 /* Assets.xcassets */,
 				FF5759102ADB9CC3001E588F /* SFSymbol.swift */,
+				FFE4B8F32BDBE41E00411F5C /* Localizable.xcstrings */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -271,7 +274,7 @@
 			};
 			buildConfigurationList = FF41EAF72AD8CCB9002FD4A9 /* Build configuration list for PBXProject "EazyCal" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = ko;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -295,6 +298,7 @@
 			files = (
 				FF41EB072AD8CCBB002FD4A9 /* Preview Assets.xcassets in Resources */,
 				FF41EB042AD8CCBB002FD4A9 /* Assets.xcassets in Resources */,
+				FFE4B8F42BDBE41E00411F5C /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,7 +476,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EazyCal/EazyCal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"EazyCal/Preview Content\"";
 				DEVELOPMENT_TEAM = KRY967CND6;
 				ENABLE_PREVIEWS = YES;
@@ -492,7 +496,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sol.EazyCal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
@@ -510,7 +514,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EazyCal/EazyCal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"EazyCal/Preview Content\"";
 				DEVELOPMENT_TEAM = KRY967CND6;
 				ENABLE_PREVIEWS = YES;
@@ -530,7 +534,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sol.EazyCal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;

@@ -62,7 +62,7 @@ struct CalendarCell: View {
                 
                 let notViewTask = schedules.filter({ $0.1 > (taskViewCount - 1) })
                 if notViewTask.count != 0 {
-                    Text("+\(notViewTask.count)개의 일정")
+                    Text(String(localized: "+\(notViewTask.count) EVENT_COUNT"))
                         .font(.body)
                         .foregroundStyle(Color.gray300)
                         .padding(.horizontal, 6)

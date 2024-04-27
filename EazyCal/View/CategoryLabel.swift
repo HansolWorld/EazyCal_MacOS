@@ -79,28 +79,28 @@ struct CategoryLabelView: View {
                     calendarColor = calendar.cgColor
                     editCalendarRequest = true
                 }) {
-                    Text("수정")
+                    Text(String(localized: "EDIT"))
                 }
                 Button(action: {
                     requestCalendar = calendar
                     deleteCalendarRequest = true
                 }) {
-                    Text("삭제")
+                    Text(String(localized: "DELETE"))
                 }
             }
         }
         .sheet(isPresented: $editCalendarRequest) {
             VStack(spacing: 8) {
-                TextField("캘린더 이름", text: $calendarTitle)
+                TextField(String(localized: "CALENDAR_NAME"), text: $calendarTitle)
                 ColorPicker(selection: $calendarColor, supportsOpacity: false) {
-                    Text("사용자 지정")
+                    Text(String(localized: "CUSTOM"))
                 }
                 .padding(.bottom)
                 HStack {
                     Button(action: {
                         editCalendarRequest = false
                     }) {
-                        Text("취소")
+                        Text(String(localized: "CANCEL"))
                     }
                     Spacer()
                     Button(action: {
@@ -111,17 +111,17 @@ struct CategoryLabelView: View {
                         }
                         editCalendarRequest = false
                     }) {
-                        Text("수정")
+                        Text(String(localized: "EDIT"))
                     }
                 }
             }
             .padding()
         }
-        .alert("\(requestCalendar?.title ?? "") 캘린더 삭제", isPresented: $deleteCalendarRequest) {
-            Button("취소", role: .cancel) {
+        .alert(String(localized: "\(requestCalendar?.title ?? "") CALENDAR_DELETE"), isPresented: $deleteCalendarRequest) {
+            Button(String(localized: "CANCEL"), role: .cancel) {
                 requestCalendar = nil
             }
-            Button("삭제", role: .destructive) {
+            Button(String(localized: "DELETE"), role: .destructive) {
                 if let calendar = requestCalendar {
                     Task {
                         try await eventManager.removeCalendar(calendar: calendar)
@@ -130,7 +130,7 @@ struct CategoryLabelView: View {
                 }
             }
         } message: {
-            Text("이 캘린더를 삭제하면\n캘린더와 관련된 모든 이벤트도 삭제됩니다.")
+            Text(String(localized: "CALENDAR_DELETE_MASSAGE"))
         }
         .onHover { hovering in
             onHover = hovering

@@ -111,14 +111,14 @@ struct CalendarCategoryLabelView: View {
                 requestSchedule = schedule
                 deleteSchedule = true
             }) {
-                Text("삭제")
+                Text(String(localized: "DELETE"))
             }
         }
-        .alert("\(requestSchedule?.title ?? "") 스케줄 삭제", isPresented: $deleteSchedule) {
-            Button("취소", role: .cancel) {
+        .alert(String(localized: "\(requestSchedule?.title ?? "") DELETE_EVENT"), isPresented: $deleteSchedule) {
+            Button(String(localized: "CANCEL"), role: .cancel) {
                 requestSchedule = nil
             }
-            Button("삭제", role: .destructive) {
+            Button(String(localized: "DELETE"), role: .destructive) {
                 if let schedule = requestSchedule {
                     Task {
                         try await eventManager.removeEvent(event: schedule)

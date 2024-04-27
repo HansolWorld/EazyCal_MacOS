@@ -13,13 +13,13 @@ struct AddNewTodoView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            TextField("새로운 할 일", text: $title)
+            TextField(String(localized: "NEW_REMINDER"), text: $title)
                 .font(.caption)
                 .foregroundStyle(Color.gray400)
                 .textFieldStyle(.plain)
             Divider()
             Toggle(isOn: $highlight) {
-                Text("중요표시")
+                Text(String(localized: "IMPORTANCE"))
                     .font(.caption)
                     .foregroundStyle(.gray400)
             }

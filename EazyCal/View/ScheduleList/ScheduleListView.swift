@@ -50,7 +50,7 @@ struct ScheduleListView: View {
     
     func dateToEvent(_ schedule: [EKEvent]) -> [String: [EKEvent]] {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일 EEEE"
+        dateFormatter.dateFormat = String(localized: "DATE_FORMAT_EVENT")
         
         var result: [String: [EKEvent]] = [:]
         

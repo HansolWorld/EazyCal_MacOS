@@ -98,11 +98,11 @@ class EventStore: ObservableObject {
             newReminder.title = title
             
             switch highlight {
-            case "낮음":
+            case String(localized: "LOW"):
                 newReminder.priority = 9
-            case "중간":
+            case String(localized: "MID"):
                 newReminder.priority = 5
-            case "높음":
+            case String(localized: "HIGH"):
                 newReminder.priority = 1
             default:
                 newReminder.priority = 0
@@ -118,7 +118,7 @@ class EventStore: ObservableObject {
     
     func createNewCalendar() async throws {
         let newCalendar = EKCalendar(for: .event, eventStore: self.eventStore)
-        newCalendar.title = "무제"
+        newCalendar.title = String(localized: "DEFAULT_CALENDAR_TITLE")
         newCalendar.cgColor = CGColor(red: Double.random(in: 0...1), green: Double.random(in: 0...1), blue: Double.random(in: 0...1), alpha: Double.random(in: 0...1))
         newCalendar.source = self.eventStore.defaultCalendarForNewEvents?.source
         

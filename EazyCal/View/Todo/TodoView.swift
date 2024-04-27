@@ -9,10 +9,10 @@ import SwiftUI
 
 struct TodoView: View {
     
-    let highlights = ["기본", "낮음", "중간", "높음"]
+    let highlights = [String(localized: "IMPORTANCE_DEFAULT"), String(localized: "LOW"), String(localized: "MID"), String(localized: "HIGH")]
     @State private var selectedId = ""
     @State var newTodo = ""
-    @State var highlight = "기본"
+    @State var highlight = String(localized: "IMPORTANCE_DEFAULT")
     @State var isHighlightShow = false
     @State var date = Date()
     @State var isDate = false
@@ -54,13 +54,13 @@ struct TodoView: View {
                         ForEach($eventManager.todo, id:\.calendarItemIdentifier) { $todo in
                             
                             let priority: String = {
-                                var newPriority = "기본"
+                                var newPriority = String(localized: "IMPORTANCE_DEFAULT")
                                 if todo.priority >= 6 && todo.priority <= 9  {
-                                    newPriority = "낮음"
+                                    newPriority = String(localized: "LOW")
                                 } else if todo.priority == 5 {
-                                    newPriority = "중간"
+                                    newPriority = String(localized: "MID")
                                 } else if todo.priority >= 1 && todo.priority <= 4 {
-                                    newPriority = "높음"
+                                    newPriority = String(localized: "HIGH")
                                 }
                                 
                                 return newPriority
@@ -78,7 +78,7 @@ struct TodoView: View {
                                     .frame(width: 12, height: 12)
                                     .foregroundStyle(.gray300)
                                 
-                                TextField("새로운 할일", text: $newTodo)
+                                TextField(String(localized: "NEW_REMINDER"), text: $newTodo)
                                     .font(.body)
                                     .foregroundStyle(Color.gray400)
                                     .textFieldStyle(.plain)
@@ -92,7 +92,7 @@ struct TodoView: View {
                                                 }
                                                 
                                                 newTodo = ""
-                                                highlight = "기본"
+                                                highlight = String(localized: "IMPORTANCE_DEFAULT")
                                                 isDate = false
                                             }
                                         }
@@ -116,7 +116,7 @@ struct TodoView: View {
                                 }) {
                                     HStack(spacing: 4) {
                                         Image(systemName: "calendar")
-                                        Text(isDate ? "날짜 삭제" : "날짜 추가")
+                                        Text(isDate ? String(localized: "DATE_DELETE") : String(localized: "DATE_ADD"))
                                     }
                                     .font(.subheadline)
                                     .foregroundStyle(.gray400)
@@ -131,7 +131,7 @@ struct TodoView: View {
                                 .buttonStyle(.plain)
                                 .popover(isPresented: $isDateShow) {
                                     HStack {
-                                        Text("날짜")
+                                        Text(String(localized: "DATE"))
                                             .foregroundStyle(Color.calendarBlack)
                                             .font(.body)
                                         DatePicker("", selection: $date)
@@ -151,7 +151,7 @@ struct TodoView: View {
                                 }) {
                                     HStack(spacing: 4) {
                                         Text("!")
-                                        Text("우선순위")
+                                        Text(String(localized: "RANKING"))
                                     }
                                     .font(.subheadline)
                                     .foregroundStyle(.gray400)

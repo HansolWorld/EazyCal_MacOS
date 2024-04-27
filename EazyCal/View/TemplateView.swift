@@ -30,7 +30,7 @@ struct TemplateView: View {
                 
                 Button(action: {
                     if let calendar = eventManager.calendars.first {
-                        context.insert(Template(title: "새로운 템플릿", startTime: Date(), endTime: Date(), todos: [], calendarId: calendar.calendarIdentifier))
+                        context.insert(Template(title: String(localized: "DEFAULT_TEMPLETE_TITLE"), startTime: Date(), endTime: Date(), todos: [], calendarId: calendar.calendarIdentifier))
                     }
                 }) {
                     Image(systemName: SFSymbol.plus.name)

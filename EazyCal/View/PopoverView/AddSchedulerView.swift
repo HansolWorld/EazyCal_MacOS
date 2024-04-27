@@ -29,12 +29,12 @@ struct AddSchedulerView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            TextField("새로운 일정", text: $title)
+            TextField(String(localized: "EVENT_NEW"), text: $title)
                 .font(.title3)
                 .foregroundStyle(Color.gray400)
                 .textFieldStyle(.plain)
             HStack {
-                Text("종일")
+                Text(String(localized: "ALL_DAY"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                 Spacer()
@@ -44,7 +44,7 @@ struct AddSchedulerView: View {
                     .labelsHidden()
             }
             HStack {
-                Text("시작")
+                Text(String(localized: "START"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                 Spacer()
@@ -53,7 +53,7 @@ struct AddSchedulerView: View {
                     .foregroundStyle(Color.calendarBlack)
             }
             HStack {
-                Text("종료")
+                Text(String(localized: "END"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                 Spacer()
@@ -61,14 +61,14 @@ struct AddSchedulerView: View {
                     .labelsHidden()
                     .foregroundStyle(Color.calendarBlack)
             }
-            RepeatSelectedButton(title: "반복", selected: $repeatDate)
-            CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $category)
+            RepeatSelectedButton(title: String(localized: "REPEAT"), selected: $repeatDate)
+            CustomPicker(title: String(localized: "CATEGORY"), categoryList: eventManager.calendars, selected: $category)
             
             HStack {
-                Text("URL")
+                Text(String(localized: "URL"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
-                TextField("URL을 입력해주세요", text: $url)
+                TextField(String(localized: "URL_INPUT_PLACEHOLD"), text: $url)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
@@ -81,7 +81,7 @@ struct AddSchedulerView: View {
                 }
             }
             
-            Text("할 일")
+            Text(String(localized: "REMINDER"))
                 .font(.body)
                 .foregroundStyle(Color.gray400)
             ForEach(todos.indices, id:\.self) { index in
@@ -102,7 +102,7 @@ struct AddSchedulerView: View {
                     .scaledToFit()
                     .frame(width: 12, height: 12)
                     .foregroundStyle(Color.calendarBlue)
-                TextField("새로운 할일", text: $todo)
+                TextField(String(localized: "NEW_REMINDER"), text: $todo)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)

@@ -17,15 +17,15 @@ enum IndexCategory {
     var title: String {
         switch self {
         case .calendar:
-            return "캘린더"
+            return String(localized: "TAB_TITLE_CALENDAR")
         case .template:
-            return "간편 일정 추가"
+            return String(localized: "TAB_TITLE_TEMPLATE")
         case .readyTodo:
-            return "준비할 일"
+            return String(localized: "TAB_TITLE_READY_REMINDER")
         case .Todo:
-            return "미리알림"
+            return String(localized: "TAB_TITLE_REMINDER")
         case .Upcomming:
-            return "다가오는 일정"
+            return String(localized: "TAB_TITLE_UPCOMMING_EVENT")
         }
     }
 }

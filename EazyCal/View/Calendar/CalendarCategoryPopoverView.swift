@@ -18,11 +18,11 @@ struct CalendarCategoryPopoverView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Button(action: {
-                let newCategory = CalendarCategory(icon: getRandomIcon(), title: "무제")
+                let newCategory = CalendarCategory(icon: getRandomIcon(), title: String(localized: "DEFAULT_CALENDAR_TITLE"))
                 context.insert(newCategory)
                 isShow = false
             }) {
-                Text("새로운 카테고리")
+                Text(String(localized: "CATEGORY_DEFAULT_TITLE"))
                     .font(.body)
                     .foregroundStyle(isHoverFirst ? .white : .calendarBlack)
             }
@@ -45,7 +45,7 @@ struct CalendarCategoryPopoverView: View {
                     try await eventManager.createNewCalendar()
                 }
             }) {
-                Text("새로운 캘린더")
+                Text(String(localized: "NEW_CALENDAR"))
                     .font(.body)
                     .foregroundStyle(isHoverSecond ? .white : .calendarBlack)
             }

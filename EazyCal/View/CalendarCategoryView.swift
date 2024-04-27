@@ -100,33 +100,33 @@ struct CalendarCategoryView: View {
                     }
                     .buttonStyle(.plain)
                     .contextMenu {
-                        if category.title != "전체" && category.title != "미등록" {
+                        if category.title != String(localized: "TOTAL") && category.title != String(localized: "NOT_CATEGORY") {
                             Button(action: {
                                 categoryTitle = category.title
                                 categoryIcon = category.icon
                                 requestCategory = category
                                 editCategoryRequest = true
                             }) {
-                                Text("수정")
+                                Text("EDIT")
                             }
                             Button(action: {
                                 requestCategory = category
                                 deleteCategoryRequest = true
                             }) {
-                                Text("삭제")
+                                Text("DELETE")
                             }
                         }
                     }
-                    .alert("카테고리 수정", isPresented: $editCategoryRequest) {
-                        TextField("Icon", text: $categoryIcon)
-                        TextField("Title", text: $categoryTitle)
+                    .alert(String(localized: "CATEGORY_EDIT"), isPresented: $editCategoryRequest) {
+                        TextField(String(localized: "CATEGORY_ICON"), text: $categoryIcon)
+                        TextField(String(localized: "CATEGORY_TITLE"), text: $categoryTitle)
                         
-                        Button("취소", role: .cancel) {
+                        Button(String(localized: "CANCEL"), role: .cancel) {
                             categoryTitle = ""
                             categoryIcon = ""
                             requestCategory = nil
                         }
-                        Button("수정") {
+                        Button(String(localized: "EDIT")) {
                             if let requestCategory {
                                 requestCategory.icon = categoryIcon
                                 requestCategory.title = categoryTitle
@@ -136,11 +136,11 @@ struct CalendarCategoryView: View {
                             }
                         }
                     }
-                    .alert("카테고리 삭제", isPresented: $deleteCategoryRequest) {
-                        Button("취소", role: .cancel) {
+                    .alert(String(localized: "CATEGORY_DELETE"), isPresented: $deleteCategoryRequest) {
+                        Button(String(localized: "CANCEL"), role: .cancel) {
                             requestCategory = nil
                         }
-                        Button("삭제", role: .destructive) {
+                        Button(String(localized: "DELETE"), role: .destructive) {
                             if let requestCategory {
                                 context.delete(requestCategory)
                                 self.requestCategory = nil
@@ -162,9 +162,9 @@ struct CalendarCategoryView: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
                     let calendaries = eventManager.calendars.filter {
-                        if selectCategory?.title == "전체" {
+                        if selectCategory?.title == String(localized: "TOTAL") {
                             return true
-                        } else if selectCategory?.title == "미등록" {
+                        } else if selectCategory?.title == String(localized: "NOT_CATEGORY") {
                             return !categoriedCalendar.contains( $0.calendarIdentifier)
                         } else {
                             if let selectCategory {
@@ -189,13 +189,21 @@ struct CalendarCategoryView: View {
             }
         }
         .onAppear {
+            categories.forEach { category in
+                if category.title == "전체" || category.title == "total" {
+                    category.title = String(localized: "TOTAL")
+                } else if category.title == "미등록" || category.title == "Unregistered" {
+                    category.title = String(localized: "NOT_CATEGORY")
+                }
+            }
+            
             if categories.allSatisfy({ $0.isSelected == false }) {
                 categories.forEach { element in
-                    if element.title == "전체" {
+                    if element.title == String(localized: "TOTAL") {
                         element.isSelected = true
                     }
                 }
-                selectCategory = categories.first(where: { $0.title == "전체" })
+                selectCategory = categories.first(where: { $0.title == String(localized: "TOTAL")})
             } else {
                 selectCategory = categories.first(where: { $0.isSelected == true })
             }
@@ -212,7 +220,7 @@ struct CalendarCategoryView: View {
     
     
     func replaceCategory(_ category: CalendarCategory, droppingCalendar: EKCalendar) {
-        if selectCategory?.title != "전체" {
+        if selectCategory?.title != String(localized: "TOTAL") {
             selectCategory?.calendars.removeAll(where: {$0 == droppingCalendar.calendarIdentifier})
         }
         category.calendars.append(droppingCalendar.calendarIdentifier)

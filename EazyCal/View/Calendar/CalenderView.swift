@@ -124,7 +124,7 @@ struct CalenderView: View {
                     }
                 }
             }) {
-                Text("오늘")
+                Text(String(localized: "TODAY"))
                     .font(.body)
                     .foregroundStyle(.gray300)
                     .padding(.vertical, 10)
@@ -141,31 +141,31 @@ struct CalenderView: View {
     @ViewBuilder
     var DayOfWeek: some View {
         HStack(spacing: 4) {
-            Text("일")
+            Text(String(localized: "SUN"))
                 .foregroundStyle(.red)
                 .padding(.leading, 6)
             Spacer()
-            Text("월")
+            Text(String(localized: "MON"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
-            Text("화")
+            Text(String(localized: "TUE"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
-            Text("수")
+            Text(String(localized: "WED"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
-            Text("목")
+            Text(String(localized: "THU"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
-            Text("금")
+            Text(String(localized: "FRI"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
-            Text("토")
+            Text(String(localized: "SAT"))
                 .foregroundStyle(.black)
                 .padding(.leading, 6)
             Spacer()
@@ -183,9 +183,9 @@ struct CalenderView: View {
         let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
         let categorySchedules = eventManager.events.filter {
             if let category = categories.first(where: { $0.isSelected == true} ) {
-                if category.title == "전체" {
+                if category.title == String(localized: "TOTAL") {
                     return true
-                } else if category.title == "미등록" {
+                } else if category.title == String(localized: "NOT_CATEGORY") {
                     return !categoriedCalendar.contains($0.calendar?.calendarIdentifier ?? "")
                 } else {
                     return category.calendars.contains($0.calendar?.calendarIdentifier ?? "")

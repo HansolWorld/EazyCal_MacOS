@@ -40,12 +40,12 @@ struct EditSchedulePopoverView: View {
     
     var body: some View {
         LazyVStack(alignment: .leading) {
-            TextField("일정 수정", text: $editTitle)
+            TextField(String(localized: "EVENT_EDIT"), text: $editTitle)
                 .font(.title3)
                 .foregroundStyle(Color.gray400)
                 .textFieldStyle(.plain)
             HStack {
-                Text("종일")
+                Text(String(localized: "ALL_DAY"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                 Spacer()
@@ -57,7 +57,7 @@ struct EditSchedulePopoverView: View {
             if !editIsAllDay {
                 VStack {
                     HStack {
-                        Text("시작")
+                        Text(String(localized: "START"))
                             .lineLimit(1)
                             .font(.body)
                             .foregroundStyle(Color.gray400)
@@ -67,7 +67,7 @@ struct EditSchedulePopoverView: View {
                             .foregroundStyle(Color.calendarBlack)
                     }
                     HStack {
-                        Text("종료")
+                        Text(String(localized: "END"))
                             .lineLimit(1)
                             .font(.body)
                             .foregroundStyle(Color.gray400)
@@ -78,14 +78,14 @@ struct EditSchedulePopoverView: View {
                     }
                 }
             }
-            RepeatSelectedButton(title: "반복", selected: $editRepeatDate)
-            CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $editCategory)
+            RepeatSelectedButton(title: String(localized: "REPEAT"), selected: $editRepeatDate)
+            CustomPicker(title: String(localized: "CATEGORY"), categoryList: eventManager.calendars, selected: $editCategory)
 
             HStack {
-                Text("URL")
+                Text(String(localized: "URL"))
                     .font(.body)
                     .foregroundStyle(Color.gray400)
-                TextField("URL을 입력해주세요", text: $editURL)
+                TextField(String(localized: "URL_INPUT_PLACEHOLD"), text: $editURL)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
@@ -98,7 +98,7 @@ struct EditSchedulePopoverView: View {
                 }
             }
             
-            Text("할 일")
+            Text(String(localized: "REMINDER"))
                 .font(.body)
                 .foregroundStyle(Color.gray400)
             
@@ -141,7 +141,7 @@ struct EditSchedulePopoverView: View {
                         .scaledToFit()
                         .frame(width: 12, height: 12)
                         .foregroundStyle(Color.calendarBlue)
-                    TextField("새로운 할일", text: $editTodo.title)
+                    TextField(String(localized: "NEW_REMINDER"), text: $editTodo.title)
                         .foregroundStyle(Color.gray400)
                         .textFieldStyle(.plain)
                         .onSubmit {

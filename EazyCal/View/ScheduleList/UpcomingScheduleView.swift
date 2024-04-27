@@ -30,7 +30,7 @@ struct UpcomingScheduleView: View {
                 }
                 HStack {
                     if schedule.isAllDay || (Calendar.current.dateComponents([.day], from: schedule.startDate, to: schedule.endDate).day ?? 0 >= 1 && dateToString(schedule.endDate) != dateString ) {
-                        Text("종일")
+                        Text(String(localized: "ALL_DAY"))
                         Spacer()
                     } else {
                         Text(schedule.startDate, style: .time)
@@ -69,7 +69,7 @@ struct UpcomingScheduleView: View {
     
     private func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일 EEEE"
+        dateFormatter.dateFormat = String(localized: "DATE_FORMAT_EVENT")
         
         return dateFormatter.string(from: date)
     }

@@ -63,7 +63,7 @@ struct TemplateLabel: View {
             Button(action: {
                 deleteTemplateRequest = true
             }) {
-                Text("삭제")
+                Text(String(localized: "DELETE"))
             }
         }
         .onTapGesture(count: 2) {
@@ -71,13 +71,13 @@ struct TemplateLabel: View {
         }
         .popover(isPresented: $editTemplateRequest, arrowEdge: .trailing) {
             VStack(alignment: .leading, spacing: 8) {
-                TextField("간편 일정", text: $newTitle)
+                TextField(String(localized: "TEMPLATE_DEFAULT_TITLE"), text: $newTitle)
                     .font(.title3)
                     .foregroundStyle(Color.gray400)
                     .textFieldStyle(.plain)
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("종일")
+                        Text(String(localized: "ALL_DAY"))
                             .font(.body)
                             .foregroundStyle(Color.gray400)
                         Spacer()
@@ -89,7 +89,7 @@ struct TemplateLabel: View {
                     if !newIsAllDay {
                         VStack {
                             HStack {
-                                Text("시작")
+                                Text(String(localized: "START"))
                                     .font(.body)
                                     .foregroundStyle(Color.gray400)
                                 Spacer()
@@ -98,7 +98,7 @@ struct TemplateLabel: View {
                                     .foregroundStyle(Color.gray400)
                             }
                             HStack {
-                                Text("종료")
+                                Text(String(localized: "END"))
                                     .font(.body)
                                     .foregroundStyle(Color.gray400)
                                 Spacer()
@@ -109,8 +109,8 @@ struct TemplateLabel: View {
                         }
                         .transition(.identity)
                     }
-                    CustomPicker(title: "카테고리", categoryList: eventManager.calendars, selected: $calendar)
-                    Text("할 일")
+                    CustomPicker(title: String(localized: "CATEGORY"), categoryList: eventManager.calendars, selected: $calendar)
+                    Text(String(localized: "REMINDER"))
                         .font(.body)
                         .foregroundStyle(Color.gray400)
                     ForEach(newTodos.indices, id:\.self) { index in
@@ -131,7 +131,7 @@ struct TemplateLabel: View {
                             .scaledToFit()
                             .frame(width: 12, height: 12)
                             .foregroundStyle(Color.calendarBlue)
-                        TextField("새로운 할일", text: $newTodo)
+                        TextField(String(localized: "NEW_REMINDER"), text: $newTodo)
                             .font(.body)
                             .foregroundStyle(Color.gray400)
                             .textFieldStyle(.plain)
@@ -163,10 +163,10 @@ struct TemplateLabel: View {
                 template.calendarId = calendar.calendarIdentifier
             }
         }
-        .alert("간편 일정 삭제", isPresented: $deleteTemplateRequest) {
-            Button("취소", role: .cancel) {
+        .alert(String(localized: "TEMPLATE_DELETE"), isPresented: $deleteTemplateRequest) {
+            Button(String(localized: "CANCEL"), role: .cancel) {
             }
-            Button("삭제", role: .destructive) {
+            Button(String(localized: "DELETE"), role: .destructive) {
                 context.delete(template)
             }
         }

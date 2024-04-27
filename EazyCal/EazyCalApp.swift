@@ -10,11 +10,11 @@ import SwiftData
 
 @main
 struct EazyCalApp: App {
-    
+
     let appContainer: ModelContainer = {
         do {
             let container = try ModelContainer(for: CalendarCategory.self, Template.self)
-            
+
             // Make sure the persistent store is empty. If it's not, return the non-empty container.
             var itemFetchDescriptor = FetchDescriptor<CalendarCategory>()
             itemFetchDescriptor.fetchLimit = 1
@@ -23,8 +23,8 @@ struct EazyCalApp: App {
             
             // This code will only run if the persistent store is empty.
             let calendarCategories = [
-                CalendarCategory(icon: "🗄️", title: "전체", isSelected: true),
-                CalendarCategory(icon: "🗑️", title: "미등록")
+                CalendarCategory(icon: "🗄️", title: String(localized: "TOTAL"), isSelected: true),
+                CalendarCategory(icon: "🗑️", title: String(localized: "NOT_CATEGORY"))
             ]
             
             
@@ -54,12 +54,12 @@ struct EazyCalApp: App {
                                 .opacity(0.9)
                             
                             VStack(alignment: .center) {
-                                Text("앱을 사용하기 위해 설정에서 권한을 허락후 앱을 재실행 해주세요.")
+                                Text(String(localized: "AUTHORITY_TITLE"))
                                     .font(.title2)
                                     .padding(.bottom, 16)
-                                Text("시스템 설정 > 개인정보 보호 및 보안 > 캘린더")
+                                Text(String(localized: "AUTHORITY_CALENDAR"))
                                     .font(.headline)
-                                Text("시스템 설정 > 개인정보 보호 및 보안 > 미리 알림")
+                                Text(String(localized: "AUTHORITY_REMINDER"))
                                     .font(.headline)
                             }
                             .foregroundStyle(Color.white)

@@ -18,15 +18,15 @@ enum RepeatType: CaseIterable {
     var title: String {
         switch self {
         case .oneDay:
-            return "없음"
+            return String(localized: "REPEAT_NOT")
         case .everyDay:
-            return "매일"
+            return String(localized: "REPEAT_DAILY")
         case .everyWeek:
-            return "매주"
+            return String(localized: "REPEAT_WEAKLY")
         case .everyMonth:
-            return "매달"
+            return String(localized: "REPEAT_MONTHLY")
         case .everyYear:
-            return "매년"
+            return String(localized: "REPEAT_YEARLY")
             
         }
     }
