@@ -2,37 +2,38 @@
 //  EventStore+Auth.swift
 //  EazyCal
 //
-//  Created by apple on 10/23/23.
-//
 
 import EventKit
 
-extension EventStore {
-    var isFullAccessAuthorized: Bool {
-        EKEventStore.authorizationStatus(for: .event) == .fullAccess
+extension EKAuthorizationStatus {
+    var eventStoreError: EventStoreError? {
+        switch self {
+        case .denied:
+            return .denied
+        case .restricted:
+            return .restricted
+        case .writeOnly:
+            return .upgrade
+        default:
+            return nil
+        }
     }
-    
-//    func isAccessPermission() async throws {
-//        switch EKEventStore.authorizationStatus(for: .event) {
-//        case .notDetermined:
-//            try await requestFullAccess()
-//        case .restricted:
-//            try await requestFullAccess()
-//        case .denied:
-//            try await requestFullAccess()
-//        case .fullAccess:
-//            print()
-//        default:
-//            try await requestFullAccess()
-//        }
-//    }
-//    
-//    private func requestFullAccess() async throws {
-//        if #available(iOS 17.0, *) {
-//            try await self.eventStore.requestFullAccessToEvents()
-//        } else {
-//            // Fall back on earlier versions.
-//            try await self.eventStore.requestAccess(to: .event)
-//        }
-//    }
+}
+
+extension EventStore {
+    var calendarAuthorizationStatus: EKAuthorizationStatus {
+        EKEventStore.authorizationStatus(for: .event)
+    }
+
+    var reminderAuthorizationStatus: EKAuthorizationStatus {
+        EKEventStore.authorizationStatus(for: .reminder)
+    }
+
+    func requestCalendarAccess() async throws -> Bool {
+        try await eventStore.requestFullAccessToEvents()
+    }
+
+    func requestReminderAccess() async throws -> Bool {
+        try await eventStore.requestFullAccessToReminders()
+    }
 }

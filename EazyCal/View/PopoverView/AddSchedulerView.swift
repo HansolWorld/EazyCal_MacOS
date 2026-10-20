@@ -137,7 +137,6 @@ struct AddSchedulerView: View {
 
 #Preview {
     AddSchedulerView(startDate: Date(), doDate: Date(), category: EKCalendar(), url: "")
-        .previewLayout(.sizeThatFits)
         .environmentObject(EventStoreManager())
         .background {
             Color.white

@@ -9,12 +9,12 @@ import SwiftUI
 
 struct TabButton: View {
     var image: String
-    var title: String
-    @Binding var selectedTab: String
+    var tab: HomeTab
+    @Binding var selectedTab: HomeTab
     
     var body: some View {
         Button(action: {
-            selectedTab = title
+            selectedTab = tab
         }) {
             VStack(spacing: 7) {
                 Image(systemName: image)
@@ -27,15 +27,16 @@ struct TabButton: View {
                         Circle()
                             .fill(
                                 Color.primaryBlue
-                                    .opacity(selectedTab == title ? 0.1 : 0)
+                                    .opacity(selectedTab == tab ? 0.1 : 0)
                             )
                     }
             }
         }
         .buttonStyle(PlainButtonStyle())
+        .accessibilityLabel(tab.rawValue)
     }
 }
 
 #Preview {
-    TabButton(image: "calendar", title: "calendar", selectedTab: .constant("calendar"))
+    TabButton(image: "calendar", tab: .calendar, selectedTab: .constant(.calendar))
 }

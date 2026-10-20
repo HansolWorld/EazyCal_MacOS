@@ -54,7 +54,7 @@ struct ScheduleTodoCellView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         if let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
                             Task {
-                                try await eventManager.updateEvent(ekEvent:schedule)
+                                try await eventManager.updateEvent(event: schedule)
                             }
                         }
                     }
@@ -90,7 +90,7 @@ struct ScheduleTodoCellView: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(cgColor: schedule.calendar.cgColor!))
+                .fill(Color(cgColor: schedule.calendar.cgColor ?? CGColor.clear))
                 .opacity(0.1)
         }
     }

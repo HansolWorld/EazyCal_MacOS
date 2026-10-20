@@ -12,6 +12,8 @@ enum EventStoreError: Error {
     case restricted
     case unknown
     case upgrade
+    case invalidDate
+    case missingDefaultCalendar
 }
 
 extension EventStoreError: LocalizedError {
@@ -27,6 +29,10 @@ extension EventStoreError: LocalizedError {
             let access = "The app has write-only access to Calendar in Settings."
             let update = "Please grant it full access so the app can fetch and delete your events."
             return NSLocalizedString("\(access) \(update)", comment: "Upgrade to full access")
+        case .invalidDate:
+            return NSLocalizedString("The requested date could not be created.", comment: "Invalid date")
+        case .missingDefaultCalendar:
+            return NSLocalizedString("A writable default calendar is not available.", comment: "Missing default calendar")
         }
     }
 }

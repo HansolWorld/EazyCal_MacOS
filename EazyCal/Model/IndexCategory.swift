@@ -11,8 +11,8 @@ enum IndexCategory {
     case calendar
     case template
     case readyTodo
-    case Todo
-    case Upcomming
+    case todo
+    case upcoming
     
     var title: String {
         switch self {
@@ -22,9 +22,9 @@ enum IndexCategory {
             return String(localized: "TAB_TITLE_TEMPLATE")
         case .readyTodo:
             return String(localized: "TAB_TITLE_READY_REMINDER")
-        case .Todo:
+        case .todo:
             return String(localized: "TAB_TITLE_REMINDER")
-        case .Upcomming:
+        case .upcoming:
             return String(localized: "TAB_TITLE_UPCOMMING_EVENT")
         }
     }

@@ -16,9 +16,9 @@ struct Home: View {
             if isSide {
                 HStack(spacing:0) {
                     VStack(spacing: 24) {
-                        TabButton(image: "calendar", title: "Calendar", selectedTab: $homeData.selectedTab)
-                        TabButton(image: "list.bullet", title: "List", selectedTab: $homeData.selectedTab)
-                        TabButton(image: "doc.plaintext", title: "ScheduleList", selectedTab: $homeData.selectedTab)
+                        TabButton(image: "calendar", tab: .calendar, selectedTab: $homeData.selectedTab)
+                        TabButton(image: "list.bullet", tab: .reminders, selectedTab: $homeData.selectedTab)
+                        TabButton(image: "doc.plaintext", tab: .scheduleList, selectedTab: $homeData.selectedTab)
                         Spacer()
                     }
                     .padding()
@@ -26,11 +26,11 @@ struct Home: View {
                     
                     ZStack {
                         switch homeData.selectedTab {
-                        case "Calendar":
+                        case .calendar:
                             CalendarTabView(currentDragTemplate: $currentDragTemplate)
-                        case "List":
+                        case .reminders:
                             TodoView()
-                        default:
+                        case .scheduleList:
                             ScheduleListView()
                         }
                     }
@@ -39,7 +39,7 @@ struct Home: View {
                 .frame(maxWidth: 330)
             }
             
-            CalenderView(currentDragTemplate: $currentDragTemplate, isSide: $isSide)
+            CalendarView(currentDragTemplate: $currentDragTemplate, isSide: $isSide)
         }
         .background(Color.background)
         .environmentObject(homeData)
@@ -47,7 +47,13 @@ struct Home: View {
 }
 
 class HomeViewModel: ObservableObject {
-    @Published var selectedTab = "Calendar"
+    @Published var selectedTab: HomeTab = .calendar
+}
+
+enum HomeTab: String {
+    case calendar
+    case reminders
+    case scheduleList
 }
 
 

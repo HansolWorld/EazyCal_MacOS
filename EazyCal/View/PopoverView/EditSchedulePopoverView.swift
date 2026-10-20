@@ -160,22 +160,11 @@ struct EditSchedulePopoverView: View {
             event.startDate = editStartDate
             event.endDate = editDoDate
             event.url = URL(string: editURL)
-            switch editRepeatDate {
-            case .oneDay:
-                event.recurrenceRules = nil
-            case .everyDay:
-                event.recurrenceRules = [EKRecurrenceRule(recurrenceWith: .daily, interval: 1, end: EKRecurrenceEnd(end: Date().addingTimeInterval(60 * 60 * 24 * 7 * 8)))]
-            case .everyWeek:
-                event.recurrenceRules = [EKRecurrenceRule(recurrenceWith: .weekly, interval: 1, end: EKRecurrenceEnd(end: Date().addingTimeInterval(60 * 60 * 24 * 7 * 8)))]
-            case .everyMonth:
-                event.recurrenceRules = [EKRecurrenceRule(recurrenceWith: .monthly, interval: 1, end: EKRecurrenceEnd(end: Date().addingTimeInterval(60 * 60 * 24 * 7 * 8)))]
-            case .everyYear:
-                event.recurrenceRules = [EKRecurrenceRule(recurrenceWith: .yearly, interval: 1, end: EKRecurrenceEnd(end: Date().addingTimeInterval(60 * 60 * 24 * 7 * 8)))]
-            }
+            event.recurrenceRules = RecurrenceRuleFactory.rules(for: editRepeatDate)
             event.notes = todos(editTodos)
             event.calendar = editCategory
             Task {
-                try await eventManager.updateEvent(ekEvent: event)
+                try await eventManager.updateEvent(event: event)
             }
         }
         .background {

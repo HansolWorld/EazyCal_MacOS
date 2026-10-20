@@ -75,44 +75,15 @@ class CalendarViewModel: ObservableObject {
     }
     
     func calculateSchedulesLayers(schedules: [EKEvent]) -> [(EKEvent, Int)] {
-        let calendarCurrent = Calendar.current
-        var layers: [(EKEvent, Int)] = []
-        
-        for schedule in schedules {
-            let componentSet: Set<Calendar.Component> = [.month, .day]
-            
-            let startDate = schedule.startDate ?? Date()
-            let startDateComponent = calendarCurrent.dateComponents(componentSet, from: startDate)
-            let (startMonth, startDay) = (startDateComponent.month, startDateComponent.day)
-            
-            let endDate = schedule.endDate ?? Date()
-            let endDateComponent = calendarCurrent.dateComponents(componentSet, from: endDate)
-            let (endMonth, endDay) = (endDateComponent.month, endDateComponent.day)
-            
-            var layer = Array(repeating: 0, count: schedules.count)
-            for (existingSchedule, existingLayer) in layers {
-                let existingStartDate = existingSchedule.startDate ?? Date()
-                let existingStartDateComponent = calendarCurrent.dateComponents(componentSet, from: existingStartDate)
-                let (existingStartMonth, existingStartDay) = (existingStartDateComponent.month, existingStartDateComponent.day)
-                
-                let existingEndDate = existingSchedule.endDate ?? Date()
-                let existingEndDateComponent = calendarCurrent.dateComponents(componentSet, from: existingEndDate)
-                let (existingEndMonth, existingEndDay) = (existingEndDateComponent.month, existingEndDateComponent.day)
-                
-                if 
-                    (startMonth == existingStartMonth && startDay == existingStartDay && startDate >= existingStartDate)
-                    || (endMonth == existingEndMonth && endDay == existingEndDay && endDate >= existingEndDate)
-                    || (startMonth == existingEndMonth && startDay == existingEndDay)
-                {
-                    layer[existingLayer - 1] = 1
-                }
-            }
-            
-            let currentLayer = layer.firstIndex(of: 0) ?? 0
-            layers.append((schedule, currentLayer+1))
+        let intervals = schedules.enumerated().map { index, schedule in
+            CalendarMath.ScheduleInterval(
+                index: index,
+                start: schedule.startDate,
+                end: schedule.endDate
+            )
         }
-
-        return layers
+        let assignments = CalendarMath.layerAssignments(for: intervals)
+        return schedules.enumerated().map { ($0.element, assignments[$0.offset]) }
     }
     
     func schedules(monthStruct: Month, year: Int, month: Int, scheduler: [(EKEvent, Int)]) -> [(EKEvent, Int)] {
@@ -153,15 +124,6 @@ class CalendarViewModel: ObservableObject {
     }
     
     func stringToDate(year: Int, month: Int, day: Int) -> Date {
-        let dateString = "\(year)-\(month)-\(day)"
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-
-        if let date = dateFormatter.date(from: dateString) {
-            return date
-        } else {
-            return Date()
-        }
+        CalendarMath.date(year: year, month: month, day: day) ?? date
     }
 }

@@ -6,11 +6,5 @@
 	<string>캘린더의 이벤트를 보여주고, 이벤트를 생성하려면 권한이 필요합니다.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
 	<string>미리알림을 보여주고, 새로운 미리알림을 생성하려면 권한이 필요합니다.</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SpoqaHanSansNeo-Bold.otf</string>
-		<string>SpoqaHanSansNeo-Medium.otf</string>
-		<string>SpoqaHanSansNeo-Regular.otf</string>
-	</array>
 </dict>
 </plist>

@@ -56,8 +56,8 @@ struct CalendarCategoryView: View {
                                 } else {
                                     element.isSelected = false
                                 }
-                                selectCategory = category
                             }
+                            selectCategory = category
                             
                             Task {
                                 do {
@@ -160,12 +160,12 @@ struct CalendarCategoryView: View {
             
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
+                    let categorizedCalendar: [String] = categories.dropFirst(2).flatMap { $0.calendars }
                     let calendaries = eventManager.calendars.filter {
                         if selectCategory?.title == String(localized: "TOTAL") {
                             return true
                         } else if selectCategory?.title == String(localized: "NOT_CATEGORY") {
-                            return !categoriedCalendar.contains( $0.calendarIdentifier)
+                            return !categorizedCalendar.contains($0.calendarIdentifier)
                         } else {
                             if let selectCategory {
                                 return selectCategory.calendars.contains($0.calendarIdentifier)

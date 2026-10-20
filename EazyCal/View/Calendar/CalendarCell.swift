@@ -150,8 +150,11 @@ struct CalendarCell: View {
                     endComponents.hour = endTime.hour
                     endComponents.minute = endTime.minute
                     
-                    let startDate = calendar.date(from: startComponents)
-                    let endDate = calendar.date(from: endComponents)
+                    guard let startDate = calendar.date(from: startComponents),
+                          let endDate = calendar.date(from: endComponents) else {
+                        self.currentDragTemplate = nil
+                        return false
+                    }
                     
                     Task {
                         try await eventManager.saveEvent(
@@ -180,14 +183,21 @@ struct CalendarCell: View {
                         month: calendarViewModel.month() + addMonth,
                         day: month.dayInt
                     )
-                    let currentDate = Calendar.current.date(from: currentDateComponents)!
-                    let offsetComps = Calendar.current.dateComponents([.day], from: selectedEvent.startDate, to: currentDate)
-                    
-                    selectedEvent.startDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.startDate)
-                    selectedEvent.endDate = Calendar.current.date(byAdding: .day, value:  offsetComps.day!, to: selectedEvent.endDate)
+                    guard let currentDate = Calendar.current.date(from: currentDateComponents),
+                          let movedStartDate = CalendarMath.moving(selectedEvent.startDate, toDay: currentDate),
+                          let originalEndDate = selectedEvent.endDate else {
+                        self.selectedEvent = nil
+                        return false
+                    }
+
+                    let movedEndDate = originalEndDate.addingTimeInterval(
+                        movedStartDate.timeIntervalSince(selectedEvent.startDate)
+                    )
+                    selectedEvent.startDate = movedStartDate
+                    selectedEvent.endDate = movedEndDate
                     
                     Task {
-                        try await eventManager.updateEvent(ekEvent: selectedEvent)
+                        try await eventManager.updateEvent(event: selectedEvent)
                     }
                     
                     self.selectedEvent = nil
@@ -222,13 +232,16 @@ struct CalendarCell: View {
     }
     
     func cellViewType(_ schedule: EKEvent, _ month: Month) -> CellViewType {
-        let endDate = Calendar.current.date(byAdding: .second, value: -1, to: schedule.endDate) ?? schedule.endDate!
-        
-        if (day(date: schedule.startDate) == month.dayInt) && (day(date: endDate) == month.dayInt) {
+        guard let startDate = schedule.startDate, let rawEndDate = schedule.endDate else {
             return .OneDate
-        } else if day(date: schedule.startDate) == month.dayInt {
+        }
+        let endDate = Calendar.current.date(byAdding: .second, value: -1, to: rawEndDate) ?? rawEndDate
+        
+        if (day(date: startDate) == month.dayInt) && (day(date: endDate) == month.dayInt) {
+            return .OneDate
+        } else if day(date: startDate) == month.dayInt {
             return .StartDate
-        } else if day(date: schedule.endDate) == month.dayInt {
+        } else if day(date: endDate) == month.dayInt {
             return .DoDate
         } else {
             return .Dating

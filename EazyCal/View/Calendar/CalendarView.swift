@@ -1,5 +1,5 @@
 //
-//  CalenderView.swift
+//  CalendarView.swift
 //  EazyCal
 //
 //  Created by apple on 10/15/23.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import EventKit
 
-struct CalenderView: View {
+struct CalendarView: View {
     @Binding var currentDragTemplate: Template?
     @Binding var isSide: Bool
     @State var mode = true
@@ -180,13 +180,13 @@ struct CalenderView: View {
         let start = staringSpacees == 0 ? staringSpacees + 7 : staringSpacees
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
-        let categoriedCalendar: [String] = categories[2...].flatMap { $0.calendars }
+        let categorizedCalendars: [String] = categories.dropFirst(2).flatMap { $0.calendars }
         let categorySchedules = eventManager.events.filter {
             if let category = categories.first(where: { $0.isSelected == true} ) {
                 if category.title == String(localized: "TOTAL") {
                     return true
                 } else if category.title == String(localized: "NOT_CATEGORY") {
-                    return !categoriedCalendar.contains($0.calendar?.calendarIdentifier ?? "")
+                    return !categorizedCalendars.contains($0.calendar?.calendarIdentifier ?? "")
                 } else {
                     return category.calendars.contains($0.calendar?.calendarIdentifier ?? "")
                 }
@@ -281,6 +281,6 @@ struct CalenderView: View {
 }
 
 #Preview {
-    CalenderView(currentDragTemplate: .constant(nil), isSide: .constant(false))
+    CalendarView(currentDragTemplate: .constant(nil), isSide: .constant(false))
         .environmentObject(CalendarViewModel())
 }

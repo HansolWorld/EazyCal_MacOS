@@ -14,14 +14,14 @@ struct ScheduleListView: View {
     var body: some View {
         VStack(spacing: 24) {
             HStack {
-                Text(IndexCategory.Upcomming.title)
+                Text(IndexCategory.upcoming.title)
                     .font(.headline)
                     .foregroundStyle(.gray300)
                 Spacer()
             }
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 20) {
-                    let eventDict = dateToEvent(eventManager.upcommingEvent)
+                    let eventDict = dateToEvent(eventManager.upcomingEvents)
                     ForEach(eventDict.keys.sorted(), id:\.self) { dateString in
                         VStack(alignment: .leading, spacing: 8) {
                             UpcomingScheduleDateView(dateString)
@@ -88,12 +88,6 @@ struct ScheduleListView: View {
     }
 }
 
-extension EKEvent: Identifiable {
-    
-}
-
 #Preview {
     ScheduleListView()
 }
-
-

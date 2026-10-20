@@ -8,6 +8,6 @@
 import Foundation
 
 enum Importance {
-    case nomal
+    case normal
     case highlight
 }

@@ -22,7 +22,7 @@ enum RepeatType: CaseIterable {
         case .everyDay:
             return String(localized: "REPEAT_DAILY")
         case .everyWeek:
-            return String(localized: "REPEAT_WEAKLY")
+            return String(localized: "REPEAT_WEEKLY")
         case .everyMonth:
             return String(localized: "REPEAT_MONTHLY")
         case .everyYear:

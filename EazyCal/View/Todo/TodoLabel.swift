@@ -248,7 +248,8 @@ struct TodoLabel: View {
         let calendar = Calendar.current
         
         let todayComponents = calendar.dateComponents([.calendar, .era, .year, .month, .day, .hour], from: Date())
-        let components = calendar.dateComponents([.day, .hour], from: todayComponents.date!, to: date)
+        guard let today = todayComponents.date else { return "" }
+        let components = calendar.dateComponents([.day, .hour], from: today, to: date)
         
         guard let daysDifference = components.day else { return "" }
         guard let hourDifference = components.hour else { return "" }

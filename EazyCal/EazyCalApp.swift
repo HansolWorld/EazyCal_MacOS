@@ -2,45 +2,27 @@
 //  EazyCalApp.swift
 //  EazyCal
 //
-//  Created by apple on 10/13/23.
-//
 
 import SwiftUI
 import SwiftData
+import EventKit
+import AppKit
 
 @main
 struct EazyCalApp: App {
+    private let appContainer: ModelContainer
+    @StateObject private var storeManager: EventStoreManager
+    @StateObject private var calendarViewModel = CalendarViewModel()
+    @State private var persistenceWarning: String?
+    @Environment(\.scenePhase) private var scenePhase
 
-    let appContainer: ModelContainer = {
-        do {
-            let container = try ModelContainer(for: CalendarCategory.self, Template.self)
+    init() {
+        let result = Self.makeModelContainer()
+        appContainer = result.container
+        _persistenceWarning = State(initialValue: result.warning)
+        _storeManager = StateObject(wrappedValue: EventStoreManager())
+    }
 
-            // Make sure the persistent store is empty. If it's not, return the non-empty container.
-            var itemFetchDescriptor = FetchDescriptor<CalendarCategory>()
-            itemFetchDescriptor.fetchLimit = 1
-            
-            guard try container.mainContext.fetch(itemFetchDescriptor).count == 0 else { return container }
-            
-            // This code will only run if the persistent store is empty.
-            let calendarCategories = [
-                CalendarCategory(icon: "🗄️", title: String(localized: "TOTAL"), isSelected: true),
-                CalendarCategory(icon: "🗑️", title: String(localized: "NOT_CATEGORY"))
-            ]
-            
-            
-            for calendarCategory in calendarCategories {
-                container.mainContext.insert(calendarCategory)
-            }
-            
-            return container
-        } catch {
-            fatalError("Failed to create container")
-        }
-    }()
-    
-    @StateObject private var storeManager = EventStoreManager()
-    @StateObject var calendarViewModel = CalendarViewModel()
-    
     var body: some Scene {
         WindowGroup {
             Home()
@@ -48,58 +30,137 @@ struct EazyCalApp: App {
                 .environmentObject(calendarViewModel)
                 .ignoresSafeArea(.all, edges: .all)
                 .overlay {
-                    if !storeManager.eventStore.isFullAccessAuthorized {
-                        ZStack {
-                            Color.calendarBlack
-                                .opacity(0.9)
-                            
-                            VStack(alignment: .center) {
-                                Text(String(localized: "AUTHORITY_TITLE"))
-                                    .font(.title2)
-                                    .padding(.bottom, 16)
-                                Text(String(localized: "AUTHORITY_CALENDAR"))
-                                    .font(.headline)
-                                Text(String(localized: "AUTHORITY_REMINDER"))
-                                    .font(.headline)
-                            }
-                            .foregroundStyle(Color.white)
-                            
-                        }
-                        .ignoresSafeArea()
-                    } else {
-                        EmptyView()
+                    if !storeManager.hasCalendarAccess {
+                        PermissionRequiredView(
+                            calendarStatus: storeManager.calendarAuthorizationStatus,
+                            reminderStatus: storeManager.reminderAuthorizationStatus,
+                            retry: { Task { await storeManager.prepare() } },
+                            openSettings: openCalendarSettings
+                        )
                     }
                 }
-                .preferredColorScheme(.light)   
+                .overlay(alignment: .topTrailing) {
+                    if storeManager.hasCalendarAccess && !storeManager.hasReminderAccess {
+                        Button(action: openReminderSettings) {
+                            Label(String(localized: "AUTHORITY_REMINDER"), systemImage: "exclamationmark.triangle")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding()
+                    }
+                }
+                .preferredColorScheme(.light)
                 .task {
-                    await listenForCalendarChanges()
+                    await storeManager.prepare()
                 }
-                .onChange(of: storeManager.eventStore.isFullAccessAuthorized) { oldValue, newValue in
-                    if !oldValue, newValue {
-                        Task {
-                            await listenForCalendarChanges()
+                .onAppear { storeManager.startObservingChanges() }
+                .onDisappear { storeManager.stopObservingChanges() }
+                .onChange(of: scenePhase) { _, phase in
+                    guard phase == .active else { return }
+                    Task { await storeManager.reloadAll() }
+                }
+                .alert(
+                    "EazyCal",
+                    isPresented: Binding(
+                        get: { storeManager.lastErrorMessage != nil || persistenceWarning != nil },
+                        set: { isPresented in
+                            if !isPresented {
+                                storeManager.lastErrorMessage = nil
+                                persistenceWarning = nil
+                            }
                         }
-                    }
+                    )
+                ) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text(storeManager.lastErrorMessage ?? persistenceWarning ?? "")
                 }
         }
-        .windowStyle(HiddenTitleBarWindowStyle())
+        .windowStyle(.hiddenTitleBar)
         .modelContainer(appContainer)
     }
-    
-    func listenForCalendarChanges() async {
-        let center = NotificationCenter.default
-        let notifications = center.notifications(named: .EKEventStoreChanged).map({ (notification: Notification) in notification.name })
 
-        guard storeManager.eventStore.isFullAccessAuthorized else { return }
-        for await _ in notifications {
+    private func openCalendarSettings() {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars") else {
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    private func openReminderSettings() {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders") else {
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    private static func makeModelContainer() -> (container: ModelContainer, warning: String?) {
+        do {
+            let container = try ModelContainer(for: CalendarCategory.self, Template.self)
+            try seedCategoriesIfNeeded(in: container)
+            return (container, nil)
+        } catch {
             do {
-                try await storeManager.loadCalendar()
-                try await storeManager.loadEvents()
-                try await storeManager.loadReminder()
-                try await storeManager.loadUpcommingEvents()
+                let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+                let container = try ModelContainer(
+                    for: CalendarCategory.self,
+                    Template.self,
+                    configurations: configuration
+                )
+                try seedCategoriesIfNeeded(in: container)
+                return (
+                    container,
+                    "저장소를 열지 못해 이번 실행에서는 임시 저장소를 사용합니다: \(error.localizedDescription)"
+                )
             } catch {
-                print(error)
+                preconditionFailure("Unable to create the persistent or fallback model container: \(error)")
             }
         }
+    }
+
+    private static func seedCategoriesIfNeeded(in container: ModelContainer) throws {
+        var descriptor = FetchDescriptor<CalendarCategory>()
+        descriptor.fetchLimit = 1
+        guard try container.mainContext.fetch(descriptor).isEmpty else { return }
+
+        container.mainContext.insert(
+            CalendarCategory(icon: "🗄️", title: String(localized: "TOTAL"), isSelected: true)
+        )
+        container.mainContext.insert(
+            CalendarCategory(icon: "🗑️", title: String(localized: "NOT_CATEGORY"))
+        )
+        try container.mainContext.save()
+    }
+}
+
+private struct PermissionRequiredView: View {
+    let calendarStatus: EKAuthorizationStatus
+    let reminderStatus: EKAuthorizationStatus
+    let retry: () -> Void
+    let openSettings: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color.calendarBlack.opacity(0.9).ignoresSafeArea()
+            VStack(spacing: 16) {
+                Text(String(localized: "AUTHORITY_TITLE"))
+                    .font(.title2)
+                permissionRow(String(localized: "AUTHORITY_CALENDAR"), status: calendarStatus)
+                permissionRow(String(localized: "AUTHORITY_REMINDER"), status: reminderStatus)
+                HStack {
+                    Button("Retry", action: retry)
+                    Button("Open Settings", action: openSettings)
+                }
+            }
+            .foregroundStyle(.white)
+            .padding(32)
+        }
+    }
+
+    private func permissionRow(_ title: String, status: EKAuthorizationStatus) -> some View {
+        HStack {
+            Image(systemName: status == .fullAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+            Text(title)
+        }
+        .font(.headline)
     }
 }

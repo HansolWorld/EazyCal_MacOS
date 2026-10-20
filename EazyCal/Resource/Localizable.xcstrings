@@ -970,7 +970,7 @@
         }
       }
     },
-    "REPEAT_WEAKLY" : {
+    "REPEAT_WEEKLY" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {

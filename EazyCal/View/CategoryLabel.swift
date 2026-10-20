@@ -22,22 +22,11 @@ struct CategoryLabelView: View {
     
     var body: some View {
         Button(action: {
-            var checkedCalendar = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-            
-            if checkedCalendar.contains(calendar.calendarIdentifier) {
-                checkedCalendar.removeAll { $0 == calendar.calendarIdentifier }
-            } else {
-                checkedCalendar.append(calendar.calendarIdentifier)
-            }
-            
-            UserDefaults.standard.set(checkedCalendar, forKey: "checkedCategory")
-            
             Task {
-                do {
-                    try await eventManager.loadEvents()
-                } catch {
-                    print(error)
-                }
+                await eventManager.setCalendar(
+                    calendar,
+                    isChecked: !eventManager.isCalendarChecked(calendar)
+                )
             }
         }) {
             HStack(spacing: 10) {
@@ -138,9 +127,7 @@ struct CategoryLabelView: View {
     }
     
     func checkToImageName() -> String {
-        let checkedCategory = UserDefaults.standard.array(forKey: "checkedCategory") as? [String] ?? []
-
-        switch checkedCategory.contains(calendar.calendarIdentifier) {
+        switch eventManager.isCalendarChecked(calendar) {
         case false:
             return SFSymbol.circle.name
         case true:
