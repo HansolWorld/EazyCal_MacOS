@@ -80,12 +80,40 @@ final class EventRuleTests: XCTestCase {
     }
 }
 
+final class ReminderScheduleTests: XCTestCase {
+    func testMovingAllDayReminderKeepsItAllDay() throws {
+        let components = DateComponents(year: 2025, month: 1, day: 3)
+        let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
+
+        let moved = ReminderSchedule.moving(components, toDay: targetDate)
+
+        XCTAssertEqual(moved.year, 2025)
+        XCTAssertEqual(moved.month, 2)
+        XCTAssertEqual(moved.day, 7)
+        XCTAssertNil(moved.hour)
+        XCTAssertNil(moved.minute)
+    }
+
+    func testEventEntryUsesExclusiveEndDateForDisplay() throws {
+        let event = EKEvent(eventStore: EKEventStore())
+        event.startDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3))
+        event.endDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 4))
+
+        let entry = CalendarEntry(event: event)
+
+        XCTAssertEqual(
+            Calendar.current.component(.day, from: entry.endDate),
+            3
+        )
+    }
+}
+
 @MainActor
 final class EventStoreManagerTests: XCTestCase {
-    func testPrepareLoadsEachAuthorizedDataSource() async {
+    func testPrepareLoadsEachAuthorizedDataSource() async throws {
         let store = FakeEventStore()
         let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
 
@@ -95,12 +123,13 @@ final class EventStoreManagerTests: XCTestCase {
         XCTAssertEqual(store.eventLoadCount, 1)
         XCTAssertEqual(store.upcomingLoadCount, 1)
         XCTAssertEqual(store.reminderLoadCount, 1)
+        XCTAssertEqual(store.scheduledReminderLoadCount, 1)
     }
 
     func testReminderMutationReloadsReminders() async throws {
         let store = FakeEventStore()
         let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
 
@@ -108,6 +137,52 @@ final class EventStoreManagerTests: XCTestCase {
 
         XCTAssertEqual(store.createReminderCount, 1)
         XCTAssertEqual(store.reminderLoadCount, 1)
+        XCTAssertEqual(store.scheduledReminderLoadCount, 1)
+    }
+
+    func testReschedulingReminderPreservesTimeAndReloadsReminderData() async throws {
+        let store = FakeEventStore()
+        let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+        let reminder = EKReminder(eventStore: EKEventStore())
+        reminder.dueDateComponents = DateComponents(
+            year: 2025,
+            month: 1,
+            day: 3,
+            hour: 14,
+            minute: 25
+        )
+        let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
+
+        try await manager.rescheduleReminder(reminder, to: targetDate)
+
+        XCTAssertEqual(reminder.dueDateComponents?.year, 2025)
+        XCTAssertEqual(reminder.dueDateComponents?.month, 2)
+        XCTAssertEqual(reminder.dueDateComponents?.day, 7)
+        XCTAssertEqual(reminder.dueDateComponents?.hour, 14)
+        XCTAssertEqual(reminder.dueDateComponents?.minute, 25)
+        XCTAssertEqual(store.updateReminderCount, 1)
+        XCTAssertEqual(store.reminderLoadCount, 1)
+        XCTAssertEqual(store.scheduledReminderLoadCount, 1)
+    }
+
+    func testCalendarRefreshStillLoadsRemindersWhenEventLoadingFails() async {
+        let store = FakeEventStore()
+        store.shouldFailEventLoading = true
+        let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            return XCTFail("Unable to create isolated user defaults")
+        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+
+        await manager.refreshCalendarEntries()
+
+        XCTAssertEqual(store.eventLoadCount, 1)
+        XCTAssertEqual(store.scheduledReminderLoadCount, 1)
+        XCTAssertNotNil(manager.lastErrorMessage)
     }
 }
 
@@ -118,7 +193,10 @@ private final class FakeEventStore: EventStoreProviding {
     var eventLoadCount = 0
     var upcomingLoadCount = 0
     var reminderLoadCount = 0
+    var scheduledReminderLoadCount = 0
     var createReminderCount = 0
+    var updateReminderCount = 0
+    var shouldFailEventLoading = false
 
     func requestCalendarAccess() async throws -> Bool { true }
     func requestReminderAccess() async throws -> Bool { true }
@@ -135,6 +213,9 @@ private final class FakeEventStore: EventStoreProviding {
 
     func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent] {
         eventLoadCount += 1
+        if shouldFailEventLoading {
+            throw EventStoreError.unknown
+        }
         return []
     }
 
@@ -143,8 +224,15 @@ private final class FakeEventStore: EventStoreProviding {
         return []
     }
 
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder] {
+        scheduledReminderLoadCount += 1
+        return []
+    }
+
     func completeReminder(reminder: EKReminder) async throws {}
-    func updateReminder(reminder: EKReminder) async throws {}
+    func updateReminder(reminder: EKReminder) async throws {
+        updateReminderCount += 1
+    }
 
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
         createReminderCount += 1

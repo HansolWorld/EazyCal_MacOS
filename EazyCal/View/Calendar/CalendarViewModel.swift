@@ -74,7 +74,7 @@ class CalendarViewModel: ObservableObject {
         return calendar.component(.month, from: date)
     }
     
-    func calculateSchedulesLayers(schedules: [EKEvent]) -> [(EKEvent, Int)] {
+    func calculateSchedulesLayers(schedules: [CalendarEntry]) -> [(CalendarEntry, Int)] {
         let intervals = schedules.enumerated().map { index, schedule in
             CalendarMath.ScheduleInterval(
                 index: index,
@@ -86,7 +86,12 @@ class CalendarViewModel: ObservableObject {
         return schedules.enumerated().map { ($0.element, assignments[$0.offset]) }
     }
     
-    func schedules(monthStruct: Month, year: Int, month: Int, scheduler: [(EKEvent, Int)]) -> [(EKEvent, Int)] {
+    func schedules(
+        monthStruct: Month,
+        year: Int,
+        month: Int,
+        scheduler: [(CalendarEntry, Int)]
+    ) -> [(CalendarEntry, Int)] {
         var currentDate = stringToDate(year: year, month: month, day: 20)
         
         if monthStruct.monthType == .Previous {
@@ -110,7 +115,7 @@ class CalendarViewModel: ObservableObject {
         let schedules = scheduler.filter({ schedule, index in
             let startDate = calendar.startOfDay(for: schedule.startDate)
             let currentDate = calendar.startOfDay(for: currentDate)
-            let endDate = schedule.endDate ?? startDate
+            let endDate = schedule.endDate
             
             
             if startDate <= currentDate && currentDate <= endDate {

@@ -9,7 +9,7 @@ import SwiftUI
 import EventKit
 
 struct CalendarCell: View {
-    let schedules: [(EKEvent, Int)]
+    let schedules: [(CalendarEntry, Int)]
     let month: Month
     let isToday: Bool
     let count : Int
@@ -21,6 +21,7 @@ struct CalendarCell: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
     @Binding var selectedEvent: EKEvent?
+    @Binding var selectedReminder: EKReminder?
     @EnvironmentObject var eventManager: EventStoreManager
     
     @State var isShow = false
@@ -45,14 +46,11 @@ struct CalendarCell: View {
                 }
                 
                 ForEach(0...max(taskViewCount-2, 0), id: \.self) { index in
-                    if let scheduleTuple = schedules.first(where: { $0.1 == index+1 }), scheduleTuple.0.calendar != nil
-                    {
-                        CalendarCategoryLabelView(
-                            schedule: scheduleTuple.0,
-                            viewType: cellViewType(scheduleTuple.0, month),
-                            selectedEvent: $selectedEvent
+                    if let scheduleTuple = schedules.first(where: { $0.1 == index+1 }) {
+                        entryLabel(
+                            scheduleTuple.0,
+                            viewType: cellViewType(scheduleTuple.0)
                         )
-                        .environmentObject(eventManager)
                     } else {
                         Text(" ")
                             .font(.body)
@@ -72,12 +70,8 @@ struct CalendarCell: View {
                         }
                         .popover(isPresented: $isMoreEventPopover, arrowEdge: .trailing) {
                             VStack(alignment: .leading) {
-                                ForEach(schedules, id:\.0) { schedule in
-                                    CalendarCategoryLabelView(
-                                        schedule: schedule.0,
-                                        viewType: .OneDate,
-                                        selectedEvent: $selectedEvent
-                                    )
+                                ForEach(schedules, id: \.0.id) { schedule in
+                                    entryLabel(schedule.0, viewType: .OneDate)
                                 }
                             }
                             .padding(4)
@@ -107,6 +101,7 @@ struct CalendarCell: View {
                         }
                         .simultaneousGesture(TapGesture().onEnded {
                             selectedEvent = nil
+                            selectedReminder = nil
                         })
                 }
             }
@@ -170,6 +165,17 @@ struct CalendarCell: View {
                     }
                     
                     self.currentDragTemplate = nil
+                } else if let selectedReminder {
+                    let targetDate = calculateDate(forMonthType: month.monthType)
+
+                    Task {
+                        try await eventManager.rescheduleReminder(
+                            selectedReminder,
+                            to: targetDate
+                        )
+                    }
+
+                    self.selectedReminder = nil
                 } else if let selectedEvent {
                     var addMonth = 0
                     if month.monthType == .Previous {
@@ -208,6 +214,27 @@ struct CalendarCell: View {
         }
         .frame(minWidth: 80, minHeight: 80)
     }
+
+    @ViewBuilder
+    private func entryLabel(_ entry: CalendarEntry, viewType: CellViewType) -> some View {
+        switch entry.source {
+        case .event(let event):
+            CalendarCategoryLabelView(
+                schedule: event,
+                viewType: viewType,
+                selectedEvent: $selectedEvent,
+                selectedReminder: $selectedReminder
+            )
+            .environmentObject(eventManager)
+        case .reminder(let reminder):
+            ScheduledReminderLabelView(
+                reminder: reminder,
+                selectedEvent: $selectedEvent,
+                selectedReminder: $selectedReminder
+            )
+            .environmentObject(eventManager)
+        }
+    }
     
     func textColor(type: MonthType, count: Int) -> Color {
         if type == MonthType.Current {
@@ -225,23 +252,21 @@ struct CalendarCell: View {
         }
     }
     
-    func day(date: Date) -> Int {
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: date)
-        return components.day ?? -1
-    }
-    
-    func cellViewType(_ schedule: EKEvent, _ month: Month) -> CellViewType {
-        guard let startDate = schedule.startDate, let rawEndDate = schedule.endDate else {
+    func cellViewType(_ entry: CalendarEntry) -> CellViewType {
+        guard case .event = entry.source else {
             return .OneDate
         }
-        let endDate = Calendar.current.date(byAdding: .second, value: -1, to: rawEndDate) ?? rawEndDate
-        
-        if (day(date: startDate) == month.dayInt) && (day(date: endDate) == month.dayInt) {
+
+        let calendar = Calendar.current
+        let currentDate = calendar.startOfDay(for: calculateDate(forMonthType: month.monthType))
+        let startDate = calendar.startOfDay(for: entry.startDate)
+        let endDate = calendar.startOfDay(for: entry.endDate)
+
+        if startDate == currentDate && endDate == currentDate {
             return .OneDate
-        } else if day(date: startDate) == month.dayInt {
+        } else if startDate == currentDate {
             return .StartDate
-        } else if day(date: endDate) == month.dayInt {
+        } else if endDate == currentDate {
             return .DoDate
         } else {
             return .Dating
@@ -277,7 +302,8 @@ struct CalendarCell: View {
         daysInPrevMonth: 1,
         calendarViewModel: CalendarViewModel(),
         currentDragTemplate: .constant(nil),
-        selectedEvent: .constant(nil)
+        selectedEvent: .constant(nil),
+        selectedReminder: .constant(nil)
     )
     .environmentObject(EventStoreManager())
 }

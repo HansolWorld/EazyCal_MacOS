@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AA0000010000000000000001 /* CalendarMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000002 /* CalendarMath.swift */; };
+		AA2000010000000000000001 /* CalendarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2000020000000000000002 /* CalendarEntry.swift */; };
+		AA2000030000000000000003 /* ScheduledReminderLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2000040000000000000004 /* ScheduledReminderLabelView.swift */; };
 		AA1000010000000000000001 /* EazyCalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1000020000000000000002 /* EazyCalTests.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
@@ -61,6 +63,8 @@
 
 /* Begin PBXFileReference section */
 		AA0000020000000000000002 /* CalendarMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarMath.swift; sourceTree = "<group>"; };
+		AA2000020000000000000002 /* CalendarEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntry.swift; sourceTree = "<group>"; };
+		AA2000040000000000000004 /* ScheduledReminderLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledReminderLabelView.swift; sourceTree = "<group>"; };
 		AA1000020000000000000002 /* EazyCalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalTests.swift; sourceTree = "<group>"; };
 		AA1000030000000000000003 /* EazyCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EazyCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
@@ -201,6 +205,7 @@
 				FF5759532ADC0D83001E588F /* CalendarView.swift */,
 				FF5759572ADC1AC1001E588F /* CalendarCell.swift */,
 				FF6BE0B82AE205CD00CB7397 /* CalendarCategoryLabelView.swift */,
+				AA2000040000000000000004 /* ScheduledReminderLabelView.swift */,
 				FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */,
 				FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */,
 				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
@@ -224,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0000020000000000000002 /* CalendarMath.swift */,
+				AA2000020000000000000002 /* CalendarEntry.swift */,
 				FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */,
 				FF57592F2ADBCD7F001E588F /* IndexCategory.swift */,
 				FF57591A2ADBA578001E588F /* Importance.swift */,
@@ -373,6 +379,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0000010000000000000001 /* CalendarMath.swift in Sources */,
+				AA2000010000000000000001 /* CalendarEntry.swift in Sources */,
+				AA2000030000000000000003 /* ScheduledReminderLabelView.swift in Sources */,
 				FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */,
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */,

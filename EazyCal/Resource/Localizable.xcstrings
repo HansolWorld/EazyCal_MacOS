@@ -851,6 +851,23 @@
         }
       }
     },
+    "COMPLETE_REMINDER" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete Reminder"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리 알림 완료"
+          }
+        }
+      }
+    },
     "RANKING" : {
       "extractionState" : "manual",
       "localizations" : {

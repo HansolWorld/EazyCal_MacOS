@@ -18,6 +18,7 @@ struct CalendarCategoryLabelView: View {
     @State var requestSchedule: EKEvent?
     @State var deleteSchedule = false
     @Binding var selectedEvent: EKEvent?
+    @Binding var selectedReminder: EKReminder?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -78,10 +79,12 @@ struct CalendarCategoryLabelView: View {
         })
         .simultaneousGesture(TapGesture().onEnded {
             withAnimation {
+                selectedReminder = nil
                 selectedEvent = schedule
             }
         })
         .onDrag { () -> NSItemProvider in
+            selectedReminder = nil
             selectedEvent = schedule
             return NSItemProvider(object: schedule.eventIdentifier as NSString)
         }

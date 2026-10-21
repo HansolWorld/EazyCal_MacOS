@@ -11,6 +11,7 @@ EazyCal은 macOS의 캘린더와 미리 알림을 한 화면에서 관리하는 
 - EventKit 캘린더 생성, 수정, 삭제 및 표시 여부 설정
 - 사용자 정의 캘린더 그룹 분류
 - 미리 알림 생성, 수정, 완료 처리 및 우선순위 설정
+- 날짜가 지정된 미리 알림을 월간 캘린더에 표시하고, 즉시 완료하거나 드래그로 재예약
 - 일정 메모를 이용한 체크리스트 관리
 - 자주 사용하는 일정을 SwiftData 템플릿으로 저장하고 캘린더에 드롭
 - 향후 30일 일정 목록 제공
@@ -35,6 +36,7 @@ EazyCalApp
 ├── EventStoreManager
 │   └── EventStoreProviding
 │       └── EventStore / EventKit
+├── CalendarEntry (Event + Reminder presentation model)
 ├── CalendarViewModel
 └── Home
     ├── CalendarTabView
@@ -45,7 +47,7 @@ EazyCalApp
     └── CalendarView
 ```
 
-`EventStore`는 EventKit 접근과 CRUD를 담당합니다. `EventStoreManager`는 권한 상태, 화면에서 사용하는 데이터, 캘린더 선택 상태와 변경 후 새로고침을 관리합니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
+`EventStore`는 EventKit 접근과 CRUD를 담당합니다. `EventStoreManager`는 권한 상태, 화면에서 사용하는 데이터, 캘린더 선택 상태와 변경 후 새로고침을 관리합니다. EventKit이 별도로 제공하는 `EKEvent`와 `EKReminder`는 `CalendarEntry` 표시 모델로 합쳐 월간 캘린더에 전달합니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
 
 ### 데이터 저장
 
@@ -116,6 +118,7 @@ xcodebuild \
 - 미리 알림 우선순위 변환
 - 권한 승인 상태의 초기 데이터 로딩
 - 데이터 변경 후 명시적 새로고침
+- 미리 알림 재예약 시 기존 시간 보존과 관련 데이터 새로고침
 
 다음 명령으로 전체 테스트를 실행할 수 있습니다.
 
@@ -144,6 +147,8 @@ xcodebuild analyze \
 - EventKit 권한 요청은 데이터 조회와 분리되어 앱 시작 시 한 번 처리됩니다.
 - `EKEventStoreChanged` 알림은 중복 등록되지 않는 단일 옵저버로 감시합니다.
 - EventKit CRUD가 성공하면 관련 화면 데이터를 즉시 다시 불러옵니다.
+- 날짜가 지정된 미완료 미리 알림은 현재 월간 캘린더 범위로 조회해 일정과 함께 표시합니다.
+- 월간 캘린더의 미리 알림은 완료 버튼과 날짜 셀 드래그 재예약을 지원합니다.
 - 최초 실행 시 사용 가능한 모든 캘린더를 기본 표시 대상으로 설정합니다.
 - 반복 일정 삭제는 의도하지 않은 이후 일정 삭제를 막기 위해 선택한 일정 하나에만 적용됩니다.
 - SwiftData 영구 저장소를 열 수 없으면 앱 종료 대신 메모리 저장소로 대체하고 사용자에게 안내합니다.

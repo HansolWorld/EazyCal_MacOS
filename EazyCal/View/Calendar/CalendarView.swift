@@ -15,6 +15,7 @@ struct CalendarView: View {
     @State var mode = true
     @State var isShow = false
     @State var selectedEvent: EKEvent?
+    @State var selectedReminder: EKReminder?
     @EnvironmentObject var calendarViewModel: CalendarViewModel
     @EnvironmentObject var eventManager: EventStoreManager
     
@@ -35,6 +36,7 @@ struct CalendarView: View {
                             .foregroundStyle(.white)
                             .onTapGesture {
                                 selectedEvent = nil
+                                selectedReminder = nil
                             }
                     }
             }
@@ -67,11 +69,7 @@ struct CalendarView: View {
                 previousMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    do {
-                        try await eventManager.loadEvents()
-                    } catch {
-                        print(error)
-                    }
+                    await eventManager.refreshCalendarEntries()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronBackward.name)
@@ -94,11 +92,7 @@ struct CalendarView: View {
                 nextMonth()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    do {
-                        try await eventManager.loadEvents()
-                    } catch {
-                        print(error)
-                    }
+                    await eventManager.refreshCalendarEntries()
                 }
             }) {
                 Image(systemName: SFSymbol.chevronForward.name)
@@ -117,11 +111,7 @@ struct CalendarView: View {
                 calendarViewModel.date = Date()
                 eventManager.date = calendarViewModel.date
                 Task {
-                    do {
-                        try await eventManager.loadEvents()
-                    } catch {
-                        print(error)
-                    }
+                    await eventManager.refreshCalendarEntries()
                 }
             }) {
                 Text(String(localized: "TODAY"))
@@ -195,7 +185,9 @@ struct CalendarView: View {
             return false
         }
         
-        let schedules = calendarViewModel.calculateSchedulesLayers(schedules: categorySchedules)
+        let calendarEntries = categorySchedules.map { CalendarEntry(event: $0) }
+            + eventManager.scheduledReminders.compactMap { CalendarEntry(reminder: $0) }
+        let schedules = calendarViewModel.calculateSchedulesLayers(schedules: calendarEntries)
 
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
@@ -225,7 +217,8 @@ struct CalendarView: View {
                             daysInPrevMonth: daysInPreviousMonth,
                             calendarViewModel: calendarViewModel,
                             currentDragTemplate: $currentDragTemplate,
-                            selectedEvent: $selectedEvent
+                            selectedEvent: $selectedEvent,
+                            selectedReminder: $selectedReminder
                         )
                         if column != 7 {
                             Divider()

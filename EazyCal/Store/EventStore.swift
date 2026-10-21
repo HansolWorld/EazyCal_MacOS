@@ -15,6 +15,7 @@ protocol EventStoreProviding: AnyObject {
     func loadUpcomingEvents() async throws -> [EKEvent]
     func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent]
     func loadAllReminders() async throws -> [EKReminder]
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder]
     func completeReminder(reminder: EKReminder) async throws
     func updateReminder(reminder: EKReminder) async throws
     func createNewReminder(title: String, date: Date?, highlight: String) async throws
@@ -66,8 +67,26 @@ final class EventStore: ObservableObject, EventStoreProviding {
 
     func loadAllReminders() async throws -> [EKReminder] {
         try requireFullAccess(for: .reminder)
-        let predicate = eventStore.predicateForReminders(in: nil)
-        return try await eventStore.reminders(matching: predicate).filter { !$0.isCompleted }
+        let predicate = eventStore.predicateForIncompleteReminders(
+            withDueDateStarting: nil,
+            ending: nil,
+            calendars: nil
+        )
+        return try await eventStore.reminders(matching: predicate)
+    }
+
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder] {
+        try requireFullAccess(for: .reminder)
+        let predicate = eventStore.predicateForIncompleteReminders(
+            withDueDateStarting: startDate,
+            ending: endDate,
+            calendars: nil
+        )
+        return try await eventStore.reminders(matching: predicate).sorted {
+            let left = ReminderSchedule.date(from: $0.dueDateComponents) ?? .distantFuture
+            let right = ReminderSchedule.date(from: $1.dueDateComponents) ?? .distantFuture
+            return left < right
+        }
     }
 
     func completeReminder(reminder: EKReminder) async throws {

@@ -19,6 +19,7 @@ final class EventStoreManager: ObservableObject {
     @Published var events: [EKEvent] = []
     @Published var upcomingEvents: [EKEvent] = []
     @Published var reminders: [EKReminder] = []
+    @Published var scheduledReminders: [EKReminder] = []
     @Published private(set) var calendarAuthorizationStatus: EKAuthorizationStatus
     @Published private(set) var reminderAuthorizationStatus: EKAuthorizationStatus
     @Published var lastErrorMessage: String?
@@ -100,12 +101,13 @@ final class EventStoreManager: ObservableObject {
 
         if hasReminderAccess {
             do {
-                try await loadReminders()
+                try await reloadReminderData()
             } catch {
                 record(error)
             }
         } else {
             reminders = []
+            scheduledReminders = []
         }
     }
 
@@ -116,6 +118,31 @@ final class EventStoreManager: ObservableObject {
 
     func loadReminders() async throws {
         reminders = try await eventStore.loadAllReminders()
+    }
+
+    func loadScheduledReminders() async throws {
+        let interval = try CalendarMath.visibleMonthInterval(containing: date)
+        scheduledReminders = try await eventStore.loadScheduledReminders(
+            from: interval.start,
+            to: interval.end
+        )
+    }
+
+    func refreshCalendarEntries() async {
+        if hasCalendarAccess {
+            do {
+                try await loadEvents()
+            } catch {
+                record(error)
+            }
+        }
+        if hasReminderAccess {
+            do {
+                try await loadScheduledReminders()
+            } catch {
+                record(error)
+            }
+        }
     }
 
     func loadEvents() async throws {
@@ -131,7 +158,7 @@ final class EventStoreManager: ObservableObject {
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
         do {
             try await eventStore.createNewReminder(title: title, date: date, highlight: highlight)
-            try await loadReminders()
+            try await reloadReminderData()
         } catch {
             record(error)
             throw error
@@ -141,7 +168,7 @@ final class EventStoreManager: ObservableObject {
     func completeReminder(reminder: EKReminder) async throws {
         do {
             try await eventStore.completeReminder(reminder: reminder)
-            try await loadReminders()
+            try await reloadReminderData()
         } catch {
             record(error)
             throw error
@@ -151,11 +178,19 @@ final class EventStoreManager: ObservableObject {
     func updateReminder(reminder: EKReminder) async throws {
         do {
             try await eventStore.updateReminder(reminder: reminder)
-            try await loadReminders()
+            try await reloadReminderData()
         } catch {
             record(error)
             throw error
         }
+    }
+
+    func rescheduleReminder(_ reminder: EKReminder, to targetDate: Date) async throws {
+        reminder.dueDateComponents = ReminderSchedule.moving(
+            reminder.dueDateComponents,
+            toDay: targetDate
+        )
+        try await updateReminder(reminder: reminder)
     }
 
     func saveEvent(
@@ -262,6 +297,11 @@ final class EventStoreManager: ObservableObject {
     private func reloadEvents() async throws {
         try await loadEvents()
         try await loadUpcomingEvents()
+    }
+
+    private func reloadReminderData() async throws {
+        try await loadReminders()
+        try await loadScheduledReminders()
     }
 
     private func initializeCheckedCalendarsIfNeeded() {
