@@ -14,6 +14,7 @@
 		AA3000030000000000000003 /* ReminderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3000040000000000000004 /* ReminderRepository.swift */; };
 		AA4000010000000000000001 /* CalendarEntryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4000020000000000000002 /* CalendarEntryMapper.swift */; };
 		AA5000010000000000000001 /* EventKitUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5000020000000000000002 /* EventKitUseCases.swift */; };
+		AA6000010000000000000001 /* MonthCalendarState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6000020000000000000002 /* MonthCalendarState.swift */; };
 		AA1000010000000000000001 /* EazyCalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1000020000000000000002 /* EazyCalTests.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
@@ -73,6 +74,7 @@
 		AA3000040000000000000004 /* ReminderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRepository.swift; sourceTree = "<group>"; };
 		AA4000020000000000000002 /* CalendarEntryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntryMapper.swift; sourceTree = "<group>"; };
 		AA5000020000000000000002 /* EventKitUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitUseCases.swift; sourceTree = "<group>"; };
+		AA6000020000000000000002 /* MonthCalendarState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCalendarState.swift; sourceTree = "<group>"; };
 		AA1000020000000000000002 /* EazyCalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalTests.swift; sourceTree = "<group>"; };
 		AA1000030000000000000003 /* EazyCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EazyCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 			children = (
 				AA0000020000000000000002 /* CalendarMath.swift */,
 				AA2000020000000000000002 /* CalendarEntry.swift */,
+				AA6000020000000000000002 /* MonthCalendarState.swift */,
 				FFDBD7882B01E32F00AB2A57 /* CalendarCategory.swift */,
 				FF57592F2ADBCD7F001E588F /* IndexCategory.swift */,
 				FF57591A2ADBA578001E588F /* Importance.swift */,
@@ -397,6 +400,7 @@
 				AA3000030000000000000003 /* ReminderRepository.swift in Sources */,
 				AA4000010000000000000001 /* CalendarEntryMapper.swift in Sources */,
 				AA5000010000000000000001 /* EventKitUseCases.swift in Sources */,
+				AA6000010000000000000001 /* MonthCalendarState.swift in Sources */,
 				FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */,
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */,

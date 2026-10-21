@@ -108,6 +108,56 @@ final class ReminderScheduleTests: XCTestCase {
     }
 }
 
+final class MonthCalendarStateTests: XCTestCase {
+    func testCategoryFilterKeepsRemindersVisible() throws {
+        let date = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
+        let entries = [
+            makeEntry(id: "first", kind: .event, calendarIdentifier: "work", date: date),
+            makeEntry(id: "second", kind: .event, calendarIdentifier: "home", date: date),
+            makeEntry(id: "reminder", kind: .reminder, calendarIdentifier: nil, date: date)
+        ]
+
+        let state = MonthCalendarState(
+            entries: entries,
+            filter: .calendars(["work"])
+        )
+
+        XCTAssertEqual(state.entries.map(\.entry.id), ["first", "reminder"])
+    }
+
+    func testEntriesReturnsOnlyItemsCoveringRequestedDay() throws {
+        let firstDay = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
+        let secondDay = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 8))
+        let state = MonthCalendarState(
+            entries: [
+                makeEntry(id: "first", kind: .event, calendarIdentifier: "work", date: firstDay),
+                makeEntry(id: "second", kind: .event, calendarIdentifier: "work", date: secondDay)
+            ],
+            filter: .all
+        )
+
+        XCTAssertEqual(state.entries(on: firstDay).map(\.entry.id), ["first"])
+    }
+
+    private func makeEntry(
+        id: String,
+        kind: CalendarEntryKind,
+        calendarIdentifier: String?,
+        date: Date
+    ) -> CalendarEntry {
+        CalendarEntry(
+            id: id,
+            sourceIdentifier: id,
+            kind: kind,
+            calendarIdentifier: calendarIdentifier,
+            title: id,
+            startDate: date,
+            endDate: date,
+            isAllDay: true
+        )
+    }
+}
+
 @MainActor
 final class EventStoreManagerTests: XCTestCase {
     func testPrepareLoadsEachAuthorizedDataSource() async throws {

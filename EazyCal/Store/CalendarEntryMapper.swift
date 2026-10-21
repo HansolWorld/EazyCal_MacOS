@@ -15,6 +15,7 @@ enum CalendarEntryMapper {
             id: "event:\(identifier)",
             sourceIdentifier: identifier,
             kind: .event,
+            calendarIdentifier: event.calendar?.calendarIdentifier,
             title: event.title ?? "",
             startDate: startDate,
             // EventKit end dates are exclusive. The domain interval is inclusive.
@@ -41,6 +42,7 @@ enum CalendarEntryMapper {
             id: "reminder:\(identifier)",
             sourceIdentifier: identifier,
             kind: .reminder,
+            calendarIdentifier: nil,
             title: reminder.title ?? "",
             startDate: dueDate,
             endDate: dueDate,

@@ -170,24 +170,12 @@ struct CalendarView: View {
         let start = staringSpacees == 0 ? staringSpacees + 7 : staringSpacees
         let previousMonth = calendarViewModel.previousMonth()
         let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
-        let categorizedCalendars: [String] = categories.dropFirst(2).flatMap { $0.calendars }
-        let categorySchedules = eventManager.events.filter {
-            if let category = categories.first(where: { $0.isSelected == true} ) {
-                if category.title == String(localized: "TOTAL") {
-                    return true
-                } else if category.title == String(localized: "NOT_CATEGORY") {
-                    return !categorizedCalendars.contains($0.calendar?.calendarIdentifier ?? "")
-                } else {
-                    return category.calendars.contains($0.calendar?.calendarIdentifier ?? "")
-                }
-            }
-            
-            return false
-        }
-        
-        let calendarEntries = categorySchedules.map { CalendarEntryMapper.map($0) }
+        let calendarEntries = eventManager.events.map { CalendarEntryMapper.map($0) }
             + eventManager.scheduledReminders.compactMap { CalendarEntryMapper.map($0) }
-        let schedules = calendarViewModel.calculateSchedulesLayers(schedules: calendarEntries)
+        let calendarState = MonthCalendarState(
+            entries: calendarEntries,
+            filter: selectedCalendarFilter
+        )
 
         VStack(spacing: 0) {
             ForEach(0..<6) { row in
@@ -203,11 +191,8 @@ struct CalendarView: View {
                         )
                     
                         CalendarCell(
-                            schedules: calendarViewModel.schedules(
-                                monthStruct: month,
-                                year: calendarViewModel.year(),
-                                month: calendarViewModel.month(),
-                                scheduler: schedules
+                            schedules: calendarState.entries(
+                                on: calendarViewModel.date(for: month)
                             ),
                             month: month,
                             isToday: checkToday(count: count, start: start),
@@ -234,6 +219,21 @@ struct CalendarView: View {
                 }
             }
         }
+    }
+
+    private var selectedCalendarFilter: MonthCalendarFilter {
+        guard let category = categories.first(where: { $0.isSelected == true }) else {
+            return .calendars([])
+        }
+
+        if category.title == String(localized: "TOTAL") {
+            return .all
+        }
+        if category.title == String(localized: "NOT_CATEGORY") {
+            let categorizedIdentifiers = Set(categories.dropFirst(2).flatMap(\.calendars))
+            return .uncategorized(categorizedCalendarIdentifiers: categorizedIdentifiers)
+        }
+        return .calendars(Set(category.calendars))
     }
     
     func checkToday(count: Int, start: Int) -> Bool {

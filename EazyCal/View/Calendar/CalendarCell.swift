@@ -9,7 +9,7 @@ import SwiftUI
 import EventKit
 
 struct CalendarCell: View {
-    let schedules: [(CalendarEntry, Int)]
+    let schedules: [LayeredCalendarEntry]
     let month: Month
     let isToday: Bool
     let count : Int
@@ -46,10 +46,10 @@ struct CalendarCell: View {
                 }
                 
                 ForEach(0...max(taskViewCount-2, 0), id: \.self) { index in
-                    if let scheduleTuple = schedules.first(where: { $0.1 == index+1 }) {
+                    if let schedule = schedules.first(where: { $0.layer == index + 1 }) {
                         entryLabel(
-                            scheduleTuple.0,
-                            viewType: cellViewType(scheduleTuple.0)
+                            schedule.entry,
+                            viewType: cellViewType(schedule.entry)
                         )
                     } else {
                         Text(" ")
@@ -58,7 +58,7 @@ struct CalendarCell: View {
                     }
                 }
                 
-                let notViewTask = schedules.filter({ $0.1 > (taskViewCount - 1) })
+                let notViewTask = schedules.filter { $0.layer > (taskViewCount - 1) }
                 if notViewTask.count != 0 {
                     Text(String(localized: "+\(notViewTask.count) EVENT_COUNT"))
                         .font(.body)
@@ -70,8 +70,8 @@ struct CalendarCell: View {
                         }
                         .popover(isPresented: $isMoreEventPopover, arrowEdge: .trailing) {
                             VStack(alignment: .leading) {
-                                ForEach(schedules, id: \.0.id) { schedule in
-                                    entryLabel(schedule.0, viewType: .OneDate)
+                                ForEach(schedules) { schedule in
+                                    entryLabel(schedule.entry, viewType: .OneDate)
                                 }
                             }
                             .padding(4)

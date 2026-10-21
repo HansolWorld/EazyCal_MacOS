@@ -74,58 +74,29 @@ class CalendarViewModel: ObservableObject {
         return calendar.component(.month, from: date)
     }
     
-    func calculateSchedulesLayers(schedules: [CalendarEntry]) -> [(CalendarEntry, Int)] {
-        let intervals = schedules.enumerated().map { index, schedule in
-            CalendarMath.ScheduleInterval(
-                index: index,
-                start: schedule.startDate,
-                end: schedule.endDate
-            )
-        }
-        let assignments = CalendarMath.layerAssignments(for: intervals)
-        return schedules.enumerated().map { ($0.element, assignments[$0.offset]) }
-    }
-    
-    func schedules(
-        monthStruct: Month,
-        year: Int,
-        month: Int,
-        scheduler: [(CalendarEntry, Int)]
-    ) -> [(CalendarEntry, Int)] {
-        var currentDate = stringToDate(year: year, month: month, day: 20)
-        
-        if monthStruct.monthType == .Previous {
-            currentDate = Calendar.current.date(byAdding: .month, value: -1, to: currentDate) ?? currentDate
-        } else if monthStruct.monthType == .Current {
+    func date(for month: Month) -> Date {
+        guard let firstOfCurrentMonth = CalendarMath.date(
+            year: year(),
+            month: self.month(),
+            day: 1,
+            calendar: calendar
+        ) else { return date }
 
-        } else {
-            currentDate = Calendar.current.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
+        let monthOffset: Int
+        switch month.monthType {
+        case .Previous: monthOffset = -1
+        case .Current: monthOffset = 0
+        case .Next: monthOffset = 1
         }
-        
-        var dateComponents = DateComponents()
-        dateComponents.year = calendar.component(.year, from: currentDate)
-        dateComponents.month = calendar.component(.month, from: currentDate)
-        dateComponents.day = monthStruct.dayInt
-        
-        if let newDate = calendar.date(from: dateComponents) {
-            currentDate = newDate
-        }
-        
-        
-        let schedules = scheduler.filter({ schedule, index in
-            let startDate = calendar.startOfDay(for: schedule.startDate)
-            let currentDate = calendar.startOfDay(for: currentDate)
-            let endDate = schedule.endDate
-            
-            
-            if startDate <= currentDate && currentDate <= endDate {
-                return true
-            } else {
-                return false
-            }
-        })
-        
-        return schedules
+
+        let targetMonth = calendar.date(
+            byAdding: .month,
+            value: monthOffset,
+            to: firstOfCurrentMonth
+        ) ?? firstOfCurrentMonth
+        var components = calendar.dateComponents([.year, .month], from: targetMonth)
+        components.day = month.dayInt
+        return calendar.date(from: components) ?? targetMonth
     }
     
     func stringToDate(year: Int, month: Int, day: Int) -> Date {

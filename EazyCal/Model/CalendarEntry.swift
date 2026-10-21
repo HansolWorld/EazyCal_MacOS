@@ -15,6 +15,7 @@ struct CalendarEntry: Identifiable, Equatable {
     let id: String
     let sourceIdentifier: String
     let kind: CalendarEntryKind
+    let calendarIdentifier: String?
     let title: String
     let startDate: Date
     let endDate: Date
