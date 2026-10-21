@@ -70,7 +70,7 @@ EazyCal/
 ├── Model/                       # SwiftData 모델과 날짜 계산
 ├── Store/                       # EventKit 추상화 및 상태 관리자
 ├── View/
-│   ├── Calendar/                # 월간 캘린더와 일정 셀
+│   ├── Calendar/                # 월간 캘린더 헤더·그리드·셀과 드롭 조정자
 │   ├── PopoverView/             # 일정 생성·수정 화면
 │   ├── ScheduleList/            # 향후 일정 목록
 │   └── Todo/                    # 미리 알림과 체크리스트

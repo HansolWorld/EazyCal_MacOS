@@ -2,278 +2,50 @@
 //  CalendarView.swift
 //  EazyCal
 //
-//  Created by apple on 10/15/23.
-//
 
-import SwiftUI
-import SwiftData
 import EventKit
+import SwiftUI
 
 struct CalendarView: View {
     @Binding var currentDragTemplate: Template?
     @Binding var isSide: Bool
-    @State var mode = true
-    @State var isShow = false
-    @State var selectedEvent: EKEvent?
-    @State var selectedReminder: EKReminder?
-    @EnvironmentObject var calendarViewModel: CalendarViewModel
-    @EnvironmentObject var eventManager: EventStoreManager
-    
-    @Environment(\.modelContext) private var context
-    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
-    
+    @State private var selectedEvent: EKEvent?
+    @State private var selectedReminder: EKReminder?
+    @EnvironmentObject private var calendarViewModel: CalendarViewModel
+
     var body: some View {
         VStack(spacing: 19) {
-            HStack {
-                MonthButton
-                Spacer()
-            }
+            CalendarHeaderView(
+                isSide: $isSide,
+                calendarViewModel: calendarViewModel
+            )
+
             VStack {
-                DayOfWeek
-                CalendarGrid
-                    .background {
-                        RoundedRectangle(cornerRadius: 16)
-                            .foregroundStyle(.white)
-                            .onTapGesture {
-                                selectedEvent = nil
-                                selectedReminder = nil
-                            }
-                    }
+                CalendarWeekdayHeaderView()
+                CalendarGridView(
+                    calendarViewModel: calendarViewModel,
+                    currentDragTemplate: $currentDragTemplate,
+                    selectedEvent: $selectedEvent,
+                    selectedReminder: $selectedReminder
+                )
+                .background {
+                    RoundedRectangle(cornerRadius: 16)
+                        .foregroundStyle(.white)
+                        .onTapGesture {
+                            selectedEvent = nil
+                            selectedReminder = nil
+                        }
+                }
             }
             .frame(maxHeight: .infinity)
         }
         .padding(.top, 29)
         .padding([.bottom, .horizontal], 23)
     }
-    
-    @ViewBuilder
-    var MonthButton: some View {
-        HStack(spacing: 15) {
-            Button(action: {
-                withAnimation {
-                    isSide.toggle()
-                }
-            }) {
-                Image(systemName: "sidebar.left")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(isSide ? Color.calendarBlue : Color.gray300)
-                    .padding(7)
-                    .background {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(isSide ? Color.calendarBlue.opacity(0.1) : Color.white)
-                    }
-            }
-            .buttonStyle(.plain)
-            
-            Button(action: {
-                previousMonth()
-                eventManager.date = calendarViewModel.date
-                Task {
-                    await eventManager.refreshCalendarEntries()
-                }
-            }) {
-                Image(systemName: SFSymbol.chevronBackward.name)
-                    .font(.body)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.gray300)
-                    .padding(12)
-                    .background {
-                        Circle()
-                            .foregroundStyle(Color.white)
-                    }
-            }
-            .buttonStyle(.plain)
-            
-            Text(calendarViewModel.monthYearString())
-                .font(.largeTitle)
-                .foregroundStyle(.gray400)
-            
-            Button(action: {
-                nextMonth()
-                eventManager.date = calendarViewModel.date
-                Task {
-                    await eventManager.refreshCalendarEntries()
-                }
-            }) {
-                Image(systemName: SFSymbol.chevronForward.name)
-                    .font(.body)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.gray300)
-                    .padding(12)
-                    .background {
-                        Circle()
-                            .foregroundStyle(Color.white)
-                    }
-            }
-            .buttonStyle(.plain)
-            
-            Button(action: {
-                calendarViewModel.date = Date()
-                eventManager.date = calendarViewModel.date
-                Task {
-                    await eventManager.refreshCalendarEntries()
-                }
-            }) {
-                Text(String(localized: "TODAY"))
-                    .font(.body)
-                    .foregroundStyle(.gray300)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
-                    .background {
-                        Capsule()
-                            .foregroundStyle(.white)
-                    }
-            }
-            .buttonStyle(.plain)
-        }
-    }
-    
-    @ViewBuilder
-    var DayOfWeek: some View {
-        HStack(spacing: 4) {
-            Text(String(localized: "SUN"))
-                .foregroundStyle(.red)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "MON"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "TUE"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "WED"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "THU"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "FRI"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-            Text(String(localized: "SAT"))
-                .foregroundStyle(.black)
-                .padding(.leading, 6)
-            Spacer()
-        }
-    }
-    
-    @ViewBuilder
-    var CalendarGrid: some View {
-        let daysInMonth = calendarViewModel.daysInMonth(nil)
-        let firstOfDay = calendarViewModel.firstOfMonth()
-        let staringSpacees = calendarViewModel.weekDay(firstOfDay)
-        let start = staringSpacees == 0 ? staringSpacees + 7 : staringSpacees
-        let previousMonth = calendarViewModel.previousMonth()
-        let daysInPreviousMonth = calendarViewModel.daysInMonth(previousMonth)
-        let calendarEntries = eventManager.events.map { CalendarEntryMapper.map($0) }
-            + eventManager.scheduledReminders.compactMap { CalendarEntryMapper.map($0) }
-        let calendarState = MonthCalendarState(
-            entries: calendarEntries,
-            filter: selectedCalendarFilter
-        )
-
-        VStack(spacing: 0) {
-            ForEach(0..<6) { row in
-                HStack(spacing: 0) {
-                    ForEach(1..<8) { column in
-                        let count = column + (row * 7)
-                        
-                        let month = monthStruct(
-                            count: count,
-                            start: start,
-                            daysInMonth: daysInMonth,
-                            daysInPrevMonth: daysInPreviousMonth
-                        )
-                    
-                        CalendarCell(
-                            schedules: calendarState.entries(
-                                on: calendarViewModel.date(for: month)
-                            ),
-                            month: month,
-                            isToday: checkToday(count: count, start: start),
-                            count: count,
-                            start: start,
-                            daysInMonth: daysInMonth,
-                            daysInPrevMonth: daysInPreviousMonth,
-                            calendarViewModel: calendarViewModel,
-                            currentDragTemplate: $currentDragTemplate,
-                            selectedEvent: $selectedEvent,
-                            selectedReminder: $selectedReminder
-                        )
-                        if column != 7 {
-                            Divider()
-                                .frame(width: 1)
-                                .overlay(Color.calendarLine)
-                        }   
-                    }
-                }
-                if row != 5 {
-                    Divider()
-                        .frame(height: 1)
-                        .overlay(Color.calendarLine)
-                }
-            }
-        }
-    }
-
-    private var selectedCalendarFilter: MonthCalendarFilter {
-        guard let category = categories.first(where: { $0.isSelected == true }) else {
-            return .calendars([])
-        }
-
-        if category.title == String(localized: "TOTAL") {
-            return .all
-        }
-        if category.title == String(localized: "NOT_CATEGORY") {
-            let categorizedIdentifiers = Set(categories.dropFirst(2).flatMap(\.calendars))
-            return .uncategorized(categorizedCalendarIdentifiers: categorizedIdentifiers)
-        }
-        return .calendars(Set(category.calendars))
-    }
-    
-    func checkToday(count: Int, start: Int) -> Bool {
-        let calendar = Calendar.current
-        
-        let currentDate = Date()
-        let currentYear = calendar.component(.year, from: currentDate)
-        let currentMonth = calendar.component(.month, from: currentDate)
-        let currentDay = calendar.component(.day, from: currentDate)
-        
-        let viewYear = calendarViewModel.year()
-        let viewMonth = calendarViewModel.month()
-        let viewDay = count - start
-        
-        return  currentYear == viewYear && currentMonth == viewMonth && currentDay == viewDay
-    }
-    
-    func monthStruct(count: Int, start: Int, daysInMonth: Int, daysInPrevMonth: Int) -> Month {
-        if(count <= start) {
-            let day = daysInPrevMonth + count - start
-            return Month(monthType: MonthType.Previous, dayInt: day)
-        } else if (count - start > daysInMonth) {
-            let day = count - start - daysInMonth
-            return Month(monthType: MonthType.Next, dayInt: day)
-        }
-        
-        let day = count - start
-        return Month(monthType: MonthType.Current, dayInt: day)
-    }
-    
-    func previousMonth() {
-        calendarViewModel.minusMonth()
-    }
-    
-    func nextMonth() {
-        calendarViewModel.plusMonth()
-    }
 }
 
 #Preview {
     CalendarView(currentDragTemplate: .constant(nil), isSide: .constant(false))
         .environmentObject(CalendarViewModel())
+        .environmentObject(EventStoreManager())
 }
