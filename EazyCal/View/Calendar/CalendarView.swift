@@ -185,8 +185,8 @@ struct CalendarView: View {
             return false
         }
         
-        let calendarEntries = categorySchedules.map { CalendarEntry(event: $0) }
-            + eventManager.scheduledReminders.compactMap { CalendarEntry(reminder: $0) }
+        let calendarEntries = categorySchedules.map { CalendarEntryMapper.map($0) }
+            + eventManager.scheduledReminders.compactMap { CalendarEntryMapper.map($0) }
         let schedules = calendarViewModel.calculateSchedulesLayers(schedules: calendarEntries)
 
         VStack(spacing: 0) {

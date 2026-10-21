@@ -3,51 +3,22 @@
 //  EazyCal
 //
 
-import EventKit
 import Foundation
 
-/// A presentation-friendly calendar item that can originate from either EventKit store.
-struct CalendarEntry: Identifiable {
-    enum Source {
-        case event(EKEvent)
-        case reminder(EKReminder)
-    }
+enum CalendarEntryKind: Equatable {
+    case event
+    case reminder
+}
 
+/// Framework-independent value used by the calendar domain and presentation layers.
+struct CalendarEntry: Identifiable, Equatable {
     let id: String
-    let source: Source
+    let sourceIdentifier: String
+    let kind: CalendarEntryKind
     let title: String
     let startDate: Date
     let endDate: Date
-
-    init(event: EKEvent) {
-        let startDate = event.startDate ?? Date()
-        let rawEndDate = event.endDate ?? startDate
-
-        id = "event:\(event.eventIdentifier ?? event.calendarItemIdentifier)"
-        source = .event(event)
-        title = event.title ?? ""
-        self.startDate = startDate
-        // EventKit event end dates are exclusive. Using an inclusive display end keeps
-        // midnight-ending events out of the following day's calendar cell.
-        endDate = rawEndDate > startDate
-            ? rawEndDate.addingTimeInterval(-1)
-            : startDate
-    }
-
-    init?(reminder: EKReminder, calendar: Calendar = .current) {
-        guard let dueDate = ReminderSchedule.date(
-            from: reminder.dueDateComponents,
-            calendar: calendar
-        ) else {
-            return nil
-        }
-
-        id = "reminder:\(reminder.calendarItemIdentifier)"
-        source = .reminder(reminder)
-        title = reminder.title ?? ""
-        startDate = dueDate
-        endDate = dueDate
-    }
+    let isAllDay: Bool
 }
 
 enum ReminderSchedule {

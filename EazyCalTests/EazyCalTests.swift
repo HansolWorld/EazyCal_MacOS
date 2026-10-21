@@ -99,7 +99,7 @@ final class ReminderScheduleTests: XCTestCase {
         event.startDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3))
         event.endDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 4))
 
-        let entry = CalendarEntry(event: event)
+        let entry = CalendarEntryMapper.map(event)
 
         XCTAssertEqual(
             Calendar.current.component(.day, from: entry.endDate),

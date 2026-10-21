@@ -217,22 +217,26 @@ struct CalendarCell: View {
 
     @ViewBuilder
     private func entryLabel(_ entry: CalendarEntry, viewType: CellViewType) -> some View {
-        switch entry.source {
-        case .event(let event):
-            CalendarCategoryLabelView(
-                schedule: event,
-                viewType: viewType,
-                selectedEvent: $selectedEvent,
-                selectedReminder: $selectedReminder
-            )
-            .environmentObject(eventManager)
-        case .reminder(let reminder):
-            ScheduledReminderLabelView(
-                reminder: reminder,
-                selectedEvent: $selectedEvent,
-                selectedReminder: $selectedReminder
-            )
-            .environmentObject(eventManager)
+        switch entry.kind {
+        case .event:
+            if let event = eventManager.event(withIdentifier: entry.sourceIdentifier) {
+                CalendarCategoryLabelView(
+                    schedule: event,
+                    viewType: viewType,
+                    selectedEvent: $selectedEvent,
+                    selectedReminder: $selectedReminder
+                )
+                .environmentObject(eventManager)
+            }
+        case .reminder:
+            if let reminder = eventManager.reminder(withIdentifier: entry.sourceIdentifier) {
+                ScheduledReminderLabelView(
+                    reminder: reminder,
+                    selectedEvent: $selectedEvent,
+                    selectedReminder: $selectedReminder
+                )
+                .environmentObject(eventManager)
+            }
         }
     }
     
@@ -253,7 +257,7 @@ struct CalendarCell: View {
     }
     
     func cellViewType(_ entry: CalendarEntry) -> CellViewType {
-        guard case .event = entry.source else {
+        guard entry.kind == .event else {
             return .OneDate
         }
 

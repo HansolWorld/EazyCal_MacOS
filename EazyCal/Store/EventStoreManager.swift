@@ -167,6 +167,17 @@ final class EventStoreManager: ObservableObject {
         upcomingEvents = try await calendarRepository.loadUpcomingEvents()
     }
 
+    func event(withIdentifier identifier: String) -> EKEvent? {
+        events.first {
+            ($0.eventIdentifier ?? $0.calendarItemIdentifier) == identifier
+        }
+    }
+
+    func reminder(withIdentifier identifier: String) -> EKReminder? {
+        scheduledReminders.first { $0.calendarItemIdentifier == identifier }
+            ?? reminders.first { $0.calendarItemIdentifier == identifier }
+    }
+
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
         do {
             try await reminderRepository.createNewReminder(title: title, date: date, highlight: highlight)
