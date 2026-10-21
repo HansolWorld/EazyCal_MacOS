@@ -48,7 +48,7 @@ EazyCalApp
     └── CalendarView
 ```
 
-`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. `EventStoreManager`는 권한 상태, 화면에서 사용하는 데이터, 캘린더 선택 상태와 변경 후 새로고침을 관리합니다. EventKit이 별도로 제공하는 `EKEvent`와 `EKReminder`는 `CalendarEntryMapper`에서 프레임워크 독립적인 `CalendarEntry` 값으로 변환되어 월간 캘린더에 전달됩니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
+`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 화면 상태를 관리합니다. EventKit이 별도로 제공하는 `EKEvent`와 `EKReminder`는 `CalendarEntryMapper`에서 프레임워크 독립적인 `CalendarEntry` 값으로 변환되어 월간 캘린더에 전달됩니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
 
 ### 데이터 저장
 

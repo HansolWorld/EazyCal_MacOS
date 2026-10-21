@@ -10,6 +10,8 @@ import EventKit
 final class EventStoreManager: ObservableObject {
     private let calendarRepository: any CalendarRepository
     private let reminderRepository: any ReminderRepository
+    private let calendarEventUseCase: CalendarEventUseCase
+    private let reminderUseCase: ReminderUseCase
     private let userDefaults: UserDefaults
     private let checkedCalendarsKey = "checkedCategory"
     private var eventStoreObserver: NSObjectProtocol?
@@ -35,6 +37,8 @@ final class EventStoreManager: ObservableObject {
     ) {
         self.calendarRepository = calendarRepository
         self.reminderRepository = reminderRepository
+        calendarEventUseCase = CalendarEventUseCase(repository: calendarRepository)
+        reminderUseCase = ReminderUseCase(repository: reminderRepository)
         self.userDefaults = userDefaults
         calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
         reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
@@ -180,8 +184,13 @@ final class EventStoreManager: ObservableObject {
 
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
         do {
-            try await reminderRepository.createNewReminder(title: title, date: date, highlight: highlight)
-            try await reloadReminderData()
+            let snapshot = try await reminderUseCase.create(
+                title: title,
+                date: date,
+                highlight: highlight,
+                visibleDate: self.date
+            )
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -190,8 +199,8 @@ final class EventStoreManager: ObservableObject {
 
     func completeReminder(reminder: EKReminder) async throws {
         do {
-            try await reminderRepository.completeReminder(reminder: reminder)
-            try await reloadReminderData()
+            let snapshot = try await reminderUseCase.complete(reminder, visibleDate: date)
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -200,8 +209,8 @@ final class EventStoreManager: ObservableObject {
 
     func updateReminder(reminder: EKReminder) async throws {
         do {
-            try await reminderRepository.updateReminder(reminder: reminder)
-            try await reloadReminderData()
+            let snapshot = try await reminderUseCase.update(reminder, visibleDate: date)
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -209,11 +218,17 @@ final class EventStoreManager: ObservableObject {
     }
 
     func rescheduleReminder(_ reminder: EKReminder, to targetDate: Date) async throws {
-        reminder.dueDateComponents = ReminderSchedule.moving(
-            reminder.dueDateComponents,
-            toDay: targetDate
-        )
-        try await updateReminder(reminder: reminder)
+        do {
+            let snapshot = try await reminderUseCase.reschedule(
+                reminder,
+                to: targetDate,
+                visibleDate: date
+            )
+            apply(snapshot)
+        } catch {
+            record(error)
+            throw error
+        }
     }
 
     func saveEvent(
@@ -227,7 +242,7 @@ final class EventStoreManager: ObservableObject {
         calendar: EKCalendar
     ) async throws {
         do {
-            try await calendarRepository.saveEvent(
+            let snapshot = try await calendarEventUseCase.saveEvent(
                 title: title,
                 isAllDay: isAllDay,
                 startDate: startDate,
@@ -235,9 +250,11 @@ final class EventStoreManager: ObservableObject {
                 repeatDate: repeatDate,
                 url: url,
                 notes: notes,
-                calendar: calendar
+                calendar: calendar,
+                visibleDate: date,
+                visibleCalendars: checkedCalendars
             )
-            try await reloadEvents()
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -246,8 +263,12 @@ final class EventStoreManager: ObservableObject {
 
     func updateEvent(event: EKEvent) async throws {
         do {
-            try await calendarRepository.updateEvent(event: event)
-            try await reloadEvents()
+            let snapshot = try await calendarEventUseCase.update(
+                event,
+                visibleDate: date,
+                visibleCalendars: checkedCalendars
+            )
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -256,8 +277,12 @@ final class EventStoreManager: ObservableObject {
 
     func removeEvent(event: EKEvent) async throws {
         do {
-            try await calendarRepository.removeEvent(event: event)
-            try await reloadEvents()
+            let snapshot = try await calendarEventUseCase.remove(
+                event,
+                visibleDate: date,
+                visibleCalendars: checkedCalendars
+            )
+            apply(snapshot)
         } catch {
             record(error)
             throw error
@@ -318,13 +343,26 @@ final class EventStoreManager: ObservableObject {
     }
 
     private func reloadEvents() async throws {
-        try await loadEvents()
-        try await loadUpcomingEvents()
+        apply(try await calendarEventUseCase.loadSnapshot(for: date, calendars: checkedCalendars))
     }
 
     private func reloadReminderData() async throws {
-        try await loadReminders()
-        try await loadScheduledReminders()
+        apply(try await reminderUseCase.loadSnapshot(for: date))
+    }
+
+    private var checkedCalendars: [EKCalendar] {
+        let checkedIdentifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
+        return calendars.filter { checkedIdentifiers.contains($0.calendarIdentifier) }
+    }
+
+    private func apply(_ snapshot: CalendarEventSnapshot) {
+        events = snapshot.events
+        upcomingEvents = snapshot.upcomingEvents
+    }
+
+    private func apply(_ snapshot: ReminderSnapshot) {
+        reminders = snapshot.reminders
+        scheduledReminders = snapshot.scheduledReminders
     }
 
     private func initializeCheckedCalendarsIfNeeded() {
