@@ -10,14 +10,10 @@ import EventKit
 import SwiftData
 
 struct TemplateView: View {
-    let templetes: [String] = []
-    
-    @State private var isAddPopoverShow = false
     @Binding var currentDragTemplate: Template?
     @EnvironmentObject var eventManager: EventStoreManager
     
     @Environment(\.modelContext) private var context
-    @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
     @Query(sort: \Template.date, order: .reverse, animation: .snappy) private var templates: [Template]
 
     var body: some View {
@@ -30,7 +26,8 @@ struct TemplateView: View {
                 
                 Button(action: {
                     if let calendar = eventManager.calendars.first {
-                        context.insert(Template(title: String(localized: "DEFAULT_TEMPLETE_TITLE"), startTime: Date(), endTime: Date(), todos: [], calendarId: calendar.calendarIdentifier))
+                        SwiftDataTemplateRepository(context: context)
+                            .createDefault(calendarIdentifier: calendar.calendarIdentifier)
                     }
                 }) {
                     Image(systemName: SFSymbol.plus.name)

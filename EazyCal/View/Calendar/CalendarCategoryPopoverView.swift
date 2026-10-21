@@ -18,8 +18,10 @@ struct CalendarCategoryPopoverView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Button(action: {
-                let newCategory = CalendarCategory(icon: getRandomIcon(), title: String(localized: "DEFAULT_CALENDAR_TITLE"))
-                context.insert(newCategory)
+                SwiftDataCalendarCategoryRepository(context: context).createCategory(
+                    icon: getRandomIcon(),
+                    title: String(localized: "DEFAULT_CALENDAR_TITLE")
+                )
                 isShow = false
             }) {
                 Text(String(localized: "CATEGORY_DEFAULT_TITLE"))

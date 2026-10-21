@@ -55,8 +55,8 @@ EazyCalApp
 | 데이터 | 저장 위치 |
 | --- | --- |
 | 캘린더, 일정, 미리 알림 | macOS EventKit 저장소 |
-| 캘린더 사용자 그룹 | SwiftData |
-| 일정 템플릿 | SwiftData |
+| 캘린더 사용자 그룹 | SwiftData (`CalendarCategoryRepository`) |
+| 일정 템플릿 | SwiftData (`TemplateRepository`) |
 | 화면에 표시할 캘린더 식별자 | UserDefaults |
 
 앱은 캘린더와 미리 알림 권한을 각각 관리합니다. 캘린더 권한이 없으면 복구 안내 화면을 표시하고, 미리 알림 권한만 없을 때는 캘린더 기능을 계속 사용할 수 있도록 별도의 설정 버튼을 제공합니다.
@@ -155,7 +155,7 @@ xcodebuild analyze \
 - 최초 실행 시 사용 가능한 모든 캘린더를 기본 표시 대상으로 설정합니다.
 - 반복 일정 삭제는 의도하지 않은 이후 일정 삭제를 막기 위해 선택한 일정 하나에만 적용됩니다.
 - SwiftData 영구 저장소를 열 수 없으면 앱 종료 대신 메모리 저장소로 대체하고 사용자에게 안내합니다.
-- Repository 프로토콜을 통해 캘린더와 미리 알림의 EventKit 의존성을 각각 테스트 대역으로 교체할 수 있습니다.
+- Repository 프로토콜을 통해 EventKit과 SwiftData 의존성을 테스트 대역 또는 인메모리 저장소로 교체할 수 있습니다.
 
 ## 개인정보
 

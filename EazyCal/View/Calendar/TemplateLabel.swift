@@ -155,19 +155,24 @@ struct TemplateLabel: View {
                 newTodos = template.todos
             }
             .onDisappear {
-                template.title = newTitle
-                template.isAllDay = newIsAllDay
-                template.startTime = newStartDate
-                template.endTime = newEndTime
-                template.todos = newTodos
-                template.calendarId = calendar.calendarIdentifier
+                SwiftDataTemplateRepository(context: context).update(
+                    template,
+                    values: TemplateValues(
+                        title: newTitle,
+                        isAllDay: newIsAllDay,
+                        startTime: newStartDate,
+                        endTime: newEndTime,
+                        todos: newTodos,
+                        calendarIdentifier: calendar.calendarIdentifier
+                    )
+                )
             }
         }
         .alert(String(localized: "TEMPLATE_DELETE"), isPresented: $deleteTemplateRequest) {
             Button(String(localized: "CANCEL"), role: .cancel) {
             }
             Button(String(localized: "DELETE"), role: .destructive) {
-                context.delete(template)
+                SwiftDataTemplateRepository(context: context).delete(template)
             }
         }
         .onHover { hovering in

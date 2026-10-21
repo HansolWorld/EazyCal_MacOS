@@ -20,6 +20,8 @@
 		AA8000030000000000000003 /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8000040000000000000004 /* CalendarGridView.swift */; };
 		AA1000010000000000000001 /* EazyCalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1000020000000000000002 /* EazyCalTests.swift */; };
 		AA9000010000000000000001 /* ApplicationWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9000020000000000000002 /* ApplicationWorkflowTests.swift */; };
+		AAB000010000000000000001 /* SwiftDataRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB000020000000000000002 /* SwiftDataRepositories.swift */; };
+		AAB000030000000000000003 /* PersistenceRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB000040000000000000004 /* PersistenceRepositoryTests.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
 		FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559932AE637DF00F4E25F /* RepeatType.swift */; };
@@ -85,6 +87,8 @@
 		AA1000020000000000000002 /* EazyCalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalTests.swift; sourceTree = "<group>"; };
 		AA1000030000000000000003 /* EazyCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EazyCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA9000020000000000000002 /* ApplicationWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWorkflowTests.swift; sourceTree = "<group>"; };
+		AAB000020000000000000002 /* SwiftDataRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataRepositories.swift; sourceTree = "<group>"; };
+		AAB000040000000000000004 /* PersistenceRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceRepositoryTests.swift; sourceTree = "<group>"; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
 		FF15598E2AE5FA8000F4E25F /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FF1559932AE637DF00F4E25F /* RepeatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatType.swift; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 				FF41EB012AD8CCB9002FD4A9 /* Home.swift */,
 				FF57590F2ADB9CB3001E588F /* Resource */,
 				FF15598D2AE5FA6C00F4E25F /* Store */,
+				AAB000050000000000000005 /* Persistence */,
 				FFDBD77D2B01A73700AB2A57 /* View */,
 				FF5759192ADBA56C001E588F /* Model */,
 				FF41EB052AD8CCBB002FD4A9 /* Preview Content */,
@@ -200,8 +205,17 @@
 			children = (
 				AA1000020000000000000002 /* EazyCalTests.swift */,
 				AA9000020000000000000002 /* ApplicationWorkflowTests.swift */,
+				AAB000040000000000000004 /* PersistenceRepositoryTests.swift */,
 			);
 			path = EazyCalTests;
+			sourceTree = "<group>";
+		};
+		AAB000050000000000000005 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				AAB000020000000000000002 /* SwiftDataRepositories.swift */,
+			);
+			path = Persistence;
 			sourceTree = "<group>";
 		};
 		FF41EB052AD8CCBB002FD4A9 /* Preview Content */ = {
@@ -399,6 +413,7 @@
 			files = (
 				AA1000010000000000000001 /* EazyCalTests.swift in Sources */,
 				AA9000010000000000000001 /* ApplicationWorkflowTests.swift in Sources */,
+				AAB000030000000000000003 /* PersistenceRepositoryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +432,7 @@
 				AA7000010000000000000001 /* CalendarDropCoordinator.swift in Sources */,
 				AA8000010000000000000001 /* CalendarHeaderView.swift in Sources */,
 				AA8000030000000000000003 /* CalendarGridView.swift in Sources */,
+				AAB000010000000000000001 /* SwiftDataRepositories.swift in Sources */,
 				FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */,
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */,

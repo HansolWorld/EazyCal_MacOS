@@ -50,21 +50,12 @@ struct CalendarCategoryView: View {
                 ForEach(categories, id:\.id) { category in
                     Button(action: {
                         withAnimation {
-                            categories.forEach { element in
-                                if element == category {
-                                    element.isSelected = true
-                                } else {
-                                    element.isSelected = false
-                                }
-                            }
+                            SwiftDataCalendarCategoryRepository(context: context)
+                                .select(category, in: categories)
                             selectCategory = category
-                            
+
                             Task {
-                                do {
-                                    try await eventManager.loadEvents()
-                                } catch {
-                                    print(error)
-                                }
+                                await eventManager.refreshCalendarEntries()
                             }
                         }
                     }) {
@@ -128,8 +119,11 @@ struct CalendarCategoryView: View {
                         }
                         Button(String(localized: "EDIT")) {
                             if let requestCategory {
-                                requestCategory.icon = categoryIcon
-                                requestCategory.title = categoryTitle
+                                SwiftDataCalendarCategoryRepository(context: context).update(
+                                    requestCategory,
+                                    icon: categoryIcon,
+                                    title: categoryTitle
+                                )
                                 categoryTitle = ""
                                 categoryIcon = ""
                                 self.requestCategory = nil
@@ -142,12 +136,13 @@ struct CalendarCategoryView: View {
                         }
                         Button(String(localized: "DELETE"), role: .destructive) {
                             if let requestCategory {
-                                context.delete(requestCategory)
+                                SwiftDataCalendarCategoryRepository(context: context)
+                                    .delete(requestCategory)
                                 self.requestCategory = nil
                             }
                         }
                     }
-                    .onDrop(of: [.text], isTargeted: nil, perform: { providers in
+                    .onDrop(of: [.text], isTargeted: nil, perform: { _ in
                         if let currentDragItem {
                             replaceCategory(category, droppingCalendar: currentDragItem)
                             selectCategory = category
@@ -189,41 +184,27 @@ struct CalendarCategoryView: View {
             }
         }
         .onAppear {
-            categories.forEach { category in
-                if category.title == "전체" || category.title == "total" {
-                    category.title = String(localized: "TOTAL")
-                } else if category.title == "미등록" || category.title == "Unregistered" {
-                    category.title = String(localized: "NOT_CATEGORY")
-                }
-            }
-            
-            if categories.allSatisfy({ $0.isSelected == false }) {
-                categories.forEach { element in
-                    if element.title == String(localized: "TOTAL") {
-                        element.isSelected = true
-                    }
-                }
-                selectCategory = categories.first(where: { $0.title == String(localized: "TOTAL")})
-            } else {
-                selectCategory = categories.first(where: { $0.isSelected == true })
-            }
-            
+            selectCategory = SwiftDataCalendarCategoryRepository(context: context)
+                .prepareSelection(
+                    in: categories,
+                    totalTitle: String(localized: "TOTAL"),
+                    uncategorizedTitle: String(localized: "NOT_CATEGORY")
+                )
+
             Task {
-                do {
-                    try await eventManager.loadEvents()
-                } catch {
-                    print(error)
-                }
+                await eventManager.refreshCalendarEntries()
             }
         }
     }
     
     
     func replaceCategory(_ category: CalendarCategory, droppingCalendar: EKCalendar) {
-        if selectCategory?.title != String(localized: "TOTAL") {
-            selectCategory?.calendars.removeAll(where: {$0 == droppingCalendar.calendarIdentifier})
-        }
-        category.calendars.append(droppingCalendar.calendarIdentifier)
+        let source = selectCategory?.title == String(localized: "TOTAL") ? nil : selectCategory
+        SwiftDataCalendarCategoryRepository(context: context).moveCalendar(
+            identifier: droppingCalendar.calendarIdentifier,
+            from: source,
+            to: category
+        )
     }
 }
 
