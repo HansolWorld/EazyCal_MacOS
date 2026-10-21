@@ -88,7 +88,7 @@ struct TodoView: View {
                                                 do {
                                                     try await eventManager.createNewReminder(title: newTodo, date: isDate ? date : nil, highlight: highlight)
                                                 } catch {
-                                                    print(error)
+                                                    return
                                                 }
                                                 
                                                 newTodo = ""

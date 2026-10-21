@@ -33,12 +33,19 @@ EazyCal은 macOS의 캘린더와 미리 알림을 한 화면에서 관리하는 
 
 ```text
 EazyCalApp
-├── EventStoreManager
-│   ├── CalendarRepository
-│   └── ReminderRepository
-│       └── EventStore / EventKit
-├── CalendarEntry (Event + Reminder presentation model)
-├── CalendarViewModel
+├── Domain / Screen State
+│   ├── CalendarEntry
+│   ├── CalendarMath
+│   └── MonthCalendarState
+├── Application
+│   ├── CalendarEventUseCase
+│   ├── ReminderUseCase
+│   └── EventStoreManager
+├── Data
+│   ├── CalendarRepository / ReminderRepository
+│   │   └── EventStore / EventKit
+│   └── TemplateRepository / CalendarCategoryRepository
+│       └── SwiftData
 └── Home
     ├── CalendarTabView
     │   ├── CalendarCategoryView
@@ -67,8 +74,9 @@ EazyCalApp
 EazyCal/
 ├── EazyCalApp.swift             # 앱 진입점, 권한 UI, SwiftData 구성
 ├── Home.swift                   # 메인 화면과 탭 상태
-├── Model/                       # SwiftData 모델과 날짜 계산
-├── Store/                       # EventKit 추상화 및 상태 관리자
+├── Model/                       # 도메인 값, 화면 상태, SwiftData 모델
+├── Store/                       # EventKit Repository, UseCase, 상태 관리자
+├── Persistence/                 # SwiftData Repository
 ├── View/
 │   ├── Calendar/                # 월간 캘린더 헤더·그리드·셀과 드롭 조정자
 │   ├── PopoverView/             # 일정 생성·수정 화면
@@ -77,7 +85,9 @@ EazyCal/
 └── Resource/                    # 색상, 아이콘, 지역화 리소스
 
 EazyCalTests/
-└── EazyCalTests.swift           # 날짜, 반복 규칙, 저장소 관리자 테스트
+├── EazyCalTests.swift                    # 날짜, 도메인 규칙, 상태 관리자
+├── ApplicationWorkflowTests.swift        # UseCase와 드롭 흐름
+└── PersistenceRepositoryTests.swift      # 인메모리 SwiftData Repository
 ```
 
 ## 실행 방법
@@ -122,6 +132,7 @@ xcodebuild \
 - 미리 알림 재예약 시 기존 시간 보존과 관련 데이터 새로고침
 - UseCase 변경 후 이벤트·미리 알림 목록 재조회
 - 일정 드롭 시 기간 보존과 자정을 넘는 템플릿 날짜 처리
+- SwiftData 템플릿·카테고리 Repository CRUD
 
 다음 명령으로 전체 테스트를 실행할 수 있습니다.
 
