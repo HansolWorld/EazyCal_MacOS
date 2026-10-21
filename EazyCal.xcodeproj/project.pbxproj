@@ -15,6 +15,7 @@
 		AA4000010000000000000001 /* CalendarEntryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4000020000000000000002 /* CalendarEntryMapper.swift */; };
 		AA5000010000000000000001 /* EventKitUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5000020000000000000002 /* EventKitUseCases.swift */; };
 		AA6000010000000000000001 /* MonthCalendarState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6000020000000000000002 /* MonthCalendarState.swift */; };
+		AA7000010000000000000001 /* CalendarDropCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7000020000000000000002 /* CalendarDropCoordinator.swift */; };
 		AA1000010000000000000001 /* EazyCalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1000020000000000000002 /* EazyCalTests.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
@@ -75,6 +76,7 @@
 		AA4000020000000000000002 /* CalendarEntryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntryMapper.swift; sourceTree = "<group>"; };
 		AA5000020000000000000002 /* EventKitUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitUseCases.swift; sourceTree = "<group>"; };
 		AA6000020000000000000002 /* MonthCalendarState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCalendarState.swift; sourceTree = "<group>"; };
+		AA7000020000000000000002 /* CalendarDropCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDropCoordinator.swift; sourceTree = "<group>"; };
 		AA1000020000000000000002 /* EazyCalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalTests.swift; sourceTree = "<group>"; };
 		AA1000030000000000000003 /* EazyCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EazyCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				FF5759572ADC1AC1001E588F /* CalendarCell.swift */,
 				FF6BE0B82AE205CD00CB7397 /* CalendarCategoryLabelView.swift */,
 				AA2000040000000000000004 /* ScheduledReminderLabelView.swift */,
+				AA7000020000000000000002 /* CalendarDropCoordinator.swift */,
 				FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */,
 				FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */,
 				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
@@ -401,6 +404,7 @@
 				AA4000010000000000000001 /* CalendarEntryMapper.swift in Sources */,
 				AA5000010000000000000001 /* EventKitUseCases.swift in Sources */,
 				AA6000010000000000000001 /* MonthCalendarState.swift in Sources */,
+				AA7000010000000000000001 /* CalendarDropCoordinator.swift in Sources */,
 				FF478D712AEA39A20073EF32 /* CalendarTabView.swift in Sources */,
 				FF57590E2ADB9A86001E588F /* CategoryLabel.swift in Sources */,
 				FFC1E6E02B0DD96E00CBCA88 /* CellViewType.swift in Sources */,

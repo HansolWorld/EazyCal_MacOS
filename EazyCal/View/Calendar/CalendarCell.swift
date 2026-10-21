@@ -111,103 +111,31 @@ struct CalendarCell: View {
                         .scaleEffect(1.5)
                     
                     AddSchedulerView(
-                        startDate: calculateDate(forMonthType: month.monthType),
-                        doDate: calculateDate(forMonthType: month.monthType),
+                        startDate: cellDate,
+                        doDate: cellDate,
                         category: eventManager.calendars.first ?? EKCalendar()
                     )
                     .environmentObject(eventManager)
                 }
             }
-            .onDrop(of: [.text], isTargeted: $isHover) { providers in
-                if let currentDragTemplate, let ekCalendar = eventManager.calendars.first(where: {$0.calendarIdentifier == currentDragTemplate.calendarId}) {
-                    
-                    let calendar = Calendar.current
-                    let startTime =  calendar.dateComponents([.hour, .minute], from: currentDragTemplate.startTime)
-                    let endTime =  calendar.dateComponents([.hour, .minute], from: currentDragTemplate.endTime)
-                    
-                    var addMonth = 0
-                    if month.monthType == .Previous {
-                        addMonth = -1
-                    } else if month.monthType == .Next {
-                        addMonth = 1
-                    }
-                    var startComponents = DateComponents()
-                    startComponents.year = calendarViewModel.year()
-                    startComponents.month = calendarViewModel.month() + addMonth
-                    startComponents.day = month.dayInt
-                    startComponents.hour = startTime.hour
-                    startComponents.minute = startTime.minute
-                    
-                    var endComponents = DateComponents()
-                    endComponents.year = calendarViewModel.year()
-                    endComponents.month = calendarViewModel.month() + addMonth
-                    endComponents.day = month.dayInt
-                    endComponents.hour = endTime.hour
-                    endComponents.minute = endTime.minute
-                    
-                    guard let startDate = calendar.date(from: startComponents),
-                          let endDate = calendar.date(from: endComponents) else {
-                        self.currentDragTemplate = nil
-                        return false
-                    }
-                    
-                    Task {
-                        try await eventManager.saveEvent(
-                            title: currentDragTemplate.title,
-                            isAllDay: currentDragTemplate.isAllDay,
-                            startDate: startDate,
-                            endDate: endDate,
-                            repeatDate: .oneDay, 
-                            url: nil,
-                            notes: currentDragTemplate.todos,
-                            calendar: ekCalendar
-                        )
-                    }
-                    
-                    self.currentDragTemplate = nil
+            .onDrop(of: [.text], isTargeted: $isHover) { _ in
+                let item: CalendarDropItem
+                if let currentDragTemplate {
+                    item = .template(currentDragTemplate)
                 } else if let selectedReminder {
-                    let targetDate = calculateDate(forMonthType: month.monthType)
-
-                    Task {
-                        try await eventManager.rescheduleReminder(
-                            selectedReminder,
-                            to: targetDate
-                        )
-                    }
-
-                    self.selectedReminder = nil
+                    item = .reminder(selectedReminder)
                 } else if let selectedEvent {
-                    var addMonth = 0
-                    if month.monthType == .Previous {
-                        addMonth = -1
-                    } else if month.monthType == .Next {
-                        addMonth = 1
-                    }
-                    
-                    let currentDateComponents = DateComponents(
-                        year: calendarViewModel.year(),
-                        month: calendarViewModel.month() + addMonth,
-                        day: month.dayInt
-                    )
-                    guard let currentDate = Calendar.current.date(from: currentDateComponents),
-                          let movedStartDate = CalendarMath.moving(selectedEvent.startDate, toDay: currentDate),
-                          let originalEndDate = selectedEvent.endDate else {
-                        self.selectedEvent = nil
-                        return false
-                    }
-
-                    let movedEndDate = originalEndDate.addingTimeInterval(
-                        movedStartDate.timeIntervalSince(selectedEvent.startDate)
-                    )
-                    selectedEvent.startDate = movedStartDate
-                    selectedEvent.endDate = movedEndDate
-                    
-                    Task {
-                        try await eventManager.updateEvent(event: selectedEvent)
-                    }
-                    
-                    self.selectedEvent = nil
+                    item = .event(selectedEvent)
                 } else {
+                    return false
+                }
+
+                currentDragTemplate = nil
+                selectedReminder = nil
+                selectedEvent = nil
+                Task {
+                    await CalendarDropCoordinator(eventHandler: eventManager)
+                        .perform(item, on: cellDate)
                 }
                 return true
             }
@@ -262,7 +190,7 @@ struct CalendarCell: View {
         }
 
         let calendar = Calendar.current
-        let currentDate = calendar.startOfDay(for: calculateDate(forMonthType: month.monthType))
+        let currentDate = calendar.startOfDay(for: cellDate)
         let startDate = calendar.startOfDay(for: entry.startDate)
         let endDate = calendar.startOfDay(for: entry.endDate)
 
@@ -277,21 +205,8 @@ struct CalendarCell: View {
         }
     }
     
-    func calculateDate(forMonthType monthType: MonthType) -> Date {
-        let date = calendarViewModel.stringToDate(
-            year: calendarViewModel.year(),
-            month: calendarViewModel.month(),
-            day: month.dayInt
-        )
-        
-        switch monthType {
-        case .Previous:
-            return Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date
-        case .Current:
-            return date
-        case .Next:
-            return Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
-        }
+    private var cellDate: Date {
+        calendarViewModel.date(for: month)
     }
 }
 

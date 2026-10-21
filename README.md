@@ -48,7 +48,7 @@ EazyCalApp
     └── CalendarView
 ```
 
-`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 공유 데이터를 관리합니다. EventKit 모델은 `CalendarEntryMapper`에서 프레임워크 독립적인 값으로 변환되고, 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당합니다.
+`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 공유 데이터를 관리합니다. EventKit 모델은 `CalendarEntryMapper`에서 프레임워크 독립적인 값으로 변환되고, 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당합니다. 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
 
 ### 데이터 저장
 
