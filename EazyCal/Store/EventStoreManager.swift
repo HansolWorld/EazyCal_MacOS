@@ -8,7 +8,8 @@ import EventKit
 
 @MainActor
 final class EventStoreManager: ObservableObject {
-    private let eventStore: any EventStoreProviding
+    private let calendarRepository: any CalendarRepository
+    private let reminderRepository: any ReminderRepository
     private let userDefaults: UserDefaults
     private let checkedCalendarsKey = "checkedCategory"
     private var eventStoreObserver: NSObjectProtocol?
@@ -28,13 +29,24 @@ final class EventStoreManager: ObservableObject {
     var hasReminderAccess: Bool { reminderAuthorizationStatus == .fullAccess }
 
     init(
-        eventStore: any EventStoreProviding = EventStore(),
+        calendarRepository: any CalendarRepository,
+        reminderRepository: any ReminderRepository,
         userDefaults: UserDefaults = .standard
     ) {
-        self.eventStore = eventStore
+        self.calendarRepository = calendarRepository
+        self.reminderRepository = reminderRepository
         self.userDefaults = userDefaults
-        calendarAuthorizationStatus = eventStore.calendarAuthorizationStatus
-        reminderAuthorizationStatus = eventStore.reminderAuthorizationStatus
+        calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
+        reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
+    }
+
+    convenience init(userDefaults: UserDefaults = .standard) {
+        let eventStore = EventStore()
+        self.init(
+            calendarRepository: eventStore,
+            reminderRepository: eventStore,
+            userDefaults: userDefaults
+        )
     }
 
     func prepare() async {
@@ -64,26 +76,26 @@ final class EventStoreManager: ObservableObject {
     func requestAccess() async {
         do {
             if calendarAuthorizationStatus == .notDetermined {
-                _ = try await eventStore.requestCalendarAccess()
+                _ = try await calendarRepository.requestCalendarAccess()
             }
-            calendarAuthorizationStatus = eventStore.calendarAuthorizationStatus
+            calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
         } catch {
             record(error)
         }
 
         do {
             if reminderAuthorizationStatus == .notDetermined {
-                _ = try await eventStore.requestReminderAccess()
+                _ = try await reminderRepository.requestReminderAccess()
             }
-            reminderAuthorizationStatus = eventStore.reminderAuthorizationStatus
+            reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
         } catch {
             record(error)
         }
     }
 
     func reloadAll() async {
-        calendarAuthorizationStatus = eventStore.calendarAuthorizationStatus
-        reminderAuthorizationStatus = eventStore.reminderAuthorizationStatus
+        calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
+        reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
 
         if hasCalendarAccess {
             do {
@@ -112,17 +124,17 @@ final class EventStoreManager: ObservableObject {
     }
 
     func loadCalendars() async throws {
-        calendars = try await eventStore.loadCalendars()
+        calendars = try await calendarRepository.loadCalendars()
         initializeCheckedCalendarsIfNeeded()
     }
 
     func loadReminders() async throws {
-        reminders = try await eventStore.loadAllReminders()
+        reminders = try await reminderRepository.loadAllReminders()
     }
 
     func loadScheduledReminders() async throws {
         let interval = try CalendarMath.visibleMonthInterval(containing: date)
-        scheduledReminders = try await eventStore.loadScheduledReminders(
+        scheduledReminders = try await reminderRepository.loadScheduledReminders(
             from: interval.start,
             to: interval.end
         )
@@ -148,16 +160,16 @@ final class EventStoreManager: ObservableObject {
     func loadEvents() async throws {
         let checkedIdentifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
         let checkedCalendars = calendars.filter { checkedIdentifiers.contains($0.calendarIdentifier) }
-        events = try await eventStore.loadEvents(forDate: date, calendars: checkedCalendars)
+        events = try await calendarRepository.loadEvents(forDate: date, calendars: checkedCalendars)
     }
 
     func loadUpcomingEvents() async throws {
-        upcomingEvents = try await eventStore.loadUpcomingEvents()
+        upcomingEvents = try await calendarRepository.loadUpcomingEvents()
     }
 
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
         do {
-            try await eventStore.createNewReminder(title: title, date: date, highlight: highlight)
+            try await reminderRepository.createNewReminder(title: title, date: date, highlight: highlight)
             try await reloadReminderData()
         } catch {
             record(error)
@@ -167,7 +179,7 @@ final class EventStoreManager: ObservableObject {
 
     func completeReminder(reminder: EKReminder) async throws {
         do {
-            try await eventStore.completeReminder(reminder: reminder)
+            try await reminderRepository.completeReminder(reminder: reminder)
             try await reloadReminderData()
         } catch {
             record(error)
@@ -177,7 +189,7 @@ final class EventStoreManager: ObservableObject {
 
     func updateReminder(reminder: EKReminder) async throws {
         do {
-            try await eventStore.updateReminder(reminder: reminder)
+            try await reminderRepository.updateReminder(reminder: reminder)
             try await reloadReminderData()
         } catch {
             record(error)
@@ -204,7 +216,7 @@ final class EventStoreManager: ObservableObject {
         calendar: EKCalendar
     ) async throws {
         do {
-            try await eventStore.saveEvent(
+            try await calendarRepository.saveEvent(
                 title: title,
                 isAllDay: isAllDay,
                 startDate: startDate,
@@ -223,7 +235,7 @@ final class EventStoreManager: ObservableObject {
 
     func updateEvent(event: EKEvent) async throws {
         do {
-            try await eventStore.updateEvent(event: event)
+            try await calendarRepository.updateEvent(event: event)
             try await reloadEvents()
         } catch {
             record(error)
@@ -233,7 +245,7 @@ final class EventStoreManager: ObservableObject {
 
     func removeEvent(event: EKEvent) async throws {
         do {
-            try await eventStore.removeEvent(event: event)
+            try await calendarRepository.removeEvent(event: event)
             try await reloadEvents()
         } catch {
             record(error)
@@ -243,7 +255,7 @@ final class EventStoreManager: ObservableObject {
 
     func createNewCalendar() async throws {
         do {
-            try await eventStore.createNewCalendar()
+            try await calendarRepository.createNewCalendar()
             try await loadCalendars()
             try await loadEvents()
         } catch {
@@ -254,7 +266,7 @@ final class EventStoreManager: ObservableObject {
 
     func updateCalendar(calendar: EKCalendar) async throws {
         do {
-            try await eventStore.updateCalendar(calendar: calendar)
+            try await calendarRepository.updateCalendar(calendar: calendar)
             try await loadCalendars()
             try await reloadEvents()
         } catch {
@@ -265,7 +277,7 @@ final class EventStoreManager: ObservableObject {
 
     func removeCalendar(calendar: EKCalendar) async throws {
         do {
-            try await eventStore.removeCalendar(calendar: calendar)
+            try await calendarRepository.removeCalendar(calendar: calendar)
             removeCheckedCalendar(identifier: calendar.calendarIdentifier)
             try await loadCalendars()
             try await reloadEvents()

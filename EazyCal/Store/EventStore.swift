@@ -5,29 +5,7 @@
 
 import EventKit
 
-protocol EventStoreProviding: AnyObject {
-    var calendarAuthorizationStatus: EKAuthorizationStatus { get }
-    var reminderAuthorizationStatus: EKAuthorizationStatus { get }
-
-    func requestCalendarAccess() async throws -> Bool
-    func requestReminderAccess() async throws -> Bool
-    func loadCalendars() async throws -> [EKCalendar]
-    func loadUpcomingEvents() async throws -> [EKEvent]
-    func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent]
-    func loadAllReminders() async throws -> [EKReminder]
-    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder]
-    func completeReminder(reminder: EKReminder) async throws
-    func updateReminder(reminder: EKReminder) async throws
-    func createNewReminder(title: String, date: Date?, highlight: String) async throws
-    func createNewCalendar() async throws
-    func updateCalendar(calendar: EKCalendar) async throws
-    func removeCalendar(calendar: EKCalendar) async throws
-    func saveEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, repeatDate: RepeatType, url: URL?, notes: [String], calendar: EKCalendar) async throws
-    func updateEvent(event: EKEvent) async throws
-    func removeEvent(event: EKEvent) async throws
-}
-
-final class EventStore: ObservableObject, EventStoreProviding {
+final class EventStore: ObservableObject, CalendarRepository, ReminderRepository {
     let eventStore = EKEventStore()
 
     func loadCalendars() async throws -> [EKCalendar] {

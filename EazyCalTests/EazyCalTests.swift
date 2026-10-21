@@ -115,7 +115,11 @@ final class EventStoreManagerTests: XCTestCase {
         let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
-        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+        let manager = EventStoreManager(
+            calendarRepository: store,
+            reminderRepository: store,
+            userDefaults: defaults
+        )
 
         await manager.prepare()
 
@@ -131,7 +135,11 @@ final class EventStoreManagerTests: XCTestCase {
         let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
-        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+        let manager = EventStoreManager(
+            calendarRepository: store,
+            reminderRepository: store,
+            userDefaults: defaults
+        )
 
         try await manager.createNewReminder(title: "Test", date: nil, highlight: "unknown")
 
@@ -145,7 +153,11 @@ final class EventStoreManagerTests: XCTestCase {
         let suiteName = "EventStoreManagerTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
-        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+        let manager = EventStoreManager(
+            calendarRepository: store,
+            reminderRepository: store,
+            userDefaults: defaults
+        )
         let reminder = EKReminder(eventStore: EKEventStore())
         reminder.dueDateComponents = DateComponents(
             year: 2025,
@@ -176,7 +188,11 @@ final class EventStoreManagerTests: XCTestCase {
             return XCTFail("Unable to create isolated user defaults")
         }
         defer { defaults.removePersistentDomain(forName: suiteName) }
-        let manager = EventStoreManager(eventStore: store, userDefaults: defaults)
+        let manager = EventStoreManager(
+            calendarRepository: store,
+            reminderRepository: store,
+            userDefaults: defaults
+        )
 
         await manager.refreshCalendarEntries()
 
@@ -186,7 +202,7 @@ final class EventStoreManagerTests: XCTestCase {
     }
 }
 
-private final class FakeEventStore: EventStoreProviding {
+private final class FakeEventStore: CalendarRepository, ReminderRepository {
     var calendarAuthorizationStatus: EKAuthorizationStatus = .fullAccess
     var reminderAuthorizationStatus: EKAuthorizationStatus = .fullAccess
     var calendarLoadCount = 0

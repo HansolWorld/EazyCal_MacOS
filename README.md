@@ -34,7 +34,8 @@ EazyCal은 macOS의 캘린더와 미리 알림을 한 화면에서 관리하는 
 ```text
 EazyCalApp
 ├── EventStoreManager
-│   └── EventStoreProviding
+│   ├── CalendarRepository
+│   └── ReminderRepository
 │       └── EventStore / EventKit
 ├── CalendarEntry (Event + Reminder presentation model)
 ├── CalendarViewModel
@@ -47,7 +48,7 @@ EazyCalApp
     └── CalendarView
 ```
 
-`EventStore`는 EventKit 접근과 CRUD를 담당합니다. `EventStoreManager`는 권한 상태, 화면에서 사용하는 데이터, 캘린더 선택 상태와 변경 후 새로고침을 관리합니다. EventKit이 별도로 제공하는 `EKEvent`와 `EKReminder`는 `CalendarEntry` 표시 모델로 합쳐 월간 캘린더에 전달합니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
+`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. `EventStoreManager`는 권한 상태, 화면에서 사용하는 데이터, 캘린더 선택 상태와 변경 후 새로고침을 관리합니다. EventKit이 별도로 제공하는 `EKEvent`와 `EKReminder`는 `CalendarEntry` 표시 모델로 합쳐 월간 캘린더에 전달합니다. 날짜 범위 계산과 일정 레이어 배치는 `CalendarMath`에 분리되어 있습니다.
 
 ### 데이터 저장
 
@@ -152,7 +153,7 @@ xcodebuild analyze \
 - 최초 실행 시 사용 가능한 모든 캘린더를 기본 표시 대상으로 설정합니다.
 - 반복 일정 삭제는 의도하지 않은 이후 일정 삭제를 막기 위해 선택한 일정 하나에만 적용됩니다.
 - SwiftData 영구 저장소를 열 수 없으면 앱 종료 대신 메모리 저장소로 대체하고 사용자에게 안내합니다.
-- `EventStoreProviding` 프로토콜을 통해 EventKit 의존성을 테스트 대역으로 교체할 수 있습니다.
+- Repository 프로토콜을 통해 캘린더와 미리 알림의 EventKit 의존성을 각각 테스트 대역으로 교체할 수 있습니다.
 
 ## 개인정보
 
