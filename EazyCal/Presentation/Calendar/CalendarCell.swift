@@ -16,7 +16,6 @@ struct CalendarCell: View {
     let daysInMonth : Int
     let daysInPrevMonth : Int
     @State private var isHover = false
-    @State private var isMoreEventPopover = false
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
     @Binding var selectedEventIdentifier: String?
@@ -44,42 +43,14 @@ struct CalendarCell: View {
                         .padding([.top, .leading], 4)
                 }
                 
-                ForEach(0...max(taskViewCount-2, 0), id: \.self) { index in
-                    if let schedule = schedules.first(where: { $0.layer == index + 1 }) {
-                        entryLabel(
-                            schedule.entry,
-                            viewType: cellViewType(schedule.entry)
-                        )
-                    } else {
-                        Text(" ")
-                            .font(.body)
-                            .padding(2)
-                    }
-                }
-                
-                let notViewTask = schedules.filter { $0.layer > (taskViewCount - 1) }
-                if notViewTask.count != 0 {
-                    Text(String(localized: "+\(notViewTask.count) EVENT_COUNT"))
-                        .font(.body)
-                        .foregroundStyle(Color.gray300)
-                        .padding(.horizontal, 6)
-                        .padding(.bottom, 4)
-                        .onTapGesture {
-                            isMoreEventPopover = true
-                        }
-                        .popover(isPresented: $isMoreEventPopover, arrowEdge: .trailing) {
-                            VStack(alignment: .leading) {
-                                ForEach(schedules) { schedule in
-                                    entryLabel(schedule.entry, viewType: .OneDate)
-                                }
-                            }
-                            .padding(4)
-                            .background {
-                                Color.white
-                                    .scaleEffect(1.5)
-                            }
-                        }
-                }
+                CalendarEntryListView(
+                    schedules: schedules,
+                    visibleRowCount: taskViewCount,
+                    cellDate: cellDate,
+                    selectedEventIdentifier: $selectedEventIdentifier,
+                    selectedReminderIdentifier: $selectedReminderIdentifier
+                )
+                .environmentObject(eventManager)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background {
@@ -144,31 +115,6 @@ struct CalendarCell: View {
         .frame(minWidth: 80, minHeight: 80)
     }
 
-    @ViewBuilder
-    private func entryLabel(_ entry: CalendarEntry, viewType: CellViewType) -> some View {
-        switch entry.kind {
-        case .event:
-            if let event = eventManager.event(withIdentifier: entry.sourceIdentifier) {
-                CalendarCategoryLabelView(
-                    schedule: event,
-                    viewType: viewType,
-                    selectedEventIdentifier: $selectedEventIdentifier,
-                    selectedReminderIdentifier: $selectedReminderIdentifier
-                )
-                .environmentObject(eventManager)
-            }
-        case .reminder:
-            if let reminder = eventManager.reminder(withIdentifier: entry.sourceIdentifier) {
-                ScheduledReminderLabelView(
-                    reminder: reminder,
-                    selectedEventIdentifier: $selectedEventIdentifier,
-                    selectedReminderIdentifier: $selectedReminderIdentifier
-                )
-                .environmentObject(eventManager)
-            }
-        }
-    }
-    
     func textColor(type: MonthType, count: Int) -> Color {
         if type == MonthType.Current {
             if self.isToday {
@@ -182,27 +128,6 @@ struct CalendarCell: View {
             return Color.calendarRed
         } else {
             return Color.gray
-        }
-    }
-    
-    func cellViewType(_ entry: CalendarEntry) -> CellViewType {
-        guard entry.kind == .event else {
-            return .OneDate
-        }
-
-        let calendar = Calendar.current
-        let currentDate = calendar.startOfDay(for: cellDate)
-        let startDate = calendar.startOfDay(for: entry.startDate)
-        let endDate = calendar.startOfDay(for: entry.endDate)
-
-        if startDate == currentDate && endDate == currentDate {
-            return .OneDate
-        } else if startDate == currentDate {
-            return .StartDate
-        } else if endDate == currentDate {
-            return .DoDate
-        } else {
-            return .Dating
         }
     }
     

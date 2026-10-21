@@ -1,212 +1,67 @@
-//
-//  CalendarCategoryView.swift
-//  EazyCal
-//
-//  Created by apple on 10/15/23.
-//
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct CalendarCategoryView: View {
-    private let gridItem = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    
-    @State private var isAddPopoverShow = false
-    @State private var categoryIcon = ""
-    @State private var categoryTitle = ""
-    @State private var requestCategory: CalendarCategory?
-    @State private var selectCategory: CalendarCategory?
-    @State private var editCategoryRequest: Bool = false
-    @State private var deleteCategoryRequest: Bool = false
-    @State private var currentDragCalendarIdentifier: String?
-    @EnvironmentObject var eventManager: EventStoreManager
-
+    @State private var isAddPopoverPresented = false
+    @State private var selectedCategory: CalendarCategory?
+    @State private var draggedCalendarIdentifier: String?
+    @EnvironmentObject private var eventManager: EventStoreManager
     @Environment(\.modelContext) private var context
     @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
-    
+
     var body: some View {
         VStack(spacing: 15) {
-            HStack {
-                Text(IndexCategory.calendar.title)
-                    .font(.headline)
-                    .foregroundStyle(.gray300)
-                Spacer(minLength: 10)
-                
-                Button(action: {
-                    isAddPopoverShow = true
-                }) {
-                    Image(systemName: SFSymbol.plus.name)
-                        .foregroundStyle(Color.primaryBlue)
-                        .popover(isPresented: $isAddPopoverShow) {
-                            CalendarCategoryPopoverView(isShow: $isAddPopoverShow)
-                                .environmentObject(eventManager)
-                        }
-                }
-                .buttonStyle(.plain)
-            }
-            
-            LazyVGrid(columns: gridItem) {
-                ForEach(categories, id:\.id) { category in
-                    Button(action: {
-                        withAnimation {
-                            SwiftDataCalendarCategoryRepository(context: context)
-                                .select(category, in: categories)
-                            selectCategory = category
+            header
 
-                            Task {
-                                await eventManager.refreshCalendarEntries()
-                            }
-                        }
-                    }) {
-                        var isSeleted: Bool {
-                            if let selected = category.isSelected {
-                                return selected
-                            } else {
-                                return false
-                            }
-                        }
-                        
-                        VStack {
-                            Text(category.icon)
-                                .font(.system(size: 12))
-                                .padding()
-                                .background {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.background)
-                                }
-                                .opacity(isSeleted ? 1 : 0.5)
-                                .overlay {
-                                    if isSeleted {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.primaryBlue, lineWidth: 2)
-                                    }
-                                }
-                            Text(category.title)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .fontWeight(isSeleted ? .bold : .regular)
-                                .foregroundStyle(isSeleted ? .primaryBlue : .gray400)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .contextMenu {
-                        if category.title != String(localized: "TOTAL") && category.title != String(localized: "NOT_CATEGORY") {
-                            Button(action: {
-                                categoryTitle = category.title
-                                categoryIcon = category.icon
-                                requestCategory = category
-                                editCategoryRequest = true
-                            }) {
-                                Text("EDIT")
-                            }
-                            Button(action: {
-                                requestCategory = category
-                                deleteCategoryRequest = true
-                            }) {
-                                Text("DELETE")
-                            }
-                        }
-                    }
-                    .alert(String(localized: "CATEGORY_EDIT"), isPresented: $editCategoryRequest) {
-                        TextField(String(localized: "CATEGORY_ICON"), text: $categoryIcon)
-                        TextField(String(localized: "CATEGORY_TITLE"), text: $categoryTitle)
-                        
-                        Button(String(localized: "CANCEL"), role: .cancel) {
-                            categoryTitle = ""
-                            categoryIcon = ""
-                            requestCategory = nil
-                        }
-                        Button(String(localized: "EDIT")) {
-                            if let requestCategory {
-                                SwiftDataCalendarCategoryRepository(context: context).update(
-                                    requestCategory,
-                                    icon: categoryIcon,
-                                    title: categoryTitle
-                                )
-                                categoryTitle = ""
-                                categoryIcon = ""
-                                self.requestCategory = nil
-                            }
-                        }
-                    }
-                    .alert(String(localized: "CATEGORY_DELETE"), isPresented: $deleteCategoryRequest) {
-                        Button(String(localized: "CANCEL"), role: .cancel) {
-                            requestCategory = nil
-                        }
-                        Button(String(localized: "DELETE"), role: .destructive) {
-                            if let requestCategory {
-                                SwiftDataCalendarCategoryRepository(context: context)
-                                    .delete(requestCategory)
-                                self.requestCategory = nil
-                            }
-                        }
-                    }
-                    .onDrop(of: [.text], isTargeted: nil, perform: { _ in
-                        if let currentDragCalendarIdentifier {
-                            replaceCategory(category, calendarIdentifier: currentDragCalendarIdentifier)
-                            selectCategory = category
-                        }
-                        currentDragCalendarIdentifier = nil
-                        return true
-                    })
-                }
-            }
-            
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    let categorizedCalendar: [String] = categories.dropFirst(2).flatMap { $0.calendars }
-                    let calendaries = eventManager.calendars.filter {
-                        if selectCategory?.title == String(localized: "TOTAL") {
-                            return true
-                        } else if selectCategory?.title == String(localized: "NOT_CATEGORY") {
-                            return !categorizedCalendar.contains($0.id)
-                        } else {
-                            if let selectCategory {
-                                return selectCategory.calendars.contains($0.id)
-                            } else {
-                                return false
-                            }
-                        }
-                    }
-                    
-                    ForEach(calendaries) { calendar in
-                        CategoryLabelView(
-                            calendar: calendar,
-                            currentDragCalendarIdentifier: $currentDragCalendarIdentifier
-                        )
-                            .environmentObject(eventManager)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(8)
-            .background {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.background)
-            }
+            CalendarCategoryGrid(
+                categories: categories,
+                selectedCategory: $selectedCategory,
+                draggedCalendarIdentifier: $draggedCalendarIdentifier
+            )
+            .environmentObject(eventManager)
+
+            CategorizedCalendarList(
+                calendars: eventManager.calendars,
+                categories: categories,
+                selectedCategory: selectedCategory,
+                draggedCalendarIdentifier: $draggedCalendarIdentifier
+            )
+            .environmentObject(eventManager)
         }
-        .onAppear {
-            selectCategory = SwiftDataCalendarCategoryRepository(context: context)
-                .prepareSelection(
-                    in: categories,
-                    totalTitle: String(localized: "TOTAL"),
-                    uncategorizedTitle: String(localized: "NOT_CATEGORY")
-                )
+        .onAppear(perform: prepareSelection)
+    }
 
-            Task {
-                await eventManager.refreshCalendarEntries()
+    private var header: some View {
+        HStack {
+            Text(IndexCategory.calendar.title)
+                .font(.headline)
+                .foregroundStyle(.gray300)
+            Spacer(minLength: 10)
+
+            Button {
+                isAddPopoverPresented = true
+            } label: {
+                Image(systemName: SFSymbol.plus.name)
+                    .foregroundStyle(Color.primaryBlue)
+            }
+            .buttonStyle(.plain)
+            .popover(isPresented: $isAddPopoverPresented) {
+                CalendarCategoryPopoverView(isShow: $isAddPopoverPresented)
+                    .environmentObject(eventManager)
             }
         }
     }
-    
-    
-    func replaceCategory(_ category: CalendarCategory, calendarIdentifier: String) {
-        let source = selectCategory?.title == String(localized: "TOTAL") ? nil : selectCategory
-        SwiftDataCalendarCategoryRepository(context: context).moveCalendar(
-            identifier: calendarIdentifier,
-            from: source,
-            to: category
+
+    private func prepareSelection() {
+        selectedCategory = SwiftDataCalendarCategoryRepository(context: context).prepareSelection(
+            in: categories,
+            totalTitle: String(localized: "TOTAL"),
+            uncategorizedTitle: String(localized: "NOT_CATEGORY")
         )
+
+        Task {
+            await eventManager.refreshCalendarEntries()
+        }
     }
 }
 

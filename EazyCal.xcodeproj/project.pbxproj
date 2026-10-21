@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD0000010000000000000001 /* NewReminderComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000020000000000000002 /* NewReminderComposer.swift */; };
+		AD0000030000000000000003 /* ReminderMetadataEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000040000000000000004 /* ReminderMetadataEditor.swift */; };
+		AD0000050000000000000005 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000060000000000000006 /* TemplateEditorView.swift */; };
+		AD0000070000000000000007 /* CalendarEntryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000080000000000000008 /* CalendarEntryListView.swift */; };
+		AD0000090000000000000009 /* CalendarCategoryComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD00000A000000000000000A /* CalendarCategoryComponents.swift */; };
 		AA0000010000000000000001 /* CalendarMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000020000000000000002 /* CalendarMath.swift */; };
 		AA2000010000000000000001 /* CalendarEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2000020000000000000002 /* CalendarEntry.swift */; };
 		AA2000030000000000000003 /* ScheduledReminderLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2000040000000000000004 /* ScheduledReminderLabelView.swift */; };
@@ -75,6 +80,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD0000020000000000000002 /* NewReminderComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReminderComposer.swift; sourceTree = "<group>"; };
+		AD0000040000000000000004 /* ReminderMetadataEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderMetadataEditor.swift; sourceTree = "<group>"; };
+		AD0000060000000000000006 /* TemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorView.swift; sourceTree = "<group>"; };
+		AD0000080000000000000008 /* CalendarEntryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntryListView.swift; sourceTree = "<group>"; };
+		AD00000A000000000000000A /* CalendarCategoryComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCategoryComponents.swift; sourceTree = "<group>"; };
 		AA0000020000000000000002 /* CalendarMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarMath.swift; sourceTree = "<group>"; };
 		AA2000020000000000000002 /* CalendarEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntry.swift; sourceTree = "<group>"; };
 		AA2000040000000000000004 /* ScheduledReminderLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledReminderLabelView.swift; sourceTree = "<group>"; };
@@ -285,6 +295,8 @@
 			children = (
 				FF57592B2ADBCC94001E588F /* TodoView.swift */,
 				FF5759162ADBA50F001E588F /* TodoLabel.swift */,
+				AD0000020000000000000002 /* NewReminderComposer.swift */,
+				AD0000040000000000000004 /* ReminderMetadataEditor.swift */,
 				FF20DD212AE8BDEA00C93B43 /* ScheduleTodoCellView.swift */,
 			);
 			path = Todo;
@@ -297,12 +309,14 @@
 				AA8000020000000000000002 /* CalendarHeaderView.swift */,
 				AA8000040000000000000004 /* CalendarGridView.swift */,
 				FF5759572ADC1AC1001E588F /* CalendarCell.swift */,
+				AD0000080000000000000008 /* CalendarEntryListView.swift */,
 				FF6BE0B82AE205CD00CB7397 /* CalendarCategoryLabelView.swift */,
 				AA2000040000000000000004 /* ScheduledReminderLabelView.swift */,
 				AA7000020000000000000002 /* CalendarDropCoordinator.swift */,
 				FFDBD7802B01D08A00AB2A57 /* CalendarCategoryPopoverView.swift */,
 				FF478D742AEA42DE0073EF32 /* CalendarViewModel.swift */,
 				FF5759122ADB9EEF001E588F /* TemplateLabel.swift */,
+				AD0000060000000000000006 /* TemplateEditorView.swift */,
 				FF54FA2C2ADFA8D400996AC9 /* RepeatSelectedButton.swift */,
 				FF54FA342ADFC69100996AC9 /* CustomPicker.swift */,
 			);
@@ -361,6 +375,7 @@
 				FFF59D292B01A2CA0071761E /* TabButton.swift */,
 				FF478D702AEA39A20073EF32 /* CalendarTabView.swift */,
 				FF57591D2ADBAFDA001E588F /* CalendarCategoryView.swift */,
+				AD00000A000000000000000A /* CalendarCategoryComponents.swift */,
 				FF57590D2ADB9A86001E588F /* CategoryLabel.swift */,
 				FF5759232ADBC320001E588F /* TemplateView.swift */,
 				FFC1E6E12B0E06F000CBCA88 /* PopoverView */,
@@ -475,6 +490,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD0000010000000000000001 /* NewReminderComposer.swift in Sources */,
+				AD0000030000000000000003 /* ReminderMetadataEditor.swift in Sources */,
+				AD0000050000000000000005 /* TemplateEditorView.swift in Sources */,
+				AD0000070000000000000007 /* CalendarEntryListView.swift in Sources */,
+				AD0000090000000000000009 /* CalendarCategoryComponents.swift in Sources */,
 				AAC000010000000000000001 /* EventModels.swift in Sources */,
 				AAC000030000000000000003 /* CalendarColor+SwiftUI.swift in Sources */,
 				AA0000010000000000000001 /* CalendarMath.swift in Sources */,
