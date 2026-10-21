@@ -1,5 +1,5 @@
 //
-//  EventKitUseCases.swift
+//  EventUseCases.swift
 //  EazyCal
 //
 

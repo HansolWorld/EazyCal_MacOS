@@ -32,30 +32,24 @@ EazyCal은 macOS의 캘린더와 미리 알림을 한 화면에서 관리하는 
 ## 아키텍처
 
 ```text
-EazyCalApp
-├── Domain / Screen State
-│   ├── CalendarEntry
-│   ├── CalendarMath
-│   └── MonthCalendarState
+App
+├── Domain
+│   ├── EventItem / ReminderItem / CalendarItem
+│   ├── CalendarEntry / CalendarMath / MonthCalendarState
+│   └── CalendarRepository / ReminderRepository
 ├── Application
 │   ├── CalendarEventUseCase
 │   ├── ReminderUseCase
-│   └── EventStoreManager
+│   └── CalendarEntryMapper
 ├── Data
-│   ├── CalendarRepository / ReminderRepository
-│   │   └── EventStore / EventKit
-│   └── TemplateRepository / CalendarCategoryRepository
-│       └── SwiftData
-└── Home
-    ├── CalendarTabView
-    │   ├── CalendarCategoryView
-    │   └── TemplateView
-    ├── TodoView
-    ├── ScheduleListView
-    └── CalendarView
+│   ├── EventKit → EventStore
+│   └── SwiftData → TemplateRepository / CalendarCategoryRepository
+└── Presentation
+    ├── EventStoreManager
+    └── Calendar / Todo / ScheduleList
 ```
 
-`EventStore`는 EventKit 접근과 CRUD를 담당하고, 캘린더와 미리 알림 기능은 각각 `CalendarRepository`, `ReminderRepository` 인터페이스로 분리되어 있습니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 공유 데이터를 관리합니다. EventKit 모델은 `CalendarEntryMapper`에서 프레임워크 독립적인 값으로 변환되고, 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당합니다. 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
+`EventStore`는 EventKit 접근과 도메인 모델 변환을 담당합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 화면 공유 데이터를 관리합니다. 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당하고, 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
 
 ### 데이터 저장
 
@@ -72,12 +66,16 @@ EazyCalApp
 
 ```text
 EazyCal/
-├── EazyCalApp.swift             # 앱 진입점, 권한 UI, SwiftData 구성
-├── Home.swift                   # 메인 화면과 탭 상태
-├── Model/                       # 도메인 값, 화면 상태, SwiftData 모델
-├── Store/                       # EventKit Repository, UseCase, 상태 관리자
-├── Persistence/                 # SwiftData Repository
-├── View/
+├── App/                         # 앱 진입점, 의존성 조립, 메인 화면
+├── Domain/                      # 순수 도메인 값·규칙·Repository 계약
+│   └── Repositories/
+├── Application/                 # 일정·미리 알림 UseCase와 도메인 매핑
+├── Data/
+│   ├── EventKit/                # EventKit Repository 구현과 매퍼
+│   └── Persistence/             # SwiftData 모델과 Repository 구현
+├── Presentation/
+│   ├── State/                   # 화면 공유 상태와 애플리케이션 파사드
+│   ├── Models/                  # 화면 전용 값
 │   ├── Calendar/                # 월간 캘린더 헤더·그리드·셀과 드롭 조정자
 │   ├── PopoverView/             # 일정 생성·수정 화면
 │   ├── ScheduleList/            # 향후 일정 목록
