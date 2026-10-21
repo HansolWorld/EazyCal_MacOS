@@ -32,8 +32,8 @@ struct TodoView: View {
                 }
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach($eventManager.upcomingEvents, id: \.eventIdentifier) { $schedule in
-                            if let notes = schedule.notes, notes.contains("☐") {
+                        ForEach($eventManager.upcomingEvents) { $schedule in
+                            if schedule.notes.contains("☐") {
                                 ScheduleTodoCellView(schedule: $schedule)
                                     .environmentObject(eventManager)
                             }
@@ -51,7 +51,7 @@ struct TodoView: View {
                 }
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach($eventManager.reminders, id:\.calendarItemIdentifier) { $todo in
+                        ForEach($eventManager.reminders) { $todo in
                             
                             let priority: String = {
                                 var newPriority = String(localized: "IMPORTANCE_DEFAULT")

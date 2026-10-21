@@ -133,8 +133,8 @@ struct EazyCalApp: App {
 }
 
 private struct PermissionRequiredView: View {
-    let calendarStatus: EKAuthorizationStatus
-    let reminderStatus: EKAuthorizationStatus
+    let calendarStatus: AuthorizationStatus
+    let reminderStatus: AuthorizationStatus
     let retry: () -> Void
     let openSettings: () -> Void
 
@@ -156,7 +156,7 @@ private struct PermissionRequiredView: View {
         }
     }
 
-    private func permissionRow(_ title: String, status: EKAuthorizationStatus) -> some View {
+    private func permissionRow(_ title: String, status: AuthorizationStatus) -> some View {
         HStack {
             Image(systemName: status == .fullAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
             Text(title)

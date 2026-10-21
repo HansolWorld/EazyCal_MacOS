@@ -20,8 +20,8 @@ struct CalendarCell: View {
     @State private var isMoreEventPopover = false
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
-    @Binding var selectedEvent: EKEvent?
-    @Binding var selectedReminder: EKReminder?
+    @Binding var selectedEvent: EventItem?
+    @Binding var selectedReminder: ReminderItem?
     @EnvironmentObject var eventManager: EventStoreManager
     
     @State var isShow = false
@@ -110,12 +110,14 @@ struct CalendarCell: View {
                     Color.white
                         .scaleEffect(1.5)
                     
-                    AddSchedulerView(
-                        startDate: cellDate,
-                        doDate: cellDate,
-                        category: eventManager.calendars.first ?? EKCalendar()
-                    )
-                    .environmentObject(eventManager)
+                    if let calendar = eventManager.calendars.first {
+                        AddSchedulerView(
+                            startDate: cellDate,
+                            doDate: cellDate,
+                            category: calendar
+                        )
+                        .environmentObject(eventManager)
+                    }
                 }
             }
             .onDrop(of: [.text], isTargeted: $isHover) { _ in

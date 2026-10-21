@@ -22,6 +22,8 @@
 		AA9000010000000000000001 /* ApplicationWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9000020000000000000002 /* ApplicationWorkflowTests.swift */; };
 		AAB000010000000000000001 /* SwiftDataRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB000020000000000000002 /* SwiftDataRepositories.swift */; };
 		AAB000030000000000000003 /* PersistenceRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB000040000000000000004 /* PersistenceRepositoryTests.swift */; };
+		AAC000010000000000000001 /* EventModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000020000000000000002 /* EventModels.swift */; };
+		AAC000030000000000000003 /* CalendarColor+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000040000000000000004 /* CalendarColor+SwiftUI.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
 		FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559932AE637DF00F4E25F /* RepeatType.swift */; };
@@ -89,6 +91,8 @@
 		AA9000020000000000000002 /* ApplicationWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWorkflowTests.swift; sourceTree = "<group>"; };
 		AAB000020000000000000002 /* SwiftDataRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataRepositories.swift; sourceTree = "<group>"; };
 		AAB000040000000000000004 /* PersistenceRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceRepositoryTests.swift; sourceTree = "<group>"; };
+		AAC000020000000000000002 /* EventModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModels.swift; sourceTree = "<group>"; };
+		AAC000040000000000000004 /* CalendarColor+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CalendarColor+SwiftUI.swift"; sourceTree = "<group>"; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
 		FF15598E2AE5FA8000F4E25F /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FF1559932AE637DF00F4E25F /* RepeatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatType.swift; sourceTree = "<group>"; };
@@ -268,6 +272,7 @@
 		FF5759192ADBA56C001E588F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				AAC000020000000000000002 /* EventModels.swift */,
 				AA0000020000000000000002 /* CalendarMath.swift */,
 				AA2000020000000000000002 /* CalendarEntry.swift */,
 				AA6000020000000000000002 /* MonthCalendarState.swift */,
@@ -304,6 +309,7 @@
 		FFDBD77D2B01A73700AB2A57 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				AAC000040000000000000004 /* CalendarColor+SwiftUI.swift */,
 				FFF59D292B01A2CA0071761E /* TabButton.swift */,
 				FF478D702AEA39A20073EF32 /* CalendarTabView.swift */,
 				FF57591D2ADBAFDA001E588F /* CalendarCategoryView.swift */,
@@ -421,6 +427,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAC000010000000000000001 /* EventModels.swift in Sources */,
+				AAC000030000000000000003 /* CalendarColor+SwiftUI.swift in Sources */,
 				AA0000010000000000000001 /* CalendarMath.swift in Sources */,
 				AA2000010000000000000001 /* CalendarEntry.swift in Sources */,
 				AA2000030000000000000003 /* ScheduledReminderLabelView.swift in Sources */,

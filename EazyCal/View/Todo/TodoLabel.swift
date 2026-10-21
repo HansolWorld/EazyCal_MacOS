@@ -18,7 +18,7 @@ struct TodoLabel: View {
     @State private var isDateSelectedShow = false
     @State private var isPriorytySelectedShow = false
     @State private var lastButtonPressTime: Date?
-    @Binding var todo: EKReminder
+    @Binding var todo: ReminderItem
     @Binding var selectedId: String
     @FocusState var isFocus: Bool
     @EnvironmentObject var eventManager: EventStoreManager
@@ -81,7 +81,7 @@ struct TodoLabel: View {
                         .onChange(of: isFocus) { oldValue, newValue in
                             withAnimation {
                                 if newValue {
-                                    selectedId = todo.calendarItemIdentifier
+                                    selectedId = todo.id
                                 }
                             }
                         }
@@ -99,7 +99,7 @@ struct TodoLabel: View {
             }
             
             
-            if selectedId == todo.calendarItemIdentifier {
+            if selectedId == todo.id {
                 HStack {
                     HStack(spacing: 8) {
                         Button(action: {
@@ -269,5 +269,19 @@ struct TodoLabel: View {
 }
 
 #Preview {
-    TodoLabel(editTodo: "", newPriority: "기본", todo: .constant(EKReminder()), selectedId: .constant(""))
+    TodoLabel(
+        editTodo: "",
+        newPriority: "기본",
+        todo: .constant(
+            ReminderItem(
+                id: "preview",
+                title: "Preview",
+                priority: 0,
+                dueDateComponents: nil,
+                isCompleted: false,
+                color: .clear
+            )
+        ),
+        selectedId: .constant("")
+    )
 }

@@ -6,6 +6,17 @@
 import EventKit
 
 extension EKAuthorizationStatus {
+    var domainStatus: AuthorizationStatus {
+        switch self {
+        case .notDetermined: .notDetermined
+        case .restricted: .restricted
+        case .denied: .denied
+        case .writeOnly: .writeOnly
+        case .fullAccess: .fullAccess
+        @unknown default: .unknown
+        }
+    }
+
     var eventStoreError: EventStoreError? {
         switch self {
         case .denied:
@@ -21,12 +32,12 @@ extension EKAuthorizationStatus {
 }
 
 extension EventStore {
-    var calendarAuthorizationStatus: EKAuthorizationStatus {
-        EKEventStore.authorizationStatus(for: .event)
+    var calendarAuthorizationStatus: AuthorizationStatus {
+        EKEventStore.authorizationStatus(for: .event).domainStatus
     }
 
-    var reminderAuthorizationStatus: EKAuthorizationStatus {
-        EKEventStore.authorizationStatus(for: .reminder)
+    var reminderAuthorizationStatus: AuthorizationStatus {
+        EKEventStore.authorizationStatus(for: .reminder).domainStatus
     }
 
     func requestCalendarAccess() async throws -> Bool {

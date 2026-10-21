@@ -11,7 +11,7 @@ import EventKit
 struct TemplateLabel: View {
     @Bindable var template: Template
     @Binding var currentDragTemplate: Template?
-    @State var calendar: EKCalendar
+    @State var calendar: CalendarItem
     @State var newTitle: String
     @State var newIsAllDay: Bool
     @State var newStartDate: Date
@@ -32,7 +32,7 @@ struct TemplateLabel: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 8, height: 8)
-                    .foregroundStyle(Color(calendar.cgColor))
+                    .foregroundStyle(Color(calendarColor: calendar.color))
                 Text(template.title)
                     .font(.body)
                     .foregroundStyle(Color.gray400)
@@ -48,7 +48,7 @@ struct TemplateLabel: View {
                         .cornerRadius(12)
                         .opacity(0.1)
                 } else {
-                    Color(calendar.cgColor)
+                    Color(calendarColor: calendar.color)
                         .opacity(0.1)
                         .cornerRadius(12)
                 }
@@ -163,7 +163,7 @@ struct TemplateLabel: View {
                         startTime: newStartDate,
                         endTime: newEndTime,
                         todos: newTodos,
-                        calendarIdentifier: calendar.calendarIdentifier
+                        calendarIdentifier: calendar.id
                     )
                 )
             }

@@ -3,11 +3,11 @@
 //  EazyCal
 //
 
-import EventKit
+import Foundation
 
 struct CalendarEventSnapshot {
-    let events: [EKEvent]
-    let upcomingEvents: [EKEvent]
+    let events: [EventItem]
+    let upcomingEvents: [EventItem]
 }
 
 struct CalendarEventUseCase {
@@ -17,59 +17,55 @@ struct CalendarEventUseCase {
         self.repository = repository
     }
 
-    func loadSnapshot(for date: Date, calendars: [EKCalendar]) async throws -> CalendarEventSnapshot {
-        let events = try await repository.loadEvents(forDate: date, calendars: calendars)
+    func loadSnapshot(for date: Date, calendarIdentifiers: Set<String>) async throws -> CalendarEventSnapshot {
+        let events = try await repository.loadEvents(
+            forDate: date,
+            calendarIdentifiers: calendarIdentifiers
+        )
         let upcomingEvents = try await repository.loadUpcomingEvents()
         return CalendarEventSnapshot(events: events, upcomingEvents: upcomingEvents)
     }
 
     func saveEvent(
-        title: String,
-        isAllDay: Bool,
-        startDate: Date,
-        endDate: Date,
-        repeatDate: RepeatType,
-        url: URL?,
-        notes: [String],
-        calendar: EKCalendar,
+        draft: EventDraft,
         visibleDate: Date,
-        visibleCalendars: [EKCalendar]
+        visibleCalendarIdentifiers: Set<String>
     ) async throws -> CalendarEventSnapshot {
-        try await repository.saveEvent(
-            title: title,
-            isAllDay: isAllDay,
-            startDate: startDate,
-            endDate: endDate,
-            repeatDate: repeatDate,
-            url: url,
-            notes: notes,
-            calendar: calendar
+        try await repository.saveEvent(draft)
+        return try await loadSnapshot(
+            for: visibleDate,
+            calendarIdentifiers: visibleCalendarIdentifiers
         )
-        return try await loadSnapshot(for: visibleDate, calendars: visibleCalendars)
     }
 
     func update(
-        _ event: EKEvent,
+        _ event: EventItem,
         visibleDate: Date,
-        visibleCalendars: [EKCalendar]
+        visibleCalendarIdentifiers: Set<String>
     ) async throws -> CalendarEventSnapshot {
-        try await repository.updateEvent(event: event)
-        return try await loadSnapshot(for: visibleDate, calendars: visibleCalendars)
+        try await repository.updateEvent(event)
+        return try await loadSnapshot(
+            for: visibleDate,
+            calendarIdentifiers: visibleCalendarIdentifiers
+        )
     }
 
     func remove(
-        _ event: EKEvent,
+        identifier: String,
         visibleDate: Date,
-        visibleCalendars: [EKCalendar]
+        visibleCalendarIdentifiers: Set<String>
     ) async throws -> CalendarEventSnapshot {
-        try await repository.removeEvent(event: event)
-        return try await loadSnapshot(for: visibleDate, calendars: visibleCalendars)
+        try await repository.removeEvent(identifier: identifier)
+        return try await loadSnapshot(
+            for: visibleDate,
+            calendarIdentifiers: visibleCalendarIdentifiers
+        )
     }
 }
 
 struct ReminderSnapshot {
-    let reminders: [EKReminder]
-    let scheduledReminders: [EKReminder]
+    let reminders: [ReminderItem]
+    let scheduledReminders: [ReminderItem]
 }
 
 struct ReminderUseCase {
@@ -93,30 +89,29 @@ struct ReminderUseCase {
     }
 
     func create(
-        title: String,
-        date: Date?,
-        highlight: String,
+        draft: ReminderDraft,
         visibleDate: Date
     ) async throws -> ReminderSnapshot {
-        try await repository.createNewReminder(title: title, date: date, highlight: highlight)
+        try await repository.createNewReminder(draft)
         return try await loadSnapshot(for: visibleDate)
     }
 
-    func complete(_ reminder: EKReminder, visibleDate: Date) async throws -> ReminderSnapshot {
-        try await repository.completeReminder(reminder: reminder)
+    func complete(identifier: String, visibleDate: Date) async throws -> ReminderSnapshot {
+        try await repository.completeReminder(identifier: identifier)
         return try await loadSnapshot(for: visibleDate)
     }
 
-    func update(_ reminder: EKReminder, visibleDate: Date) async throws -> ReminderSnapshot {
-        try await repository.updateReminder(reminder: reminder)
+    func update(_ reminder: ReminderItem, visibleDate: Date) async throws -> ReminderSnapshot {
+        try await repository.updateReminder(reminder)
         return try await loadSnapshot(for: visibleDate)
     }
 
     func reschedule(
-        _ reminder: EKReminder,
+        _ reminder: ReminderItem,
         to targetDate: Date,
         visibleDate: Date
     ) async throws -> ReminderSnapshot {
+        var reminder = reminder
         reminder.dueDateComponents = ReminderSchedule.moving(
             reminder.dueDateComponents,
             toDay: targetDate

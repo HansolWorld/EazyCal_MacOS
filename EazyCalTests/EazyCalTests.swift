@@ -95,9 +95,17 @@ final class ReminderScheduleTests: XCTestCase {
     }
 
     func testEventEntryUsesExclusiveEndDateForDisplay() throws {
-        let event = EKEvent(eventStore: EKEventStore())
-        event.startDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3))
-        event.endDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 4))
+        let event = EventItem(
+            id: "event",
+            calendar: CalendarItem(id: "calendar", title: "Calendar", color: .clear),
+            title: "Event",
+            isAllDay: true,
+            startDate: try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3)),
+            endDate: try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 4)),
+            repeatType: .oneDay,
+            url: nil,
+            notes: ""
+        )
 
         let entry = CalendarEntryMapper.map(event)
 
@@ -208,23 +216,29 @@ final class EventStoreManagerTests: XCTestCase {
             reminderRepository: store,
             userDefaults: defaults
         )
-        let reminder = EKReminder(eventStore: EKEventStore())
-        reminder.dueDateComponents = DateComponents(
-            year: 2025,
-            month: 1,
-            day: 3,
-            hour: 14,
-            minute: 25
+        let reminder = ReminderItem(
+            id: "reminder",
+            title: "Reminder",
+            priority: 0,
+            dueDateComponents: DateComponents(
+                year: 2025,
+                month: 1,
+                day: 3,
+                hour: 14,
+                minute: 25
+            ),
+            isCompleted: false,
+            color: .clear
         )
         let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
 
         try await manager.rescheduleReminder(reminder, to: targetDate)
 
-        XCTAssertEqual(reminder.dueDateComponents?.year, 2025)
-        XCTAssertEqual(reminder.dueDateComponents?.month, 2)
-        XCTAssertEqual(reminder.dueDateComponents?.day, 7)
-        XCTAssertEqual(reminder.dueDateComponents?.hour, 14)
-        XCTAssertEqual(reminder.dueDateComponents?.minute, 25)
+        XCTAssertEqual(store.updatedReminder?.dueDateComponents?.year, 2025)
+        XCTAssertEqual(store.updatedReminder?.dueDateComponents?.month, 2)
+        XCTAssertEqual(store.updatedReminder?.dueDateComponents?.day, 7)
+        XCTAssertEqual(store.updatedReminder?.dueDateComponents?.hour, 14)
+        XCTAssertEqual(store.updatedReminder?.dueDateComponents?.minute, 25)
         XCTAssertEqual(store.updateReminderCount, 1)
         XCTAssertEqual(store.reminderLoadCount, 1)
         XCTAssertEqual(store.scheduledReminderLoadCount, 1)
@@ -253,8 +267,8 @@ final class EventStoreManagerTests: XCTestCase {
 }
 
 private final class FakeEventStore: CalendarRepository, ReminderRepository {
-    var calendarAuthorizationStatus: EKAuthorizationStatus = .fullAccess
-    var reminderAuthorizationStatus: EKAuthorizationStatus = .fullAccess
+    var calendarAuthorizationStatus: AuthorizationStatus = .fullAccess
+    var reminderAuthorizationStatus: AuthorizationStatus = .fullAccess
     var calendarLoadCount = 0
     var eventLoadCount = 0
     var upcomingLoadCount = 0
@@ -262,22 +276,23 @@ private final class FakeEventStore: CalendarRepository, ReminderRepository {
     var scheduledReminderLoadCount = 0
     var createReminderCount = 0
     var updateReminderCount = 0
+    var updatedReminder: ReminderItem?
     var shouldFailEventLoading = false
 
     func requestCalendarAccess() async throws -> Bool { true }
     func requestReminderAccess() async throws -> Bool { true }
 
-    func loadCalendars() async throws -> [EKCalendar] {
+    func loadCalendars() async throws -> [CalendarItem] {
         calendarLoadCount += 1
         return []
     }
 
-    func loadUpcomingEvents() async throws -> [EKEvent] {
+    func loadUpcomingEvents() async throws -> [EventItem] {
         upcomingLoadCount += 1
         return []
     }
 
-    func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent] {
+    func loadEvents(forDate date: Date, calendarIdentifiers: Set<String>) async throws -> [EventItem] {
         eventLoadCount += 1
         if shouldFailEventLoading {
             throw EventStoreError.unknown
@@ -285,29 +300,30 @@ private final class FakeEventStore: CalendarRepository, ReminderRepository {
         return []
     }
 
-    func loadAllReminders() async throws -> [EKReminder] {
+    func loadAllReminders() async throws -> [ReminderItem] {
         reminderLoadCount += 1
         return []
     }
 
-    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder] {
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [ReminderItem] {
         scheduledReminderLoadCount += 1
         return []
     }
 
-    func completeReminder(reminder: EKReminder) async throws {}
-    func updateReminder(reminder: EKReminder) async throws {
+    func completeReminder(identifier: String) async throws {}
+    func updateReminder(_ reminder: ReminderItem) async throws {
         updateReminderCount += 1
+        updatedReminder = reminder
     }
 
-    func createNewReminder(title: String, date: Date?, highlight: String) async throws {
+    func createNewReminder(_ draft: ReminderDraft) async throws {
         createReminderCount += 1
     }
 
     func createNewCalendar() async throws {}
-    func updateCalendar(calendar: EKCalendar) async throws {}
-    func removeCalendar(calendar: EKCalendar) async throws {}
-    func saveEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, repeatDate: RepeatType, url: URL?, notes: [String], calendar: EKCalendar) async throws {}
-    func updateEvent(event: EKEvent) async throws {}
-    func removeEvent(event: EKEvent) async throws {}
+    func updateCalendar(_ calendar: CalendarItem) async throws {}
+    func removeCalendar(identifier: String) async throws {}
+    func saveEvent(_ draft: EventDraft) async throws {}
+    func updateEvent(_ event: EventItem) async throws {}
+    func removeEvent(identifier: String) async throws {}
 }

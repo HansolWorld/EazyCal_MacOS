@@ -3,18 +3,17 @@
 //  EazyCal
 //
 
-import EventKit
 import Foundation
 
 enum CalendarDropItem {
     case template(Template)
-    case event(EKEvent)
-    case reminder(EKReminder)
+    case event(EventItem)
+    case reminder(ReminderItem)
 }
 
 @MainActor
 protocol CalendarDropEventHandling: AnyObject {
-    var calendars: [EKCalendar] { get }
+    var calendars: [CalendarItem] { get }
 
     func saveEvent(
         title: String,
@@ -24,10 +23,10 @@ protocol CalendarDropEventHandling: AnyObject {
         repeatDate: RepeatType,
         url: URL?,
         notes: [String],
-        calendar: EKCalendar
+        calendar: CalendarItem
     ) async throws
-    func updateEvent(event: EKEvent) async throws
-    func rescheduleReminder(_ reminder: EKReminder, to targetDate: Date) async throws
+    func updateEvent(event: EventItem) async throws
+    func rescheduleReminder(_ reminder: ReminderItem, to targetDate: Date) async throws
 }
 
 extension EventStoreManager: CalendarDropEventHandling {}
@@ -62,7 +61,7 @@ struct CalendarDropCoordinator {
 
     private func createEvent(from template: Template, on targetDate: Date) async throws {
         guard let eventCalendar = eventHandler.calendars.first(where: {
-            $0.calendarIdentifier == template.calendarId
+            $0.id == template.calendarId
         }),
         let startDate = CalendarMath.moving(template.startTime, toDay: targetDate, calendar: calendar),
         var endDate = CalendarMath.moving(template.endTime, toDay: targetDate, calendar: calendar) else {
@@ -85,16 +84,17 @@ struct CalendarDropCoordinator {
         )
     }
 
-    private func move(_ event: EKEvent, to targetDate: Date) async throws {
+    private func move(_ event: EventItem, to targetDate: Date) async throws {
         guard let movedStartDate = CalendarMath.moving(
             event.startDate,
             toDay: targetDate,
             calendar: calendar
-        ), let originalEndDate = event.endDate else {
+        ) else {
             return
         }
 
-        let duration = originalEndDate.timeIntervalSince(event.startDate)
+        var event = event
+        let duration = event.endDate.timeIntervalSince(event.startDate)
         event.startDate = movedStartDate
         event.endDate = movedStartDate.addingTimeInterval(duration)
         try await eventHandler.updateEvent(event: event)

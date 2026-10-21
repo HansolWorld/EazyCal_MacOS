@@ -27,7 +27,7 @@ struct TemplateView: View {
                 Button(action: {
                     if let calendar = eventManager.calendars.first {
                         SwiftDataTemplateRepository(context: context)
-                            .createDefault(calendarIdentifier: calendar.calendarIdentifier)
+                            .createDefault(calendarIdentifier: calendar.id)
                     }
                 }) {
                     Image(systemName: SFSymbol.plus.name)
@@ -39,7 +39,7 @@ struct TemplateView: View {
                 LazyVStack(spacing: 10) {
                     if let firstCalendar = eventManager.calendars.first {
                         ForEach(templates, id:\.id) { template in
-                            let calendar: EKCalendar = eventManager.calendars.first(where: {$0.calendarIdentifier == template.calendarId}) ?? firstCalendar
+                            let calendar = eventManager.calendars.first(where: { $0.id == template.calendarId }) ?? firstCalendar
                             TemplateLabel(
                                 template: template,
                                 currentDragTemplate: $currentDragTemplate,

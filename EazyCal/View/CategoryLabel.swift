@@ -10,14 +10,14 @@ import SwiftData
 import EventKit
 
 struct CategoryLabelView: View {
-    let calendar: EKCalendar
+    let calendar: CalendarItem
     @State private var onHover = false
     @State private var calendarTitle = ""
     @State private var calendarColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
-    @State private var requestCalendar: EKCalendar?
+    @State private var requestCalendar: CalendarItem?
     @State private var editCalendarRequest: Bool = false
     @State private var deleteCalendarRequest: Bool = false
-    @Binding var currentDragItem: EKCalendar?
+    @Binding var currentDragItem: CalendarItem?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -35,7 +35,7 @@ struct CategoryLabelView: View {
                     .scaledToFit()
                     .frame(width: 8, height: 8)
                     .fontWeight(.heavy)
-                    .foregroundStyle(Color(cgColor: calendar.cgColor))
+                    .foregroundStyle(Color(calendarColor: calendar.color))
                 Text(calendar.title)
                     .font(.body)
                     .foregroundStyle(.gray400)
@@ -56,7 +56,7 @@ struct CategoryLabelView: View {
             
             .onDrag { () -> NSItemProvider in
                 self.currentDragItem = calendar
-                return NSItemProvider(object: calendar.calendarIdentifier as NSString)
+                return NSItemProvider(object: calendar.id as NSString)
             }
         }
         .buttonStyle(.plain)
@@ -65,7 +65,7 @@ struct CategoryLabelView: View {
                 Button(action: {
                     requestCalendar = calendar
                     calendarTitle = calendar.title
-                    calendarColor = calendar.cgColor
+                    calendarColor = calendar.color.cgColor
                     editCalendarRequest = true
                 }) {
                     Text(String(localized: "EDIT"))
@@ -93,10 +93,11 @@ struct CategoryLabelView: View {
                     }
                     Spacer()
                     Button(action: {
-                        calendar.cgColor = calendarColor
-                        calendar.title = calendarTitle
+                        var updatedCalendar = calendar
+                        updatedCalendar.color = CalendarColor(calendarColor)
+                        updatedCalendar.title = calendarTitle
                         Task {
-                            try await eventManager.updateCalendar(calendar: calendar)
+                            try await eventManager.updateCalendar(calendar: updatedCalendar)
                         }
                         editCalendarRequest = false
                     }) {

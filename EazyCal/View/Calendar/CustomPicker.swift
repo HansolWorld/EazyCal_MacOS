@@ -10,9 +10,9 @@ import EventKit
 
 struct CustomPicker: View {
     let title: String
-    @State var categoryList: [EKCalendar]
+    let categoryList: [CalendarItem]
     @State var isShow = false
-    @Binding var selected: EKCalendar
+    @Binding var selected: CalendarItem
     
     var body: some View {
         HStack {
@@ -28,7 +28,7 @@ struct CustomPicker: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 8, height: 8)
-                        .foregroundStyle(Color(cgColor: selected.cgColor))
+                        .foregroundStyle(Color(calendarColor: selected.color))
                     Text(selected.title)
                         .font(.body)
                         .foregroundStyle(.gray400)
@@ -40,7 +40,7 @@ struct CustomPicker: View {
             .buttonStyle(.plain)
             .popover(isPresented: $isShow) {
                 VStack(alignment: .leading) {
-                    ForEach(categoryList, id: \.calendarIdentifier) { category in
+                    ForEach(categoryList) { category in
                         Button(action: {
                             selected = category
                             isShow = false
@@ -50,7 +50,7 @@ struct CustomPicker: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 8, height: 8)
-                                    .foregroundStyle(Color(cgColor: category.cgColor))
+                                    .foregroundStyle(Color(calendarColor: category.color))
                                 Text(category.title)
                                     .font(.caption)
                                     .foregroundStyle(.gray400)
@@ -73,5 +73,9 @@ struct CustomPicker: View {
 }
 
 #Preview {
-    CustomPicker(title: "캘린더", categoryList: [], selected: .constant(EKCalendar()))
+    CustomPicker(
+        title: "캘린더",
+        categoryList: [],
+        selected: .constant(CalendarItem(id: "preview", title: "Preview", color: .clear))
+    )
 }

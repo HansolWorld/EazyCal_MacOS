@@ -19,7 +19,7 @@ class Todo: ObservableObject {
 }
 
 struct EditSchedulePopoverView: View {
-    let event: EKEvent
+    let event: EventItem
     @State var editTitle: String
     @State var editIsAllDay: Bool
     @State var editStartDate: Date
@@ -35,7 +35,7 @@ struct EditSchedulePopoverView: View {
     }
     @State var editTodo = Todo(title: "")
     @State var editTodos: [Todo]
-    @State var editCategory: EKCalendar
+    @State var editCategory: CalendarItem
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -155,16 +155,17 @@ struct EditSchedulePopoverView: View {
         .padding()
         .focusable()
         .onDisappear {
-            event.title = editTitle
-            event.isAllDay = editIsAllDay
-            event.startDate = editStartDate
-            event.endDate = editDoDate
-            event.url = URL(string: editURL)
-            event.recurrenceRules = RecurrenceRuleFactory.rules(for: editRepeatDate)
-            event.notes = todos(editTodos)
-            event.calendar = editCategory
+            var updatedEvent = event
+            updatedEvent.title = editTitle
+            updatedEvent.isAllDay = editIsAllDay
+            updatedEvent.startDate = editStartDate
+            updatedEvent.endDate = editDoDate
+            updatedEvent.url = URL(string: editURL)
+            updatedEvent.repeatType = editRepeatDate
+            updatedEvent.notes = todos(editTodos)
+            updatedEvent.calendar = editCategory
             Task {
-                try await eventManager.updateEvent(event: event)
+                try await eventManager.updateEvent(event: updatedEvent)
             }
         }
         .background {
@@ -174,7 +175,7 @@ struct EditSchedulePopoverView: View {
     }
     
     func todos(_ todos: [Todo]) -> String {
-        var notes = event.notes?.split(separator: "\n") ?? []
+        var notes = event.notes.split(separator: "\n")
         notes = notes.filter { !($0.contains("☑︎") || $0.contains("☐")) }
         
         for todo in todos {

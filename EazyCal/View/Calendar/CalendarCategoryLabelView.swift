@@ -9,16 +9,16 @@ import SwiftUI
 import EventKit
 
 struct CalendarCategoryLabelView: View {
-    let schedule: EKEvent
+    let schedule: EventItem
     let viewType: CellViewType
     
     @State var isSelected = false
     @State var isHover = false
     @State var isEdit = false
-    @State var requestSchedule: EKEvent?
+    @State var requestSchedule: EventItem?
     @State var deleteSchedule = false
-    @Binding var selectedEvent: EKEvent?
-    @Binding var selectedReminder: EKReminder?
+    @Binding var selectedEvent: EventItem?
+    @Binding var selectedReminder: ReminderItem?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -28,7 +28,7 @@ struct CalendarCategoryLabelView: View {
                 .scaledToFit()
                 .frame(width: 6, height: 6)
                 .fontWeight(.heavy)
-                .foregroundStyle(viewType == .Dating || viewType == .DoDate ? Color.clear : Color(cgColor: schedule.calendar.cgColor))
+                .foregroundStyle(viewType == .Dating || viewType == .DoDate ? Color.clear : Color(calendarColor: schedule.calendar.color))
             Text(viewType == .Dating || viewType == .DoDate ? " " : schedule.title)
                 .font(.callout)
                 .foregroundStyle(selectedEvent == schedule ? Color.white : Color.black)
@@ -43,28 +43,28 @@ struct CalendarCategoryLabelView: View {
                 switch viewType {
                 case .Dating:
                     Rectangle()
-                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .fill(Color(calendarColor: schedule.calendar.color))
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                 case .StartDate:
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .circular)
-                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .fill(Color(calendarColor: schedule.calendar.color))
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                         .padding(.leading, 4)
                 case .DoDate:
                     UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
-                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .fill(Color(calendarColor: schedule.calendar.color))
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                         .padding(.trailing, 4)
                 case .OneDate:
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
-                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .fill(Color(calendarColor: schedule.calendar.color))
                         .opacity(selectedEvent == schedule ? 1 : 0.1)
                         .padding(.horizontal, 4)
                 }
             } else {
                 if selectedEvent == schedule {
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
-                        .fill(Color(cgColor: schedule.calendar.cgColor))
+                        .fill(Color(calendarColor: schedule.calendar.color))
                         .padding(.horizontal, 4)
                 }
             }
@@ -86,7 +86,7 @@ struct CalendarCategoryLabelView: View {
         .onDrag { () -> NSItemProvider in
             selectedReminder = nil
             selectedEvent = schedule
-            return NSItemProvider(object: schedule.eventIdentifier as NSString)
+            return NSItemProvider(object: schedule.id as NSString)
         }
         .onChange(of: selectedEvent, { oldValue, newValue in
             if selectedEvent == schedule {
@@ -102,7 +102,7 @@ struct CalendarCategoryLabelView: View {
                 editIsAllDay: schedule.isAllDay,
                 editStartDate: schedule.startDate,
                 editDoDate: schedule.endDate,
-                editRepeatDate: repeatType(schedule.recurrenceRules?.first?.frequency),
+                editRepeatDate: schedule.repeatType,
                 editURL: schedule.url?.absoluteString ?? "",
                 editTodos: todos(),
                 editCategory: schedule.calendar
@@ -152,27 +152,8 @@ struct CalendarCategoryLabelView: View {
         }
     }
     
-    func repeatType(_ frequency: EKRecurrenceFrequency?) -> RepeatType {
-        if let frequency = frequency {
-            switch frequency {
-            case .daily:
-                return .everyDay
-            case .weekly:
-                return .everyWeek
-            case .monthly:
-                return .everyMonth
-            case .yearly:
-                return .everyYear
-            default:
-                return .oneDay
-            }
-        } else {
-            return .oneDay
-        }
-    }
-    
     func todos() -> [Todo] {
-        let todosString = schedule.notes?.components(separatedBy: "\n").filter {$0.contains("☐") || $0.contains("☑︎")} ?? []
+        let todosString = schedule.notes.components(separatedBy: "\n").filter {$0.contains("☐") || $0.contains("☑︎")}
         return todosString.map {
             if $0.contains("☐") {
                 return Todo(isComplete: false, title: $0.replacingOccurrences(of: "☐", with: ""))

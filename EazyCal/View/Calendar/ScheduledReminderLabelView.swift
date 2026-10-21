@@ -7,16 +7,13 @@ import EventKit
 import SwiftUI
 
 struct ScheduledReminderLabelView: View {
-    let reminder: EKReminder
-    @Binding var selectedEvent: EKEvent?
-    @Binding var selectedReminder: EKReminder?
+    let reminder: ReminderItem
+    @Binding var selectedEvent: EventItem?
+    @Binding var selectedReminder: ReminderItem?
     @EnvironmentObject private var eventManager: EventStoreManager
 
     private var tintColor: Color {
-        guard let color = reminder.calendar?.cgColor else {
-            return .calendarBlue
-        }
-        return Color(cgColor: color)
+        Color(calendarColor: reminder.color)
     }
 
     private var isSelected: Bool {
@@ -38,7 +35,7 @@ struct ScheduledReminderLabelView: View {
             .buttonStyle(.plain)
             .help(String(localized: "COMPLETE_REMINDER"))
 
-            Text(reminder.title ?? "")
+            Text(reminder.title)
                 .font(.callout)
                 .foregroundStyle(isSelected ? Color.white : Color.black)
                 .lineLimit(1)
@@ -62,7 +59,7 @@ struct ScheduledReminderLabelView: View {
         .onDrag {
             selectedEvent = nil
             selectedReminder = reminder
-            return NSItemProvider(object: reminder.calendarItemIdentifier as NSString)
+            return NSItemProvider(object: reminder.id as NSString)
         }
         .contextMenu {
             Button(String(localized: "COMPLETE_REMINDER")) {

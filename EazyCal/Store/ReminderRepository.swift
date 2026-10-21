@@ -3,15 +3,20 @@
 //  EazyCal
 //
 
-import EventKit
+import Foundation
 
 protocol ReminderRepository: AnyObject {
-    var reminderAuthorizationStatus: EKAuthorizationStatus { get }
+    var reminderAuthorizationStatus: AuthorizationStatus { get }
 
     func requestReminderAccess() async throws -> Bool
-    func loadAllReminders() async throws -> [EKReminder]
-    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder]
-    func completeReminder(reminder: EKReminder) async throws
-    func updateReminder(reminder: EKReminder) async throws
-    func createNewReminder(title: String, date: Date?, highlight: String) async throws
+    func loadAllReminders() async throws -> [ReminderItem]
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [ReminderItem]
+    func completeReminder(identifier: String) async throws
+    func updateReminder(_ reminder: ReminderItem) async throws
+    func createNewReminder(_ draft: ReminderDraft) async throws
+}
+
+protocol EventStoreChangeObserving: AnyObject {
+    func startObservingChanges(_ handler: @escaping @MainActor () -> Void)
+    func stopObservingChanges()
 }

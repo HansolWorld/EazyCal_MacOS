@@ -9,8 +9,8 @@ import SwiftUI
 struct CalendarView: View {
     @Binding var currentDragTemplate: Template?
     @Binding var isSide: Bool
-    @State private var selectedEvent: EKEvent?
-    @State private var selectedReminder: EKReminder?
+    @State private var selectedEvent: EventItem?
+    @State private var selectedReminder: ReminderItem?
     @EnvironmentObject private var calendarViewModel: CalendarViewModel
 
     var body: some View {

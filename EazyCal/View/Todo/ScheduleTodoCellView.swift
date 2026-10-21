@@ -9,7 +9,7 @@ import SwiftUI
 import EventKit
 
 struct ScheduleTodoCellView: View {
-    @Binding var schedule: EKEvent
+    @Binding var schedule: EventItem
     @State private var lastButtonPressTime: Date?
     @EnvironmentObject var eventManager: EventStoreManager
     
@@ -21,7 +21,7 @@ struct ScheduleTodoCellView: View {
                     .scaledToFit()
                     .frame(width: 6, height: 6)
                     .fontWeight(.heavy)
-                    .foregroundStyle(Color(cgColor: schedule.calendar.cgColor ?? CGColor.clear))
+                    .foregroundStyle(Color(calendarColor: schedule.calendar.color))
                 Text(schedule.title)
                     .font(.body)
                     .foregroundStyle(.black)
@@ -32,10 +32,10 @@ struct ScheduleTodoCellView: View {
                     .foregroundStyle(.gray300)
             }
             
-            let notes = splitTodo(by: schedule.notes ?? "")
+            let notes = splitTodo(by: schedule.notes)
             ForEach(notes.indices, id: \.self) { index in
                 Button(action: {
-                    var scheduleTodos = splitTodo(by: schedule.notes ?? "")
+                    var scheduleTodos = splitTodo(by: schedule.notes)
                     let todo = scheduleTodos[index]
                     switch todo.contains("☑︎") {
                     case true:
@@ -44,7 +44,7 @@ struct ScheduleTodoCellView: View {
                         scheduleTodos[index] = todo.replacingOccurrences(of: "☐", with: "☑︎")
                     }
                     
-                    var newNotes = schedule.notes?.components(separatedBy: "\n").filter( {!($0.contains("☑︎") || $0.contains("☐"))} ) ?? []
+                    var newNotes = schedule.notes.components(separatedBy: "\n").filter( {!($0.contains("☑︎") || $0.contains("☐"))} )
                     
                     newNotes += scheduleTodos
                     schedule.notes = newNotes.joined(separator: "\n")
@@ -90,7 +90,7 @@ struct ScheduleTodoCellView: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(cgColor: schedule.calendar.cgColor ?? CGColor.clear))
+                .fill(Color(calendarColor: schedule.calendar.color))
                 .opacity(0.1)
         }
     }
@@ -101,5 +101,19 @@ struct ScheduleTodoCellView: View {
 }
 
 #Preview {
-    ScheduleTodoCellView(schedule: .constant(EKEvent()))
+    ScheduleTodoCellView(
+        schedule: .constant(
+            EventItem(
+                id: "preview",
+                calendar: CalendarItem(id: "preview", title: "Preview", color: .clear),
+                title: "Preview",
+                isAllDay: false,
+                startDate: Date(),
+                endDate: Date(),
+                repeatType: .oneDay,
+                url: nil,
+                notes: ""
+            )
+        )
+    )
 }

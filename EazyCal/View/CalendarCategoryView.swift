@@ -19,7 +19,7 @@ struct CalendarCategoryView: View {
     @State private var selectCategory: CalendarCategory?
     @State private var editCategoryRequest: Bool = false
     @State private var deleteCategoryRequest: Bool = false
-    @State private var currentDragItem: EKCalendar?
+    @State private var currentDragItem: CalendarItem?
     @EnvironmentObject var eventManager: EventStoreManager
 
     @Environment(\.modelContext) private var context
@@ -160,17 +160,17 @@ struct CalendarCategoryView: View {
                         if selectCategory?.title == String(localized: "TOTAL") {
                             return true
                         } else if selectCategory?.title == String(localized: "NOT_CATEGORY") {
-                            return !categorizedCalendar.contains($0.calendarIdentifier)
+                            return !categorizedCalendar.contains($0.id)
                         } else {
                             if let selectCategory {
-                                return selectCategory.calendars.contains($0.calendarIdentifier)
+                                return selectCategory.calendars.contains($0.id)
                             } else {
                                 return false
                             }
                         }
                     }
                     
-                    ForEach(calendaries, id:\.self) { calendar in
+                    ForEach(calendaries) { calendar in
                         CategoryLabelView(calendar: calendar, currentDragItem: $currentDragItem)
                             .environmentObject(eventManager)
                     }
@@ -198,10 +198,10 @@ struct CalendarCategoryView: View {
     }
     
     
-    func replaceCategory(_ category: CalendarCategory, droppingCalendar: EKCalendar) {
+    func replaceCategory(_ category: CalendarCategory, droppingCalendar: CalendarItem) {
         let source = selectCategory?.title == String(localized: "TOTAL") ? nil : selectCategory
         SwiftDataCalendarCategoryRepository(context: context).moveCalendar(
-            identifier: droppingCalendar.calendarIdentifier,
+            identifier: droppingCalendar.id,
             from: source,
             to: category
         )

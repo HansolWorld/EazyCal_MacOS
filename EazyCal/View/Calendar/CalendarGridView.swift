@@ -25,8 +25,8 @@ struct CalendarWeekdayHeaderView: View {
 struct CalendarGridView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
-    @Binding var selectedEvent: EKEvent?
-    @Binding var selectedReminder: EKReminder?
+    @Binding var selectedEvent: EventItem?
+    @Binding var selectedReminder: ReminderItem?
     @EnvironmentObject private var eventManager: EventStoreManager
     @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
 

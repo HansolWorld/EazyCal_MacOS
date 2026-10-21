@@ -3,20 +3,19 @@
 //  EazyCal
 //
 
-import EventKit
+import Foundation
 
 enum CalendarEntryMapper {
-    static func map(_ event: EKEvent) -> CalendarEntry {
-        let startDate = event.startDate ?? Date()
-        let rawEndDate = event.endDate ?? startDate
-        let identifier = event.eventIdentifier ?? event.calendarItemIdentifier
+    static func map(_ event: EventItem) -> CalendarEntry {
+        let startDate = event.startDate
+        let rawEndDate = event.endDate
 
         return CalendarEntry(
-            id: "event:\(identifier)",
-            sourceIdentifier: identifier,
+            id: "event:\(event.id)",
+            sourceIdentifier: event.id,
             kind: .event,
-            calendarIdentifier: event.calendar?.calendarIdentifier,
-            title: event.title ?? "",
+            calendarIdentifier: event.calendar.id,
+            title: event.title,
             startDate: startDate,
             // EventKit end dates are exclusive. The domain interval is inclusive.
             endDate: rawEndDate > startDate
@@ -27,7 +26,7 @@ enum CalendarEntryMapper {
     }
 
     static func map(
-        _ reminder: EKReminder,
+        _ reminder: ReminderItem,
         calendar: Calendar = .current
     ) -> CalendarEntry? {
         guard let dueDate = ReminderSchedule.date(
@@ -36,14 +35,12 @@ enum CalendarEntryMapper {
         ) else {
             return nil
         }
-        let identifier = reminder.calendarItemIdentifier
-
         return CalendarEntry(
-            id: "reminder:\(identifier)",
-            sourceIdentifier: identifier,
+            id: "reminder:\(reminder.id)",
+            sourceIdentifier: reminder.id,
             kind: .reminder,
             calendarIdentifier: nil,
-            title: reminder.title ?? "",
+            title: reminder.title,
             startDate: dueDate,
             endDate: dueDate,
             isAllDay: reminder.dueDateComponents?.hour == nil

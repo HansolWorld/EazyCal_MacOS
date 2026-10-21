@@ -16,7 +16,7 @@ struct AddSchedulerView: View {
     @State var repeatDate = RepeatType.oneDay
     @State var todo: String = ""
     @State var todos:[String] = []
-    @State var category: EKCalendar
+    @State var category: CalendarItem
     @State var url: String = ""
     var linkURL: URL? {
         if !url.contains("http") {
@@ -136,7 +136,12 @@ struct AddSchedulerView: View {
 }
 
 #Preview {
-    AddSchedulerView(startDate: Date(), doDate: Date(), category: EKCalendar(), url: "")
+    AddSchedulerView(
+        startDate: Date(),
+        doDate: Date(),
+        category: CalendarItem(id: "preview", title: "Preview", color: .clear),
+        url: ""
+    )
         .environmentObject(EventStoreManager())
         .background {
             Color.white

@@ -1,4 +1,3 @@
-import EventKit
 import XCTest
 @testable import EazyCal
 
@@ -6,13 +5,13 @@ import XCTest
 final class ApplicationWorkflowTests: XCTestCase {
     func testReminderUseCaseCompletesAndReloadsSnapshot() async throws {
         let repository = WorkflowRepositorySpy()
-        let reminder = EKReminder(eventStore: EKEventStore())
+        let reminder = makeReminder()
         repository.reminders = [reminder]
         repository.scheduledReminders = [reminder]
         let useCase = ReminderUseCase(repository: repository)
         let visibleDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
 
-        let snapshot = try await useCase.complete(reminder, visibleDate: visibleDate)
+        let snapshot = try await useCase.complete(identifier: reminder.id, visibleDate: visibleDate)
 
         XCTAssertEqual(repository.completeReminderCount, 1)
         XCTAssertEqual(repository.reminderLoadCount, 1)
@@ -23,7 +22,7 @@ final class ApplicationWorkflowTests: XCTestCase {
 
     func testCalendarEventUseCaseUpdatesAndReloadsBothEventLists() async throws {
         let repository = WorkflowRepositorySpy()
-        let event = EKEvent(eventStore: EKEventStore())
+        let event = makeEvent()
         repository.events = [event]
         repository.upcomingEvents = [event]
         let useCase = CalendarEventUseCase(repository: repository)
@@ -32,7 +31,7 @@ final class ApplicationWorkflowTests: XCTestCase {
         let snapshot = try await useCase.update(
             event,
             visibleDate: visibleDate,
-            visibleCalendars: []
+            visibleCalendarIdentifiers: []
         )
 
         XCTAssertEqual(repository.updateEventCount, 1)
@@ -44,7 +43,7 @@ final class ApplicationWorkflowTests: XCTestCase {
 
     func testDropCoordinatorMovesEventAndPreservesDuration() async throws {
         let handler = DropEventHandlerSpy()
-        let event = EKEvent(eventStore: EKEventStore())
+        var event = makeEvent()
         event.startDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3, hour: 9, minute: 0))
         event.endDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3, hour: 10, minute: 30))
         let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
@@ -53,25 +52,24 @@ final class ApplicationWorkflowTests: XCTestCase {
 
         XCTAssertEqual(handler.updateEventCount, 1)
         XCTAssertEqual(
-            event.endDate.timeIntervalSince(event.startDate),
+            try XCTUnwrap(handler.updatedEvent).endDate.timeIntervalSince(try XCTUnwrap(handler.updatedEvent).startDate),
             90 * 60,
             accuracy: 0.1
         )
-        XCTAssertEqual(Calendar.current.component(.day, from: event.startDate), 7)
+        XCTAssertEqual(Calendar.current.component(.day, from: try XCTUnwrap(handler.updatedEvent).startDate), 7)
     }
 
     func testDropCoordinatorMovesOvernightTemplateEndToNextDay() async throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
-        let eventStore = EKEventStore()
-        let eventCalendar = EKCalendar(for: .event, eventStore: eventStore)
+        let eventCalendar = CalendarItem(id: "calendar", title: "Calendar", color: .clear)
         let handler = DropEventHandlerSpy(calendars: [eventCalendar])
         let template = Template(
             title: "Night shift",
             startTime: try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 1, hour: 23, minute: 0, calendar: calendar)),
             endTime: try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 1, hour: 1, minute: 0, calendar: calendar)),
             todos: [],
-            calendarId: eventCalendar.calendarIdentifier
+            calendarId: eventCalendar.id
         )
         let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7, calendar: calendar))
 
@@ -84,15 +82,40 @@ final class ApplicationWorkflowTests: XCTestCase {
         XCTAssertEqual(calendar.component(.day, from: startDate), 7)
         XCTAssertEqual(calendar.component(.day, from: endDate), 8)
     }
+
+    private func makeEvent() -> EventItem {
+        EventItem(
+            id: "event",
+            calendar: CalendarItem(id: "calendar", title: "Calendar", color: .clear),
+            title: "Event",
+            isAllDay: false,
+            startDate: Date(),
+            endDate: Date().addingTimeInterval(60),
+            repeatType: .oneDay,
+            url: nil,
+            notes: ""
+        )
+    }
+
+    private func makeReminder() -> ReminderItem {
+        ReminderItem(
+            id: "reminder",
+            title: "Reminder",
+            priority: 0,
+            dueDateComponents: nil,
+            isCompleted: false,
+            color: .clear
+        )
+    }
 }
 
 private final class WorkflowRepositorySpy: CalendarRepository, ReminderRepository {
-    var calendarAuthorizationStatus: EKAuthorizationStatus = .fullAccess
-    var reminderAuthorizationStatus: EKAuthorizationStatus = .fullAccess
-    var events: [EKEvent] = []
-    var upcomingEvents: [EKEvent] = []
-    var reminders: [EKReminder] = []
-    var scheduledReminders: [EKReminder] = []
+    var calendarAuthorizationStatus: AuthorizationStatus = .fullAccess
+    var reminderAuthorizationStatus: AuthorizationStatus = .fullAccess
+    var events: [EventItem] = []
+    var upcomingEvents: [EventItem] = []
+    var reminders: [ReminderItem] = []
+    var scheduledReminders: [ReminderItem] = []
     var eventLoadCount = 0
     var upcomingLoadCount = 0
     var reminderLoadCount = 0
@@ -102,54 +125,55 @@ private final class WorkflowRepositorySpy: CalendarRepository, ReminderRepositor
 
     func requestCalendarAccess() async throws -> Bool { true }
     func requestReminderAccess() async throws -> Bool { true }
-    func loadCalendars() async throws -> [EKCalendar] { [] }
+    func loadCalendars() async throws -> [CalendarItem] { [] }
 
-    func loadUpcomingEvents() async throws -> [EKEvent] {
+    func loadUpcomingEvents() async throws -> [EventItem] {
         upcomingLoadCount += 1
         return upcomingEvents
     }
 
-    func loadEvents(forDate date: Date, calendars: [EKCalendar]) async throws -> [EKEvent] {
+    func loadEvents(forDate date: Date, calendarIdentifiers: Set<String>) async throws -> [EventItem] {
         eventLoadCount += 1
         return events
     }
 
-    func loadAllReminders() async throws -> [EKReminder] {
+    func loadAllReminders() async throws -> [ReminderItem] {
         reminderLoadCount += 1
         return reminders
     }
 
-    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [EKReminder] {
+    func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [ReminderItem] {
         scheduledReminderLoadCount += 1
         return scheduledReminders
     }
 
-    func completeReminder(reminder: EKReminder) async throws {
+    func completeReminder(identifier: String) async throws {
         completeReminderCount += 1
     }
 
-    func updateReminder(reminder: EKReminder) async throws {}
-    func createNewReminder(title: String, date: Date?, highlight: String) async throws {}
+    func updateReminder(_ reminder: ReminderItem) async throws {}
+    func createNewReminder(_ draft: ReminderDraft) async throws {}
     func createNewCalendar() async throws {}
-    func updateCalendar(calendar: EKCalendar) async throws {}
-    func removeCalendar(calendar: EKCalendar) async throws {}
-    func saveEvent(title: String, isAllDay: Bool, startDate: Date, endDate: Date, repeatDate: RepeatType, url: URL?, notes: [String], calendar: EKCalendar) async throws {}
+    func updateCalendar(_ calendar: CalendarItem) async throws {}
+    func removeCalendar(identifier: String) async throws {}
+    func saveEvent(_ draft: EventDraft) async throws {}
 
-    func updateEvent(event: EKEvent) async throws {
+    func updateEvent(_ event: EventItem) async throws {
         updateEventCount += 1
     }
 
-    func removeEvent(event: EKEvent) async throws {}
+    func removeEvent(identifier: String) async throws {}
 }
 
 @MainActor
 private final class DropEventHandlerSpy: CalendarDropEventHandling {
-    let calendars: [EKCalendar]
+    let calendars: [CalendarItem]
     var updateEventCount = 0
+    var updatedEvent: EventItem?
     var savedStartDate: Date?
     var savedEndDate: Date?
 
-    init(calendars: [EKCalendar] = []) {
+    init(calendars: [CalendarItem] = []) {
         self.calendars = calendars
     }
 
@@ -161,15 +185,16 @@ private final class DropEventHandlerSpy: CalendarDropEventHandling {
         repeatDate: RepeatType,
         url: URL?,
         notes: [String],
-        calendar: EKCalendar
+        calendar: CalendarItem
     ) async throws {
         savedStartDate = startDate
         savedEndDate = endDate
     }
 
-    func updateEvent(event: EKEvent) async throws {
+    func updateEvent(event: EventItem) async throws {
         updateEventCount += 1
+        updatedEvent = event
     }
 
-    func rescheduleReminder(_ reminder: EKReminder, to targetDate: Date) async throws {}
+    func rescheduleReminder(_ reminder: ReminderItem, to targetDate: Date) async throws {}
 }

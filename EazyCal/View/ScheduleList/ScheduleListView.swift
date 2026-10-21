@@ -26,7 +26,7 @@ struct ScheduleListView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             UpcomingScheduleDateView(dateString)
                             if let events = eventDict[dateString] {
-                                ForEach(events, id:\.eventIdentifier) { schedule in
+                                ForEach(events) { schedule in
                                     UpcomingScheduleView(schedule: schedule, dateString: dateString)
                                 }
                             }
@@ -48,11 +48,11 @@ struct ScheduleListView: View {
             .id(dateString)
     }
     
-    func dateToEvent(_ schedule: [EKEvent]) -> [String: [EKEvent]] {
+    func dateToEvent(_ schedule: [EventItem]) -> [String: [EventItem]] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = String(localized: "DATE_FORMAT_EVENT")
         
-        var result: [String: [EKEvent]] = [:]
+        var result: [String: [EventItem]] = [:]
         
         let today = Calendar.current.startOfDay(for: Date())
         for event in schedule {

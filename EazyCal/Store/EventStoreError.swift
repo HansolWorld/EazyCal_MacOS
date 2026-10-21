@@ -14,6 +14,7 @@ enum EventStoreError: Error {
     case upgrade
     case invalidDate
     case missingDefaultCalendar
+    case itemNotFound
 }
 
 extension EventStoreError: LocalizedError {
@@ -33,6 +34,8 @@ extension EventStoreError: LocalizedError {
             return NSLocalizedString("The requested date could not be created.", comment: "Invalid date")
         case .missingDefaultCalendar:
             return NSLocalizedString("A writable default calendar is not available.", comment: "Missing default calendar")
+        case .itemNotFound:
+            return NSLocalizedString("The requested calendar item no longer exists.", comment: "Missing calendar item")
         }
     }
 }
