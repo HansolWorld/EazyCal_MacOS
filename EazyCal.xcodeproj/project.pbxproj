@@ -19,6 +19,7 @@
 		AA8000010000000000000001 /* CalendarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8000020000000000000002 /* CalendarHeaderView.swift */; };
 		AA8000030000000000000003 /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8000040000000000000004 /* CalendarGridView.swift */; };
 		AA1000010000000000000001 /* EazyCalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1000020000000000000002 /* EazyCalTests.swift */; };
+		AA9000010000000000000001 /* ApplicationWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9000020000000000000002 /* ApplicationWorkflowTests.swift */; };
 		FF10BDB92BC9683A007D687B /* UpcomingScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */; };
 		FF15598F2AE5FA8000F4E25F /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15598E2AE5FA8000F4E25F /* EventStore.swift */; };
 		FF1559942AE637DF00F4E25F /* RepeatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1559932AE637DF00F4E25F /* RepeatType.swift */; };
@@ -83,6 +84,7 @@
 		AA8000040000000000000004 /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
 		AA1000020000000000000002 /* EazyCalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EazyCalTests.swift; sourceTree = "<group>"; };
 		AA1000030000000000000003 /* EazyCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EazyCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA9000020000000000000002 /* ApplicationWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationWorkflowTests.swift; sourceTree = "<group>"; };
 		FF10BDB82BC9683A007D687B /* UpcomingScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingScheduleView.swift; sourceTree = "<group>"; };
 		FF15598E2AE5FA8000F4E25F /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FF1559932AE637DF00F4E25F /* RepeatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatType.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				AA1000020000000000000002 /* EazyCalTests.swift */,
+				AA9000020000000000000002 /* ApplicationWorkflowTests.swift */,
 			);
 			path = EazyCalTests;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA1000010000000000000001 /* EazyCalTests.swift in Sources */,
+				AA9000010000000000000001 /* ApplicationWorkflowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
