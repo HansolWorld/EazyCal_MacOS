@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct UpcomingScheduleView: View {
     let schedule: EventItem

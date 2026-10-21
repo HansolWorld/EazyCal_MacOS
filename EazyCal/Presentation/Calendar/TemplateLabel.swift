@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct TemplateLabel: View {
     @Bindable var template: Template

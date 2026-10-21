@@ -5,7 +5,6 @@
 
 import SwiftUI
 import SwiftData
-import EventKit
 import AppKit
 
 @main

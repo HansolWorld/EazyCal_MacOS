@@ -51,6 +51,8 @@ App
 
 `EventStore`는 EventKit 접근과 도메인 모델 변환을 담당합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 화면 공유 데이터를 관리합니다. 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당하고, 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
 
+`Presentation`과 `App` 계층은 EventKit을 import하지 않습니다. 화면 선택과 드래그 상태는 EventKit 객체나 도메인 객체 전체를 보관하지 않고 일정·미리 알림 식별자만 전달하며, 데이터 계층이 해당 식별자를 실제 EventKit 항목으로 해석합니다.
+
 ### 데이터 저장
 
 | 데이터 | 저장 위치 |

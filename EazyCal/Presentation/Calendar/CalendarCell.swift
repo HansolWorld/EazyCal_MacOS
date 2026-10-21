@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct CalendarCell: View {
     let schedules: [LayeredCalendarEntry]
@@ -20,8 +19,8 @@ struct CalendarCell: View {
     @State private var isMoreEventPopover = false
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
-    @Binding var selectedEvent: EventItem?
-    @Binding var selectedReminder: ReminderItem?
+    @Binding var selectedEventIdentifier: String?
+    @Binding var selectedReminderIdentifier: String?
     @EnvironmentObject var eventManager: EventStoreManager
     
     @State var isShow = false
@@ -100,8 +99,8 @@ struct CalendarCell: View {
                             isShow.toggle()
                         }
                         .simultaneousGesture(TapGesture().onEnded {
-                            selectedEvent = nil
-                            selectedReminder = nil
+                            selectedEventIdentifier = nil
+                            selectedReminderIdentifier = nil
                         })
                 }
             }
@@ -124,17 +123,17 @@ struct CalendarCell: View {
                 let item: CalendarDropItem
                 if let currentDragTemplate {
                     item = .template(currentDragTemplate)
-                } else if let selectedReminder {
-                    item = .reminder(selectedReminder)
-                } else if let selectedEvent {
-                    item = .event(selectedEvent)
+                } else if let selectedReminderIdentifier {
+                    item = .reminder(identifier: selectedReminderIdentifier)
+                } else if let selectedEventIdentifier {
+                    item = .event(identifier: selectedEventIdentifier)
                 } else {
                     return false
                 }
 
                 currentDragTemplate = nil
-                selectedReminder = nil
-                selectedEvent = nil
+                selectedReminderIdentifier = nil
+                selectedEventIdentifier = nil
                 Task {
                     await CalendarDropCoordinator(eventHandler: eventManager)
                         .perform(item, on: cellDate)
@@ -153,8 +152,8 @@ struct CalendarCell: View {
                 CalendarCategoryLabelView(
                     schedule: event,
                     viewType: viewType,
-                    selectedEvent: $selectedEvent,
-                    selectedReminder: $selectedReminder
+                    selectedEventIdentifier: $selectedEventIdentifier,
+                    selectedReminderIdentifier: $selectedReminderIdentifier
                 )
                 .environmentObject(eventManager)
             }
@@ -162,8 +161,8 @@ struct CalendarCell: View {
             if let reminder = eventManager.reminder(withIdentifier: entry.sourceIdentifier) {
                 ScheduledReminderLabelView(
                     reminder: reminder,
-                    selectedEvent: $selectedEvent,
-                    selectedReminder: $selectedReminder
+                    selectedEventIdentifier: $selectedEventIdentifier,
+                    selectedReminderIdentifier: $selectedReminderIdentifier
                 )
                 .environmentObject(eventManager)
             }
@@ -223,8 +222,8 @@ struct CalendarCell: View {
         daysInPrevMonth: 1,
         calendarViewModel: CalendarViewModel(),
         currentDragTemplate: .constant(nil),
-        selectedEvent: .constant(nil),
-        selectedReminder: .constant(nil)
+        selectedEventIdentifier: .constant(nil),
+        selectedReminderIdentifier: .constant(nil)
     )
     .environmentObject(EventStoreManager())
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import EventKit
 
 struct CategoryLabelView: View {
     let calendar: CalendarItem
@@ -17,15 +16,15 @@ struct CategoryLabelView: View {
     @State private var requestCalendar: CalendarItem?
     @State private var editCalendarRequest: Bool = false
     @State private var deleteCalendarRequest: Bool = false
-    @Binding var currentDragItem: CalendarItem?
+    @Binding var currentDragCalendarIdentifier: String?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
         Button(action: {
             Task {
                 await eventManager.setCalendar(
-                    calendar,
-                    isChecked: !eventManager.isCalendarChecked(calendar)
+                    identifier: calendar.id,
+                    isChecked: !eventManager.isCalendarChecked(identifier: calendar.id)
                 )
             }
         }) {
@@ -55,7 +54,7 @@ struct CategoryLabelView: View {
             }
             
             .onDrag { () -> NSItemProvider in
-                self.currentDragItem = calendar
+                currentDragCalendarIdentifier = calendar.id
                 return NSItemProvider(object: calendar.id as NSString)
             }
         }
@@ -114,7 +113,7 @@ struct CategoryLabelView: View {
             Button(String(localized: "DELETE"), role: .destructive) {
                 if let calendar = requestCalendar {
                     Task {
-                        try await eventManager.removeCalendar(calendar: calendar)
+                        try await eventManager.removeCalendar(identifier: calendar.id)
                         requestCalendar = nil
                     }
                 }
@@ -128,7 +127,7 @@ struct CategoryLabelView: View {
     }
     
     func checkToImageName() -> String {
-        switch eventManager.isCalendarChecked(calendar) {
+        switch eventManager.isCalendarChecked(identifier: calendar.id) {
         case false:
             return SFSymbol.circle.name
         case true:

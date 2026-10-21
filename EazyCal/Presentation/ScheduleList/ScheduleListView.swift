@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct ScheduleListView: View {
     @EnvironmentObject var eventManager: EventStoreManager

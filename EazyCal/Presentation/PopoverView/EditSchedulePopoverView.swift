@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 class Todo: ObservableObject {
     @Published var isComplete: Bool

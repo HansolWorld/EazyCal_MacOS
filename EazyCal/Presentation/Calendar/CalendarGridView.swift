@@ -3,7 +3,6 @@
 //  EazyCal
 //
 
-import EventKit
 import SwiftData
 import SwiftUI
 
@@ -25,8 +24,8 @@ struct CalendarWeekdayHeaderView: View {
 struct CalendarGridView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
     @Binding var currentDragTemplate: Template?
-    @Binding var selectedEvent: EventItem?
-    @Binding var selectedReminder: ReminderItem?
+    @Binding var selectedEventIdentifier: String?
+    @Binding var selectedReminderIdentifier: String?
     @EnvironmentObject private var eventManager: EventStoreManager
     @Query(sort: \CalendarCategory.date, animation: .snappy) private var categories: [CalendarCategory]
 
@@ -65,8 +64,8 @@ struct CalendarGridView: View {
                             daysInPrevMonth: daysInPreviousMonth,
                             calendarViewModel: calendarViewModel,
                             currentDragTemplate: $currentDragTemplate,
-                            selectedEvent: $selectedEvent,
-                            selectedReminder: $selectedReminder
+                            selectedEventIdentifier: $selectedEventIdentifier,
+                            selectedReminderIdentifier: $selectedReminderIdentifier
                         )
 
                         if column != 7 {

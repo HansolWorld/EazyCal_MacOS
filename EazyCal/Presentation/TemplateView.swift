@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 import SwiftData
 
 struct TemplateView: View {

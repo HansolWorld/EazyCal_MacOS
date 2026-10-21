@@ -232,7 +232,8 @@ final class EventStoreManagerTests: XCTestCase {
         )
         let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
 
-        try await manager.rescheduleReminder(reminder, to: targetDate)
+        manager.reminders = [reminder]
+        try await manager.rescheduleReminder(identifier: reminder.id, to: targetDate)
 
         XCTAssertEqual(store.updatedReminder?.dueDateComponents?.year, 2025)
         XCTAssertEqual(store.updatedReminder?.dueDateComponents?.month, 2)

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct CustomPicker: View {
     let title: String

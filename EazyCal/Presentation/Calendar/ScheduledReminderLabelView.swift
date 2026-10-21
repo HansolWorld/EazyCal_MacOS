@@ -3,13 +3,12 @@
 //  EazyCal
 //
 
-import EventKit
 import SwiftUI
 
 struct ScheduledReminderLabelView: View {
     let reminder: ReminderItem
-    @Binding var selectedEvent: EventItem?
-    @Binding var selectedReminder: ReminderItem?
+    @Binding var selectedEventIdentifier: String?
+    @Binding var selectedReminderIdentifier: String?
     @EnvironmentObject private var eventManager: EventStoreManager
 
     private var tintColor: Color {
@@ -17,15 +16,15 @@ struct ScheduledReminderLabelView: View {
     }
 
     private var isSelected: Bool {
-        selectedReminder == reminder
+        selectedReminderIdentifier == reminder.id
     }
 
     var body: some View {
         HStack(spacing: 5) {
             Button {
                 Task {
-                    try await eventManager.completeReminder(reminder: reminder)
-                    selectedReminder = nil
+                    try await eventManager.completeReminder(identifier: reminder.id)
+                    selectedReminderIdentifier = nil
                 }
             } label: {
                 Image(systemName: "circle")
@@ -52,20 +51,20 @@ struct ScheduledReminderLabelView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             withAnimation {
-                selectedEvent = nil
-                selectedReminder = reminder
+                selectedEventIdentifier = nil
+                selectedReminderIdentifier = reminder.id
             }
         }
         .onDrag {
-            selectedEvent = nil
-            selectedReminder = reminder
+            selectedEventIdentifier = nil
+            selectedReminderIdentifier = reminder.id
             return NSItemProvider(object: reminder.id as NSString)
         }
         .contextMenu {
             Button(String(localized: "COMPLETE_REMINDER")) {
                 Task {
-                    try await eventManager.completeReminder(reminder: reminder)
-                    selectedReminder = nil
+                    try await eventManager.completeReminder(identifier: reminder.id)
+                    selectedReminderIdentifier = nil
                 }
             }
         }

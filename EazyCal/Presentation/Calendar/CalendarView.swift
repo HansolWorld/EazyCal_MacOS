@@ -3,14 +3,13 @@
 //  EazyCal
 //
 
-import EventKit
 import SwiftUI
 
 struct CalendarView: View {
     @Binding var currentDragTemplate: Template?
     @Binding var isSide: Bool
-    @State private var selectedEvent: EventItem?
-    @State private var selectedReminder: ReminderItem?
+    @State private var selectedEventIdentifier: String?
+    @State private var selectedReminderIdentifier: String?
     @EnvironmentObject private var calendarViewModel: CalendarViewModel
 
     var body: some View {
@@ -25,15 +24,15 @@ struct CalendarView: View {
                 CalendarGridView(
                     calendarViewModel: calendarViewModel,
                     currentDragTemplate: $currentDragTemplate,
-                    selectedEvent: $selectedEvent,
-                    selectedReminder: $selectedReminder
+                    selectedEventIdentifier: $selectedEventIdentifier,
+                    selectedReminderIdentifier: $selectedReminderIdentifier
                 )
                 .background {
                     RoundedRectangle(cornerRadius: 16)
                         .foregroundStyle(.white)
                         .onTapGesture {
-                            selectedEvent = nil
-                            selectedReminder = nil
+                            selectedEventIdentifier = nil
+                            selectedReminderIdentifier = nil
                         }
                 }
             }

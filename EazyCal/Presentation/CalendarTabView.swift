@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct CalendarTabView: View {
     @Binding var currentDragTemplate: Template?

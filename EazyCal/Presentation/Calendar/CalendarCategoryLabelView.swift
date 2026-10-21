@@ -6,19 +6,17 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct CalendarCategoryLabelView: View {
     let schedule: EventItem
     let viewType: CellViewType
     
-    @State var isSelected = false
     @State var isHover = false
     @State var isEdit = false
     @State var requestSchedule: EventItem?
     @State var deleteSchedule = false
-    @Binding var selectedEvent: EventItem?
-    @Binding var selectedReminder: ReminderItem?
+    @Binding var selectedEventIdentifier: String?
+    @Binding var selectedReminderIdentifier: String?
     @EnvironmentObject var eventManager: EventStoreManager
     
     var body: some View {
@@ -31,7 +29,7 @@ struct CalendarCategoryLabelView: View {
                 .foregroundStyle(viewType == .Dating || viewType == .DoDate ? Color.clear : Color(calendarColor: schedule.calendar.color))
             Text(viewType == .Dating || viewType == .DoDate ? " " : schedule.title)
                 .font(.callout)
-                .foregroundStyle(selectedEvent == schedule ? Color.white : Color.black)
+                .foregroundStyle(isSelected ? Color.white : Color.black)
                 .lineLimit(1)
         }
         .font(.body)
@@ -44,25 +42,25 @@ struct CalendarCategoryLabelView: View {
                 case .Dating:
                     Rectangle()
                         .fill(Color(calendarColor: schedule.calendar.color))
-                        .opacity(selectedEvent == schedule ? 1 : 0.1)
+                        .opacity(isSelected ? 1 : 0.1)
                 case .StartDate:
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .circular)
                         .fill(Color(calendarColor: schedule.calendar.color))
-                        .opacity(selectedEvent == schedule ? 1 : 0.1)
+                        .opacity(isSelected ? 1 : 0.1)
                         .padding(.leading, 4)
                 case .DoDate:
                     UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
                         .fill(Color(calendarColor: schedule.calendar.color))
-                        .opacity(selectedEvent == schedule ? 1 : 0.1)
+                        .opacity(isSelected ? 1 : 0.1)
                         .padding(.trailing, 4)
                 case .OneDate:
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
                         .fill(Color(calendarColor: schedule.calendar.color))
-                        .opacity(selectedEvent == schedule ? 1 : 0.1)
+                        .opacity(isSelected ? 1 : 0.1)
                         .padding(.horizontal, 4)
                 }
             } else {
-                if selectedEvent == schedule {
+                if isSelected {
                     UnevenRoundedRectangle(topLeadingRadius: 8, bottomLeadingRadius: 8, bottomTrailingRadius: 8, topTrailingRadius: 8, style: .circular)
                         .fill(Color(calendarColor: schedule.calendar.color))
                         .padding(.horizontal, 4)
@@ -71,7 +69,7 @@ struct CalendarCategoryLabelView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture(count: 2, perform: {
-            if selectedEvent == schedule {
+            if isSelected {
                 isEdit = true
             } else {
                 isEdit = false
@@ -79,22 +77,15 @@ struct CalendarCategoryLabelView: View {
         })
         .simultaneousGesture(TapGesture().onEnded {
             withAnimation {
-                selectedReminder = nil
-                selectedEvent = schedule
+                selectedReminderIdentifier = nil
+                selectedEventIdentifier = schedule.id
             }
         })
         .onDrag { () -> NSItemProvider in
-            selectedReminder = nil
-            selectedEvent = schedule
+            selectedReminderIdentifier = nil
+            selectedEventIdentifier = schedule.id
             return NSItemProvider(object: schedule.id as NSString)
         }
-        .onChange(of: selectedEvent, { oldValue, newValue in
-            if selectedEvent == schedule {
-                isSelected = true
-            } else {
-                isSelected = false
-            }
-        })
         .popover(isPresented: $isEdit) {
             EditSchedulePopoverView(
                 event: schedule,
@@ -124,7 +115,7 @@ struct CalendarCategoryLabelView: View {
             Button(String(localized: "DELETE"), role: .destructive) {
                 if let schedule = requestSchedule {
                     Task {
-                        try await eventManager.removeEvent(event: schedule)
+                        try await eventManager.removeEvent(identifier: schedule.id)
                         requestSchedule = nil
                     }
                 }
@@ -135,10 +126,10 @@ struct CalendarCategoryLabelView: View {
         .onKeyPress { key in
             if !isEdit {
                 if key.key == KeyEquivalent("\u{7F}"), !isEdit {
-                    if let selectedEvent {
+                    if let selectedEventIdentifier {
                         Task {
-                            try await self.eventManager.removeEvent(event: selectedEvent)
-                            self.selectedEvent = nil
+                            try await self.eventManager.removeEvent(identifier: selectedEventIdentifier)
+                            self.selectedEventIdentifier = nil
                         }
                     }
                 } else if key.key == .return {
@@ -150,6 +141,10 @@ struct CalendarCategoryLabelView: View {
             
             return .ignored
         }
+    }
+
+    private var isSelected: Bool {
+        selectedEventIdentifier == schedule.id
     }
     
     func todos() -> [Todo] {

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct ScheduleTodoCellView: View {
     @Binding var schedule: EventItem

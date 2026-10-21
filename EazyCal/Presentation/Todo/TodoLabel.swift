@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit
 
 struct TodoLabel: View {
     let highlights = [String(localized: "IMPORTANCE_DEFAULT"), String(localized: "LOW"), String(localized: "MID"), String(localized: "HIGH")]
@@ -34,7 +33,7 @@ struct TodoLabel: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             if isComplete, let lastPressTime = lastButtonPressTime, Date().timeIntervalSince(lastPressTime) >= 1.5 {
                                 Task {
-                                    try await eventManager.completeReminder(reminder: todo)
+                                    try await eventManager.completeReminder(identifier: todo.id)
                                 }
                             }
                         }

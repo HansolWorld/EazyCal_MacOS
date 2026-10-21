@@ -41,22 +41,31 @@ final class ApplicationWorkflowTests: XCTestCase {
         XCTAssertEqual(snapshot.upcomingEvents.count, 1)
     }
 
-    func testDropCoordinatorMovesEventAndPreservesDuration() async throws {
+    func testDropCoordinatorRequestsEventMoveByIdentifier() async throws {
         let handler = DropEventHandlerSpy()
+        let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
+
+        await CalendarDropCoordinator(eventHandler: handler)
+            .perform(.event(identifier: "event"), on: targetDate)
+
+        XCTAssertEqual(handler.movedEventIdentifier, "event")
+        XCTAssertEqual(handler.movedTargetDate, targetDate)
+    }
+
+    func testEventScheduleMovesEventAndPreservesDuration() throws {
         var event = makeEvent()
         event.startDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3, hour: 9, minute: 0))
         event.endDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 1, day: 3, hour: 10, minute: 30))
         let targetDate = try XCTUnwrap(CalendarMath.date(year: 2025, month: 2, day: 7))
 
-        await CalendarDropCoordinator(eventHandler: handler).perform(.event(event), on: targetDate)
+        let movedEvent = try XCTUnwrap(EventSchedule.moving(event, toDay: targetDate))
 
-        XCTAssertEqual(handler.updateEventCount, 1)
         XCTAssertEqual(
-            try XCTUnwrap(handler.updatedEvent).endDate.timeIntervalSince(try XCTUnwrap(handler.updatedEvent).startDate),
+            movedEvent.endDate.timeIntervalSince(movedEvent.startDate),
             90 * 60,
             accuracy: 0.1
         )
-        XCTAssertEqual(Calendar.current.component(.day, from: try XCTUnwrap(handler.updatedEvent).startDate), 7)
+        XCTAssertEqual(Calendar.current.component(.day, from: movedEvent.startDate), 7)
     }
 
     func testDropCoordinatorMovesOvernightTemplateEndToNextDay() async throws {
@@ -168,8 +177,8 @@ private final class WorkflowRepositorySpy: CalendarRepository, ReminderRepositor
 @MainActor
 private final class DropEventHandlerSpy: CalendarDropEventHandling {
     let calendars: [CalendarItem]
-    var updateEventCount = 0
-    var updatedEvent: EventItem?
+    var movedEventIdentifier: String?
+    var movedTargetDate: Date?
     var savedStartDate: Date?
     var savedEndDate: Date?
 
@@ -185,16 +194,16 @@ private final class DropEventHandlerSpy: CalendarDropEventHandling {
         repeatDate: RepeatType,
         url: URL?,
         notes: [String],
-        calendar: CalendarItem
+        calendarIdentifier: String
     ) async throws {
         savedStartDate = startDate
         savedEndDate = endDate
     }
 
-    func updateEvent(event: EventItem) async throws {
-        updateEventCount += 1
-        updatedEvent = event
+    func moveEvent(identifier: String, to targetDate: Date) async throws {
+        movedEventIdentifier = identifier
+        movedTargetDate = targetDate
     }
 
-    func rescheduleReminder(_ reminder: ReminderItem, to targetDate: Date) async throws {}
+    func rescheduleReminder(identifier: String, to targetDate: Date) async throws {}
 }

@@ -194,10 +194,10 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func completeReminder(reminder: ReminderItem) async throws {
+    func completeReminder(identifier: String) async throws {
         do {
             let snapshot = try await reminderUseCase.complete(
-                identifier: reminder.id,
+                identifier: identifier,
                 visibleDate: date
             )
             apply(snapshot)
@@ -217,8 +217,11 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func rescheduleReminder(_ reminder: ReminderItem, to targetDate: Date) async throws {
+    func rescheduleReminder(identifier: String, to targetDate: Date) async throws {
         do {
+            guard let reminder = reminder(withIdentifier: identifier) else {
+                throw EventStoreError.itemNotFound
+            }
             let snapshot = try await reminderUseCase.reschedule(
                 reminder,
                 to: targetDate,
@@ -239,7 +242,7 @@ final class EventStoreManager: ObservableObject {
         repeatDate: RepeatType,
         url: URL?,
         notes: [String],
-        calendar: CalendarItem
+        calendarIdentifier: String
     ) async throws {
         do {
             let snapshot = try await calendarEventUseCase.saveEvent(
@@ -251,7 +254,7 @@ final class EventStoreManager: ObservableObject {
                     repeatType: repeatDate,
                     url: url,
                     notes: notes.map { "☐" + $0 }.joined(separator: "\n"),
-                    calendarIdentifier: calendar.id
+                    calendarIdentifier: calendarIdentifier
                 ),
                 visibleDate: date,
                 visibleCalendarIdentifiers: checkedCalendarIdentifiers
@@ -277,10 +280,23 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func removeEvent(event: EventItem) async throws {
+    func moveEvent(identifier: String, to targetDate: Date) async throws {
+        do {
+            guard let event = event(withIdentifier: identifier),
+                  let movedEvent = EventSchedule.moving(event, toDay: targetDate) else {
+                throw EventStoreError.itemNotFound
+            }
+            try await updateEvent(event: movedEvent)
+        } catch {
+            record(error)
+            throw error
+        }
+    }
+
+    func removeEvent(identifier: String) async throws {
         do {
             let snapshot = try await calendarEventUseCase.remove(
-                identifier: event.id,
+                identifier: identifier,
                 visibleDate: date,
                 visibleCalendarIdentifiers: checkedCalendarIdentifiers
             )
@@ -313,10 +329,10 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func removeCalendar(calendar: CalendarItem) async throws {
+    func removeCalendar(identifier: String) async throws {
         do {
-            try await calendarRepository.removeCalendar(identifier: calendar.id)
-            removeCheckedCalendar(identifier: calendar.id)
+            try await calendarRepository.removeCalendar(identifier: identifier)
+            removeCheckedCalendar(identifier: identifier)
             try await loadCalendars()
             try await reloadEvents()
         } catch {
@@ -325,11 +341,11 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func setCalendar(_ calendar: CalendarItem, isChecked: Bool) async {
+    func setCalendar(identifier: String, isChecked: Bool) async {
         var identifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
-        identifiers.removeAll { $0 == calendar.id }
+        identifiers.removeAll { $0 == identifier }
         if isChecked {
-            identifiers.append(calendar.id)
+            identifiers.append(identifier)
         }
         userDefaults.set(identifiers, forKey: checkedCalendarsKey)
 
@@ -340,8 +356,8 @@ final class EventStoreManager: ObservableObject {
         }
     }
 
-    func isCalendarChecked(_ calendar: CalendarItem) -> Bool {
-        checkedCalendarIdentifiers.contains(calendar.id)
+    func isCalendarChecked(identifier: String) -> Bool {
+        checkedCalendarIdentifiers.contains(identifier)
     }
 
     private func reloadEvents() async throws {

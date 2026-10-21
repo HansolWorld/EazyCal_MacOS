@@ -54,3 +54,25 @@ enum ReminderSchedule {
         return moved
     }
 }
+
+enum EventSchedule {
+    static func moving(
+        _ event: EventItem,
+        toDay targetDate: Date,
+        calendar: Calendar = .current
+    ) -> EventItem? {
+        guard let movedStartDate = CalendarMath.moving(
+            event.startDate,
+            toDay: targetDate,
+            calendar: calendar
+        ) else {
+            return nil
+        }
+
+        var movedEvent = event
+        let duration = event.endDate.timeIntervalSince(event.startDate)
+        movedEvent.startDate = movedStartDate
+        movedEvent.endDate = movedStartDate.addingTimeInterval(duration)
+        return movedEvent
+    }
+}

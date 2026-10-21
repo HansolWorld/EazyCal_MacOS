@@ -7,8 +7,8 @@ import Foundation
 
 enum CalendarDropItem {
     case template(Template)
-    case event(EventItem)
-    case reminder(ReminderItem)
+    case event(identifier: String)
+    case reminder(identifier: String)
 }
 
 @MainActor
@@ -23,10 +23,10 @@ protocol CalendarDropEventHandling: AnyObject {
         repeatDate: RepeatType,
         url: URL?,
         notes: [String],
-        calendar: CalendarItem
+        calendarIdentifier: String
     ) async throws
-    func updateEvent(event: EventItem) async throws
-    func rescheduleReminder(_ reminder: ReminderItem, to targetDate: Date) async throws
+    func moveEvent(identifier: String, to targetDate: Date) async throws
+    func rescheduleReminder(identifier: String, to targetDate: Date) async throws
 }
 
 extension EventStoreManager: CalendarDropEventHandling {}
@@ -49,10 +49,10 @@ struct CalendarDropCoordinator {
             switch item {
             case .template(let template):
                 try await createEvent(from: template, on: targetDate)
-            case .event(let event):
-                try await move(event, to: targetDate)
-            case .reminder(let reminder):
-                try await eventHandler.rescheduleReminder(reminder, to: targetDate)
+            case .event(let identifier):
+                try await eventHandler.moveEvent(identifier: identifier, to: targetDate)
+            case .reminder(let identifier):
+                try await eventHandler.rescheduleReminder(identifier: identifier, to: targetDate)
             }
         } catch {
             // EventStoreManager records repository errors for user-facing presentation.
@@ -80,23 +80,7 @@ struct CalendarDropCoordinator {
             repeatDate: .oneDay,
             url: nil,
             notes: template.todos,
-            calendar: eventCalendar
+            calendarIdentifier: eventCalendar.id
         )
-    }
-
-    private func move(_ event: EventItem, to targetDate: Date) async throws {
-        guard let movedStartDate = CalendarMath.moving(
-            event.startDate,
-            toDay: targetDate,
-            calendar: calendar
-        ) else {
-            return
-        }
-
-        var event = event
-        let duration = event.endDate.timeIntervalSince(event.startDate)
-        event.startDate = movedStartDate
-        event.endDate = movedStartDate.addingTimeInterval(duration)
-        try await eventHandler.updateEvent(event: event)
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import EventKit    
 
 struct AddSchedulerView: View {
     @State var title = ""
@@ -125,7 +124,7 @@ struct AddSchedulerView: View {
                             repeatDate: repeatDate,
                             url: URL(string: url),
                             notes: todos,
-                            calendar: category
+                            calendarIdentifier: category.id
                         )
                     } catch {
                     }

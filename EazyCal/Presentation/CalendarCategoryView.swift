@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import EventKit
 
 struct CalendarCategoryView: View {
     private let gridItem = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
@@ -19,7 +18,7 @@ struct CalendarCategoryView: View {
     @State private var selectCategory: CalendarCategory?
     @State private var editCategoryRequest: Bool = false
     @State private var deleteCategoryRequest: Bool = false
-    @State private var currentDragItem: CalendarItem?
+    @State private var currentDragCalendarIdentifier: String?
     @EnvironmentObject var eventManager: EventStoreManager
 
     @Environment(\.modelContext) private var context
@@ -143,11 +142,11 @@ struct CalendarCategoryView: View {
                         }
                     }
                     .onDrop(of: [.text], isTargeted: nil, perform: { _ in
-                        if let currentDragItem {
-                            replaceCategory(category, droppingCalendar: currentDragItem)
+                        if let currentDragCalendarIdentifier {
+                            replaceCategory(category, calendarIdentifier: currentDragCalendarIdentifier)
                             selectCategory = category
                         }
-                        currentDragItem = nil
+                        currentDragCalendarIdentifier = nil
                         return true
                     })
                 }
@@ -171,7 +170,10 @@ struct CalendarCategoryView: View {
                     }
                     
                     ForEach(calendaries) { calendar in
-                        CategoryLabelView(calendar: calendar, currentDragItem: $currentDragItem)
+                        CategoryLabelView(
+                            calendar: calendar,
+                            currentDragCalendarIdentifier: $currentDragCalendarIdentifier
+                        )
                             .environmentObject(eventManager)
                     }
                 }
@@ -198,10 +200,10 @@ struct CalendarCategoryView: View {
     }
     
     
-    func replaceCategory(_ category: CalendarCategory, droppingCalendar: CalendarItem) {
+    func replaceCategory(_ category: CalendarCategory, calendarIdentifier: String) {
         let source = selectCategory?.title == String(localized: "TOTAL") ? nil : selectCategory
         SwiftDataCalendarCategoryRepository(context: context).moveCalendar(
-            identifier: droppingCalendar.id,
+            identifier: calendarIdentifier,
             from: source,
             to: category
         )
