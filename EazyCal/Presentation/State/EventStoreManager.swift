@@ -88,11 +88,11 @@ final class EventStoreManager: ObservableObject {
     }
 
     convenience init(userDefaults: UserDefaults = .standard) {
-        let eventStore = EventStore()
+        let dependencies = EventKitDependencies()
         self.init(
-            calendarRepository: eventStore,
-            reminderRepository: eventStore,
-            changeObserver: eventStore,
+            calendarRepository: dependencies.calendarRepository,
+            reminderRepository: dependencies.reminderRepository,
+            changeObserver: dependencies.changeObserver,
             userDefaults: userDefaults
         )
     }

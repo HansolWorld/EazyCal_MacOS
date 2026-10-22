@@ -42,7 +42,7 @@ App
 │   ├── ReminderUseCase
 │   └── CalendarEntryMapper
 ├── Data
-│   ├── EventKit → EventStore
+│   ├── EventKit → CalendarRepository / ReminderRepository / ChangeObserver / Mapper
 │   └── SwiftData → TemplateRepository / CalendarCategoryRepository
 └── Presentation
     ├── EventStoreManager (호환 파사드와 생명주기 조정)
@@ -52,7 +52,7 @@ App
     └── Calendar / Todo / ScheduleList
 ```
 
-`EventStore`는 EventKit 접근과 도메인 모델 변환을 담당합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당합니다.
+EventKit 데이터 계층은 하나의 `EKEventStore`를 공유하면서 `EventKitCalendarRepository`, `EventKitReminderRepository`, `EventKitChangeObserver`, `EventKitMapper`로 역할을 분리합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당합니다.
 
 화면 공유 상태는 권한, 캘린더·일정, 미리 알림 기능별 Store로 분리되어 있습니다. `EventStoreManager`는 기존 화면 API를 유지하는 파사드이자 Store 생명주기와 EventKit 변경 감지를 조정하고, 각 Store의 변경 알림을 SwiftUI에 전달합니다. 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당하고, 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
 
