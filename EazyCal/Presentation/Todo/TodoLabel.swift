@@ -3,7 +3,7 @@ import SwiftUI
 struct TodoLabel: View {
     @State private var isComplete = false
     @State var editTodo: String
-    @State var newPriority: String
+    @State var priority: ReminderPriority
     @State private var lastButtonPressTime: Date?
     @Binding var todo: ReminderItem
     @Binding var selectedId: String
@@ -48,7 +48,7 @@ struct TodoLabel: View {
             }
 
             if selectedId == todo.id {
-                ReminderMetadataEditor(reminder: $todo, priority: $newPriority)
+                ReminderMetadataEditor(reminder: $todo, priority: $priority)
                     .environmentObject(eventManager)
             }
         }
@@ -80,17 +80,7 @@ struct TodoLabel: View {
         .buttonStyle(.plain)
     }
 
-    private var priorityMark: String {
-        if (6...9).contains(todo.priority) {
-            "!"
-        } else if todo.priority == 5 {
-            "!!"
-        } else if (1...4).contains(todo.priority) {
-            "!!!"
-        } else {
-            ""
-        }
-    }
+    private var priorityMark: String { todo.priority == .none ? "" : todo.priority.symbol }
 
     private var relativeDueDateText: String {
         guard let date = todo.dueDateComponents?.date else { return " " }
@@ -130,12 +120,12 @@ struct TodoLabel: View {
 #Preview {
     TodoLabel(
         editTodo: "",
-        newPriority: "기본",
+        priority: .none,
         todo: .constant(
             ReminderItem(
                 id: "preview",
                 title: "Preview",
-                priority: 0,
+                priority: .none,
                 dueDateComponents: nil,
                 isCompleted: false,
                 color: .clear

@@ -4,20 +4,13 @@ struct NewReminderComposer: View {
     @Binding var selectedReminderIdentifier: String
 
     @State private var title = ""
-    @State private var priority = String(localized: "IMPORTANCE_DEFAULT")
+    @State private var priority: ReminderPriority = .none
     @State private var isPriorityPickerPresented = false
     @State private var dueDate = Date()
     @State private var includesDueDate = false
     @State private var isDatePickerPresented = false
     @FocusState private var isTitleFocused: Bool
     @EnvironmentObject private var eventManager: EventStoreManager
-
-    private let priorities = [
-        String(localized: "IMPORTANCE_DEFAULT"),
-        String(localized: "LOW"),
-        String(localized: "MID"),
-        String(localized: "HIGH")
-    ]
 
     var body: some View {
         VStack {
@@ -92,12 +85,12 @@ struct NewReminderComposer: View {
         .buttonStyle(.plain)
         .popover(isPresented: $isPriorityPickerPresented) {
             VStack(spacing: 4) {
-                ForEach(priorities, id: \.self) { option in
+                ForEach(ReminderPriority.allCases, id: \.self) { option in
                     Button {
                         priority = option
                         isPriorityPickerPresented = false
                     } label: {
-                        Text(option)
+                        Text(option.localizedTitle)
                             .font(.body)
                             .foregroundStyle(priority == option ? .white : .gray400)
                             .padding(4)
@@ -124,10 +117,10 @@ struct NewReminderComposer: View {
                 try await eventManager.createNewReminder(
                     title: title,
                     date: includesDueDate ? dueDate : nil,
-                    highlight: priority
+                    priority: priority
                 )
                 title = ""
-                priority = String(localized: "IMPORTANCE_DEFAULT")
+                priority = .none
                 includesDueDate = false
             } catch {
                 return

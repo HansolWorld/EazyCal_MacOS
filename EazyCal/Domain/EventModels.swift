@@ -52,10 +52,30 @@ struct EventDraft: Equatable {
     let calendarIdentifier: String
 }
 
+enum ReminderPriority: Int, CaseIterable, Equatable, Hashable {
+    case none = 0
+    case high = 1
+    case medium = 5
+    case low = 9
+
+    init(eventKitValue: Int) {
+        switch eventKitValue {
+        case 1...4:
+            self = .high
+        case 5:
+            self = .medium
+        case 6...9:
+            self = .low
+        default:
+            self = .none
+        }
+    }
+}
+
 struct ReminderItem: Identifiable, Equatable {
     let id: String
     var title: String
-    var priority: Int
+    var priority: ReminderPriority
     var dueDateComponents: DateComponents?
     var isCompleted: Bool
     var color: CalendarColor
@@ -64,5 +84,5 @@ struct ReminderItem: Identifiable, Equatable {
 struct ReminderDraft: Equatable {
     let title: String
     let date: Date?
-    let priority: Int
+    let priority: ReminderPriority
 }

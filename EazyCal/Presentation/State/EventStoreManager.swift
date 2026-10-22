@@ -171,8 +171,8 @@ final class EventStoreManager: ObservableObject {
         reminderStore.reminder(withIdentifier: identifier)
     }
 
-    func createNewReminder(title: String, date: Date?, highlight: String) async throws {
-        try await reminderStore.createReminder(title: title, date: date, highlight: highlight)
+    func createNewReminder(title: String, date: Date?, priority: ReminderPriority) async throws {
+        try await reminderStore.createReminder(title: title, date: date, priority: priority)
     }
 
     func completeReminder(identifier: String) async throws {

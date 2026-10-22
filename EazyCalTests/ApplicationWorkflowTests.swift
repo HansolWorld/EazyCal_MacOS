@@ -110,7 +110,7 @@ final class ApplicationWorkflowTests: XCTestCase {
         ReminderItem(
             id: "reminder",
             title: "Reminder",
-            priority: 0,
+            priority: .none,
             dueDateComponents: nil,
             isCompleted: false,
             color: .clear

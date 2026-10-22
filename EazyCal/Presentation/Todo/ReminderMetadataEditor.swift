@@ -2,19 +2,12 @@ import SwiftUI
 
 struct ReminderMetadataEditor: View {
     @Binding var reminder: ReminderItem
-    @Binding var priority: String
+    @Binding var priority: ReminderPriority
 
     @State private var dueDate = Date()
     @State private var isDatePickerPresented = false
     @State private var isPriorityPickerPresented = false
     @EnvironmentObject private var eventManager: EventStoreManager
-
-    private let priorities = [
-        String(localized: "IMPORTANCE_DEFAULT"),
-        String(localized: "LOW"),
-        String(localized: "MID"),
-        String(localized: "HIGH")
-    ]
 
     var body: some View {
         HStack(spacing: 8) {
@@ -59,20 +52,20 @@ struct ReminderMetadataEditor: View {
                 isPriorityPickerPresented = true
             } label: {
                 HStack(spacing: 4) {
-                    Text(priorityMark)
-                    Text(priority)
+                    Text(priority.symbol)
+                    Text(priority.localizedTitle)
                 }
                 .optionStyle()
             }
             .buttonStyle(.plain)
             .popover(isPresented: $isPriorityPickerPresented) {
                 VStack(spacing: 4) {
-                    ForEach(priorities, id: \.self) { option in
+                    ForEach(ReminderPriority.allCases, id: \.self) { option in
                         Button {
                             priority = option
                             isPriorityPickerPresented = false
                         } label: {
-                            Text(option)
+                            Text(option.localizedTitle)
                                 .font(.body)
                                 .foregroundStyle(priority == option ? .white : .gray400)
                                 .padding(4)
@@ -90,7 +83,7 @@ struct ReminderMetadataEditor: View {
                 }
             }
             .onChange(of: priority) { _, newValue in
-                reminder.priority = Self.priorityValue(for: newValue)
+                reminder.priority = newValue
                 updateReminder()
             }
         }
@@ -98,24 +91,6 @@ struct ReminderMetadataEditor: View {
             if let date = reminder.dueDateComponents?.date {
                 dueDate = date
             }
-        }
-    }
-
-    private var priorityMark: String {
-        switch priority {
-        case String(localized: "LOW"): "!"
-        case String(localized: "MID"): "!!"
-        case String(localized: "HIGH"): "!!!"
-        default: "-"
-        }
-    }
-
-    private static func priorityValue(for title: String) -> Int {
-        switch title {
-        case String(localized: "LOW"): 9
-        case String(localized: "MID"): 5
-        case String(localized: "HIGH"): 1
-        default: 0
         }
     }
 

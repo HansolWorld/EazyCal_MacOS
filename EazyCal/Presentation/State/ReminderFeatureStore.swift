@@ -53,13 +53,13 @@ final class ReminderFeatureStore: ObservableObject {
             ?? reminders.first { $0.id == identifier }
     }
 
-    func createReminder(title: String, date: Date?, highlight: String) async throws {
+    func createReminder(title: String, date: Date?, priority: ReminderPriority) async throws {
         let snapshot = try await perform {
             try await useCase.create(
                 draft: ReminderDraft(
                     title: title,
                     date: date,
-                    priority: ReminderPriority.priority(for: highlight)
+                    priority: priority
                 ),
                 visibleDate: self.date
             )

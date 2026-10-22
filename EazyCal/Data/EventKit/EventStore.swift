@@ -93,7 +93,7 @@ final class EventStore: ObservableObject, CalendarRepository, ReminderRepository
         try requireFullAccess(for: .reminder)
         let reminder = try reminder(withIdentifier: item.id)
         reminder.title = item.title
-        reminder.priority = item.priority
+        reminder.priority = item.priority.rawValue
         reminder.dueDateComponents = item.dueDateComponents
         reminder.isCompleted = item.isCompleted
         try eventStore.save(reminder, commit: true)
@@ -107,7 +107,7 @@ final class EventStore: ObservableObject, CalendarRepository, ReminderRepository
 
         let reminder = EKReminder(eventStore: eventStore)
         reminder.title = draft.title
-        reminder.priority = draft.priority
+        reminder.priority = draft.priority.rawValue
         if let date = draft.date {
             reminder.dueDateComponents = Calendar.current.dateComponents(
                 [.year, .month, .day, .hour, .minute],
@@ -250,7 +250,7 @@ enum EventKitMapper {
         ReminderItem(
             id: reminder.calendarItemIdentifier,
             title: reminder.title ?? "",
-            priority: reminder.priority,
+            priority: ReminderPriority(eventKitValue: reminder.priority),
             dueDateComponents: reminder.dueDateComponents,
             isCompleted: reminder.isCompleted,
             color: color(reminder.calendar?.cgColor)
@@ -332,21 +332,6 @@ enum RecurrenceRuleFactory {
             frequency = .yearly
         }
         return [EKRecurrenceRule(recurrenceWith: frequency, interval: 1, end: nil)]
-    }
-}
-
-enum ReminderPriority {
-    static func priority(for localizedValue: String) -> Int {
-        switch localizedValue {
-        case String(localized: "LOW"):
-            return 9
-        case String(localized: "MID"):
-            return 5
-        case String(localized: "HIGH"):
-            return 1
-        default:
-            return 0
-        }
     }
 }
 

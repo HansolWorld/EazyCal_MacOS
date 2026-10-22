@@ -73,10 +73,12 @@ final class EventRuleTests: XCTestCase {
     }
 
     func testReminderPriorities() {
-        XCTAssertEqual(ReminderPriority.priority(for: String(localized: "LOW")), 9)
-        XCTAssertEqual(ReminderPriority.priority(for: String(localized: "MID")), 5)
-        XCTAssertEqual(ReminderPriority.priority(for: String(localized: "HIGH")), 1)
-        XCTAssertEqual(ReminderPriority.priority(for: "unknown"), 0)
+        XCTAssertEqual(ReminderPriority.low.rawValue, 9)
+        XCTAssertEqual(ReminderPriority.medium.rawValue, 5)
+        XCTAssertEqual(ReminderPriority.high.rawValue, 1)
+        XCTAssertEqual(ReminderPriority(eventKitValue: 0), .none)
+        XCTAssertEqual(ReminderPriority(eventKitValue: 3), .high)
+        XCTAssertEqual(ReminderPriority(eventKitValue: 7), .low)
     }
 }
 
@@ -247,7 +249,7 @@ final class ReminderFeatureStoreTests: XCTestCase {
         let allReminder = ReminderItem(
             id: "all",
             title: "All",
-            priority: 0,
+            priority: .none,
             dueDateComponents: nil,
             isCompleted: false,
             color: .clear
@@ -255,7 +257,7 @@ final class ReminderFeatureStoreTests: XCTestCase {
         let scheduledReminder = ReminderItem(
             id: "scheduled",
             title: "Scheduled",
-            priority: 5,
+            priority: .medium,
             dueDateComponents: Calendar.current.dateComponents(
                 [.year, .month, .day],
                 from: Date()
@@ -307,7 +309,7 @@ final class EventStoreManagerTests: XCTestCase {
             userDefaults: defaults
         )
 
-        try await manager.createNewReminder(title: "Test", date: nil, highlight: "unknown")
+        try await manager.createNewReminder(title: "Test", date: nil, priority: .none)
 
         XCTAssertEqual(store.createReminderCount, 1)
         XCTAssertEqual(store.reminderLoadCount, 1)
@@ -327,7 +329,7 @@ final class EventStoreManagerTests: XCTestCase {
         let reminder = ReminderItem(
             id: "reminder",
             title: "Reminder",
-            priority: 0,
+            priority: .none,
             dueDateComponents: DateComponents(
                 year: 2025,
                 month: 1,

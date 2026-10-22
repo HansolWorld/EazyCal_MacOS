@@ -19,7 +19,7 @@ struct TodoView: View {
                 ForEach($eventManager.reminders) { $reminder in
                     TodoLabel(
                         editTodo: reminder.title,
-                        newPriority: priorityTitle(for: reminder.priority),
+                        priority: reminder.priority,
                         todo: $reminder,
                         selectedId: $selectedReminderIdentifier
                     )
@@ -64,17 +64,6 @@ struct TodoView: View {
         }
     }
 
-    private func priorityTitle(for priority: Int) -> String {
-        if (6...9).contains(priority) {
-            String(localized: "LOW")
-        } else if priority == 5 {
-            String(localized: "MID")
-        } else if (1...4).contains(priority) {
-            String(localized: "HIGH")
-        } else {
-            String(localized: "IMPORTANCE_DEFAULT")
-        }
-    }
 }
 
 #Preview {
