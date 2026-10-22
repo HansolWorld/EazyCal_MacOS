@@ -167,6 +167,114 @@ final class MonthCalendarStateTests: XCTestCase {
 }
 
 @MainActor
+final class EventStorePermissionStoreTests: XCTestCase {
+    func testReminderPermissionIsRequestedWhenCalendarPermissionRequestFails() async {
+        let repository = FakeEventStore()
+        repository.calendarAuthorizationStatus = .notDetermined
+        repository.reminderAuthorizationStatus = .notDetermined
+        repository.shouldFailCalendarAccessRequest = true
+        let store = EventStorePermissionStore(
+            calendarRepository: repository,
+            reminderRepository: repository
+        )
+
+        await store.requestAccess()
+
+        XCTAssertEqual(repository.calendarAccessRequestCount, 1)
+        XCTAssertEqual(repository.reminderAccessRequestCount, 1)
+        XCTAssertEqual(store.calendarAuthorizationStatus, .notDetermined)
+        XCTAssertEqual(store.reminderAuthorizationStatus, .fullAccess)
+        XCTAssertNotNil(store.lastErrorMessage)
+    }
+}
+
+@MainActor
+final class CalendarFeatureStoreTests: XCTestCase {
+    func testReloadPublishesDataAndInitializesVisibleCalendars() async throws {
+        let repository = FakeEventStore()
+        let workCalendar = CalendarItem(id: "work", title: "Work", color: .clear)
+        let homeCalendar = CalendarItem(id: "home", title: "Home", color: .clear)
+        let event = EventItem(
+            id: "event",
+            calendar: workCalendar,
+            title: "Meeting",
+            isAllDay: false,
+            startDate: Date(),
+            endDate: Date().addingTimeInterval(3600),
+            repeatType: .oneDay,
+            url: nil,
+            notes: ""
+        )
+        repository.calendarsResult = [workCalendar, homeCalendar]
+        repository.eventsResult = [event]
+        repository.upcomingEventsResult = [event]
+        let suiteName = "CalendarFeatureStoreTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let store = CalendarFeatureStore(repository: repository, userDefaults: defaults)
+
+        await store.reloadAll()
+
+        XCTAssertEqual(store.calendars, [workCalendar, homeCalendar])
+        XCTAssertEqual(store.events, [event])
+        XCTAssertEqual(store.upcomingEvents, [event])
+        XCTAssertEqual(repository.lastRequestedCalendarIdentifiers, ["work", "home"])
+
+        await store.setCalendar(identifier: "home", isChecked: false)
+
+        XCTAssertFalse(store.isCalendarChecked(identifier: "home"))
+        XCTAssertEqual(repository.lastRequestedCalendarIdentifiers, ["work"])
+    }
+
+    func testEventLoadingFailureIsRecordedByCalendarStore() async throws {
+        let repository = FakeEventStore()
+        repository.shouldFailEventLoading = true
+        let suiteName = "CalendarFeatureStoreTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let store = CalendarFeatureStore(repository: repository, userDefaults: defaults)
+
+        await store.refreshEvents()
+
+        XCTAssertNotNil(store.lastErrorMessage)
+    }
+}
+
+@MainActor
+final class ReminderFeatureStoreTests: XCTestCase {
+    func testReloadPublishesAllAndScheduledReminders() async {
+        let repository = FakeEventStore()
+        let allReminder = ReminderItem(
+            id: "all",
+            title: "All",
+            priority: 0,
+            dueDateComponents: nil,
+            isCompleted: false,
+            color: .clear
+        )
+        let scheduledReminder = ReminderItem(
+            id: "scheduled",
+            title: "Scheduled",
+            priority: 5,
+            dueDateComponents: Calendar.current.dateComponents(
+                [.year, .month, .day],
+                from: Date()
+            ),
+            isCompleted: false,
+            color: .clear
+        )
+        repository.remindersResult = [allReminder]
+        repository.scheduledRemindersResult = [scheduledReminder]
+        let store = ReminderFeatureStore(repository: repository)
+
+        await store.reloadAll()
+
+        XCTAssertEqual(store.reminders, [allReminder])
+        XCTAssertEqual(store.scheduledReminders, [scheduledReminder])
+    }
+}
+
+@MainActor
 final class EventStoreManagerTests: XCTestCase {
     func testPrepareLoadsEachAuthorizedDataSource() async throws {
         let store = FakeEventStore()
@@ -277,38 +385,60 @@ private final class FakeEventStore: CalendarRepository, ReminderRepository {
     var scheduledReminderLoadCount = 0
     var createReminderCount = 0
     var updateReminderCount = 0
+    var calendarAccessRequestCount = 0
+    var reminderAccessRequestCount = 0
     var updatedReminder: ReminderItem?
     var shouldFailEventLoading = false
+    var shouldFailCalendarAccessRequest = false
+    var calendarsResult: [CalendarItem] = []
+    var eventsResult: [EventItem] = []
+    var upcomingEventsResult: [EventItem] = []
+    var remindersResult: [ReminderItem] = []
+    var scheduledRemindersResult: [ReminderItem] = []
+    var lastRequestedCalendarIdentifiers: Set<String> = []
 
-    func requestCalendarAccess() async throws -> Bool { true }
-    func requestReminderAccess() async throws -> Bool { true }
+    func requestCalendarAccess() async throws -> Bool {
+        calendarAccessRequestCount += 1
+        if shouldFailCalendarAccessRequest {
+            throw EventStoreError.denied
+        }
+        calendarAuthorizationStatus = .fullAccess
+        return true
+    }
+
+    func requestReminderAccess() async throws -> Bool {
+        reminderAccessRequestCount += 1
+        reminderAuthorizationStatus = .fullAccess
+        return true
+    }
 
     func loadCalendars() async throws -> [CalendarItem] {
         calendarLoadCount += 1
-        return []
+        return calendarsResult
     }
 
     func loadUpcomingEvents() async throws -> [EventItem] {
         upcomingLoadCount += 1
-        return []
+        return upcomingEventsResult
     }
 
     func loadEvents(forDate date: Date, calendarIdentifiers: Set<String>) async throws -> [EventItem] {
         eventLoadCount += 1
+        lastRequestedCalendarIdentifiers = calendarIdentifiers
         if shouldFailEventLoading {
             throw EventStoreError.unknown
         }
-        return []
+        return eventsResult
     }
 
     func loadAllReminders() async throws -> [ReminderItem] {
         reminderLoadCount += 1
-        return []
+        return remindersResult
     }
 
     func loadScheduledReminders(from startDate: Date, to endDate: Date) async throws -> [ReminderItem] {
         scheduledReminderLoadCount += 1
-        return []
+        return scheduledRemindersResult
     }
 
     func completeReminder(identifier: String) async throws {}

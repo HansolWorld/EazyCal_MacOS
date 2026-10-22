@@ -45,11 +45,16 @@ App
 │   ├── EventKit → EventStore
 │   └── SwiftData → TemplateRepository / CalendarCategoryRepository
 └── Presentation
-    ├── EventStoreManager
+    ├── EventStoreManager (호환 파사드와 생명주기 조정)
+    ├── EventStorePermissionStore
+    ├── CalendarFeatureStore
+    ├── ReminderFeatureStore
     └── Calendar / Todo / ScheduleList
 ```
 
-`EventStore`는 EventKit 접근과 도메인 모델 변환을 담당합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당하며, `EventStoreManager`는 권한과 화면 공유 데이터를 관리합니다. 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당하고, 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
+`EventStore`는 EventKit 접근과 도메인 모델 변환을 담당합니다. `CalendarRepository`, `ReminderRepository` 계약은 `EKEvent` 같은 프레임워크 타입 대신 식별자와 `EventItem`, `ReminderItem`, `CalendarItem` 값만 사용합니다. 변경 후 관련 데이터를 다시 조회하는 애플리케이션 흐름은 `CalendarEventUseCase`, `ReminderUseCase`가 담당합니다.
+
+화면 공유 상태는 권한, 캘린더·일정, 미리 알림 기능별 Store로 분리되어 있습니다. `EventStoreManager`는 기존 화면 API를 유지하는 파사드이자 Store 생명주기와 EventKit 변경 감지를 조정하고, 각 Store의 변경 알림을 SwiftUI에 전달합니다. 카테고리 필터링·레이어 배치·날짜별 항목 계산은 `MonthCalendarState`가 담당하고, 캘린더 셀의 템플릿·일정·미리 알림 드롭 동작은 `CalendarDropCoordinator`로 분리되어 있습니다.
 
 `Presentation`과 `App` 계층은 EventKit을 import하지 않습니다. 화면 선택과 드래그 상태는 EventKit 객체나 도메인 객체 전체를 보관하지 않고 일정·미리 알림 식별자만 전달하며, 데이터 계층이 해당 식별자를 실제 EventKit 항목으로 해석합니다.
 
@@ -76,7 +81,7 @@ EazyCal/
 │   ├── EventKit/                # EventKit Repository 구현과 매퍼
 │   └── Persistence/             # SwiftData 모델과 Repository 구현
 ├── Presentation/
-│   ├── State/                   # 화면 공유 상태와 애플리케이션 파사드
+│   ├── State/                   # 기능별 Store와 EventStoreManager 파사드
 │   ├── Models/                  # 화면 전용 값
 │   ├── Calendar/                # 월간 캘린더 헤더·그리드·셀과 드롭 조정자
 │   ├── PopoverView/             # 일정 생성·수정 화면
@@ -128,6 +133,8 @@ xcodebuild \
 - 반복 규칙 생성과 무제한 반복
 - 미리 알림 우선순위 변환
 - 권한 승인 상태의 초기 데이터 로딩
+- 권한 요청 실패 시 캘린더와 미리 알림의 독립 처리
+- 기능별 Store의 상태 게시, 오류 기록 및 캘린더 선택값 저장
 - 데이터 변경 후 명시적 새로고침
 - 미리 알림 재예약 시 기존 시간 보존과 관련 데이터 새로고침
 - UseCase 변경 후 이벤트·미리 알림 목록 재조회
