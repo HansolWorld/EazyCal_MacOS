@@ -1,33 +1,71 @@
-//
-//  EventStoreManager.swift
-//  EazyCal
-//
-
-import SwiftUI
+import Combine
+import Foundation
 
 @MainActor
 final class EventStoreManager: ObservableObject {
-    private let calendarRepository: any CalendarRepository
-    private let reminderRepository: any ReminderRepository
+    private let permissionStore: EventStorePermissionStore
+    private let calendarStore: CalendarFeatureStore
+    private let reminderStore: ReminderFeatureStore
     private let changeObserver: (any EventStoreChangeObserving)?
-    private let calendarEventUseCase: CalendarEventUseCase
-    private let reminderUseCase: ReminderUseCase
-    private let userDefaults: UserDefaults
-    private let checkedCalendarsKey = "checkedCategory"
+    private var cancellables: Set<AnyCancellable> = []
 
-    var date = Date()
+    var date: Date {
+        get { calendarStore.date }
+        set {
+            calendarStore.date = newValue
+            reminderStore.date = newValue
+        }
+    }
 
-    @Published var calendars: [CalendarItem] = []
-    @Published var events: [EventItem] = []
-    @Published var upcomingEvents: [EventItem] = []
-    @Published var reminders: [ReminderItem] = []
-    @Published var scheduledReminders: [ReminderItem] = []
-    @Published private(set) var calendarAuthorizationStatus: AuthorizationStatus
-    @Published private(set) var reminderAuthorizationStatus: AuthorizationStatus
-    @Published var lastErrorMessage: String?
+    var calendars: [CalendarItem] {
+        get { calendarStore.calendars }
+        set { calendarStore.calendars = newValue }
+    }
 
-    var hasCalendarAccess: Bool { calendarAuthorizationStatus == .fullAccess }
-    var hasReminderAccess: Bool { reminderAuthorizationStatus == .fullAccess }
+    var events: [EventItem] {
+        get { calendarStore.events }
+        set { calendarStore.events = newValue }
+    }
+
+    var upcomingEvents: [EventItem] {
+        get { calendarStore.upcomingEvents }
+        set { calendarStore.upcomingEvents = newValue }
+    }
+
+    var reminders: [ReminderItem] {
+        get { reminderStore.reminders }
+        set { reminderStore.reminders = newValue }
+    }
+
+    var scheduledReminders: [ReminderItem] {
+        get { reminderStore.scheduledReminders }
+        set { reminderStore.scheduledReminders = newValue }
+    }
+
+    var calendarAuthorizationStatus: AuthorizationStatus {
+        permissionStore.calendarAuthorizationStatus
+    }
+
+    var reminderAuthorizationStatus: AuthorizationStatus {
+        permissionStore.reminderAuthorizationStatus
+    }
+
+    var lastErrorMessage: String? {
+        get {
+            permissionStore.lastErrorMessage
+                ?? calendarStore.lastErrorMessage
+                ?? reminderStore.lastErrorMessage
+        }
+        set {
+            guard newValue == nil else { return }
+            permissionStore.clearError()
+            calendarStore.clearError()
+            reminderStore.clearError()
+        }
+    }
+
+    var hasCalendarAccess: Bool { permissionStore.hasCalendarAccess }
+    var hasReminderAccess: Bool { permissionStore.hasReminderAccess }
 
     init(
         calendarRepository: any CalendarRepository,
@@ -35,14 +73,18 @@ final class EventStoreManager: ObservableObject {
         changeObserver: (any EventStoreChangeObserving)? = nil,
         userDefaults: UserDefaults = .standard
     ) {
-        self.calendarRepository = calendarRepository
-        self.reminderRepository = reminderRepository
+        permissionStore = EventStorePermissionStore(
+            calendarRepository: calendarRepository,
+            reminderRepository: reminderRepository
+        )
+        calendarStore = CalendarFeatureStore(
+            repository: calendarRepository,
+            userDefaults: userDefaults
+        )
+        reminderStore = ReminderFeatureStore(repository: reminderRepository)
         self.changeObserver = changeObserver
-        calendarEventUseCase = CalendarEventUseCase(repository: calendarRepository)
-        reminderUseCase = ReminderUseCase(repository: reminderRepository)
-        self.userDefaults = userDefaults
-        calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
-        reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
+        reminderStore.date = calendarStore.date
+        forwardFeatureChanges()
     }
 
     convenience init(userDefaults: UserDefaults = .standard) {
@@ -73,165 +115,76 @@ final class EventStoreManager: ObservableObject {
     }
 
     func requestAccess() async {
-        do {
-            if calendarAuthorizationStatus == .notDetermined {
-                _ = try await calendarRepository.requestCalendarAccess()
-            }
-            calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
-        } catch {
-            record(error)
-        }
-
-        do {
-            if reminderAuthorizationStatus == .notDetermined {
-                _ = try await reminderRepository.requestReminderAccess()
-            }
-            reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
-        } catch {
-            record(error)
-        }
+        await permissionStore.requestAccess()
     }
 
     func reloadAll() async {
-        calendarAuthorizationStatus = calendarRepository.calendarAuthorizationStatus
-        reminderAuthorizationStatus = reminderRepository.reminderAuthorizationStatus
+        permissionStore.refreshStatuses()
 
         if hasCalendarAccess {
-            do {
-                try await loadCalendars()
-                try await loadEvents()
-                try await loadUpcomingEvents()
-            } catch {
-                record(error)
-            }
+            await calendarStore.reloadAll()
         } else {
-            calendars = []
-            events = []
-            upcomingEvents = []
+            calendarStore.clear()
         }
 
         if hasReminderAccess {
-            do {
-                try await reloadReminderData()
-            } catch {
-                record(error)
-            }
+            await reminderStore.reloadAll()
         } else {
-            reminders = []
-            scheduledReminders = []
+            reminderStore.clear()
         }
-    }
-
-    func loadCalendars() async throws {
-        calendars = try await calendarRepository.loadCalendars()
-        initializeCheckedCalendarsIfNeeded()
-    }
-
-    func loadReminders() async throws {
-        reminders = try await reminderRepository.loadAllReminders()
-    }
-
-    func loadScheduledReminders() async throws {
-        let interval = try CalendarMath.visibleMonthInterval(containing: date)
-        scheduledReminders = try await reminderRepository.loadScheduledReminders(
-            from: interval.start,
-            to: interval.end
-        )
     }
 
     func refreshCalendarEntries() async {
         if hasCalendarAccess {
-            do {
-                try await loadEvents()
-            } catch {
-                record(error)
-            }
+            await calendarStore.refreshEvents()
         }
         if hasReminderAccess {
-            do {
-                try await loadScheduledReminders()
-            } catch {
-                record(error)
-            }
+            await reminderStore.refreshScheduledReminders()
         }
+    }
+
+    func loadCalendars() async throws {
+        try await calendarStore.loadCalendars()
     }
 
     func loadEvents() async throws {
-        events = try await calendarRepository.loadEvents(
-            forDate: date,
-            calendarIdentifiers: checkedCalendarIdentifiers
-        )
+        try await calendarStore.loadEvents()
     }
 
     func loadUpcomingEvents() async throws {
-        upcomingEvents = try await calendarRepository.loadUpcomingEvents()
+        try await calendarStore.loadUpcomingEvents()
+    }
+
+    func loadReminders() async throws {
+        try await reminderStore.loadReminders()
+    }
+
+    func loadScheduledReminders() async throws {
+        try await reminderStore.loadScheduledReminders()
     }
 
     func event(withIdentifier identifier: String) -> EventItem? {
-        events.first { $0.id == identifier }
-            ?? upcomingEvents.first { $0.id == identifier }
+        calendarStore.event(withIdentifier: identifier)
     }
 
     func reminder(withIdentifier identifier: String) -> ReminderItem? {
-        scheduledReminders.first { $0.id == identifier }
-            ?? reminders.first { $0.id == identifier }
+        reminderStore.reminder(withIdentifier: identifier)
     }
 
     func createNewReminder(title: String, date: Date?, highlight: String) async throws {
-        do {
-            let snapshot = try await reminderUseCase.create(
-                draft: ReminderDraft(
-                    title: title,
-                    date: date,
-                    priority: ReminderPriority.priority(for: highlight)
-                ),
-                visibleDate: self.date
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await reminderStore.createReminder(title: title, date: date, highlight: highlight)
     }
 
     func completeReminder(identifier: String) async throws {
-        do {
-            let snapshot = try await reminderUseCase.complete(
-                identifier: identifier,
-                visibleDate: date
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await reminderStore.completeReminder(identifier: identifier)
     }
 
     func updateReminder(reminder: ReminderItem) async throws {
-        do {
-            let snapshot = try await reminderUseCase.update(reminder, visibleDate: date)
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await reminderStore.updateReminder(reminder)
     }
 
     func rescheduleReminder(identifier: String, to targetDate: Date) async throws {
-        do {
-            guard let reminder = reminder(withIdentifier: identifier) else {
-                throw EventStoreError.itemNotFound
-            }
-            let snapshot = try await reminderUseCase.reschedule(
-                reminder,
-                to: targetDate,
-                visibleDate: date
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await reminderStore.rescheduleReminder(identifier: identifier, to: targetDate)
     }
 
     func saveEvent(
@@ -244,168 +197,59 @@ final class EventStoreManager: ObservableObject {
         notes: [String],
         calendarIdentifier: String
     ) async throws {
-        do {
-            let snapshot = try await calendarEventUseCase.saveEvent(
-                draft: EventDraft(
-                    title: title,
-                    isAllDay: isAllDay,
-                    startDate: startDate,
-                    endDate: endDate,
-                    repeatType: repeatDate,
-                    url: url,
-                    notes: notes.map { "☐" + $0 }.joined(separator: "\n"),
-                    calendarIdentifier: calendarIdentifier
-                ),
-                visibleDate: date,
-                visibleCalendarIdentifiers: checkedCalendarIdentifiers
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.saveEvent(
+            title: title,
+            isAllDay: isAllDay,
+            startDate: startDate,
+            endDate: endDate,
+            repeatDate: repeatDate,
+            url: url,
+            notes: notes,
+            calendarIdentifier: calendarIdentifier
+        )
     }
 
     func updateEvent(event: EventItem) async throws {
-        do {
-            let snapshot = try await calendarEventUseCase.update(
-                event,
-                visibleDate: date,
-                visibleCalendarIdentifiers: checkedCalendarIdentifiers
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.updateEvent(event)
     }
 
     func moveEvent(identifier: String, to targetDate: Date) async throws {
-        do {
-            guard let event = event(withIdentifier: identifier),
-                  let movedEvent = EventSchedule.moving(event, toDay: targetDate) else {
-                throw EventStoreError.itemNotFound
-            }
-            try await updateEvent(event: movedEvent)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.moveEvent(identifier: identifier, to: targetDate)
     }
 
     func removeEvent(identifier: String) async throws {
-        do {
-            let snapshot = try await calendarEventUseCase.remove(
-                identifier: identifier,
-                visibleDate: date,
-                visibleCalendarIdentifiers: checkedCalendarIdentifiers
-            )
-            apply(snapshot)
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.removeEvent(identifier: identifier)
     }
 
     func createNewCalendar() async throws {
-        do {
-            try await calendarRepository.createNewCalendar()
-            try await loadCalendars()
-            try await loadEvents()
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.createCalendar()
     }
 
     func updateCalendar(calendar: CalendarItem) async throws {
-        do {
-            try await calendarRepository.updateCalendar(calendar)
-            try await loadCalendars()
-            try await reloadEvents()
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.updateCalendar(calendar)
     }
 
     func removeCalendar(identifier: String) async throws {
-        do {
-            try await calendarRepository.removeCalendar(identifier: identifier)
-            removeCheckedCalendar(identifier: identifier)
-            try await loadCalendars()
-            try await reloadEvents()
-        } catch {
-            record(error)
-            throw error
-        }
+        try await calendarStore.removeCalendar(identifier: identifier)
     }
 
     func setCalendar(identifier: String, isChecked: Bool) async {
-        var identifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
-        identifiers.removeAll { $0 == identifier }
-        if isChecked {
-            identifiers.append(identifier)
-        }
-        userDefaults.set(identifiers, forKey: checkedCalendarsKey)
-
-        do {
-            try await loadEvents()
-        } catch {
-            record(error)
-        }
+        await calendarStore.setCalendar(identifier: identifier, isChecked: isChecked)
     }
 
     func isCalendarChecked(identifier: String) -> Bool {
-        checkedCalendarIdentifiers.contains(identifier)
+        calendarStore.isCalendarChecked(identifier: identifier)
     }
 
-    private func reloadEvents() async throws {
-        apply(try await calendarEventUseCase.loadSnapshot(
-            for: date,
-            calendarIdentifiers: checkedCalendarIdentifiers
-        ))
-    }
-
-    private func reloadReminderData() async throws {
-        apply(try await reminderUseCase.loadSnapshot(for: date))
-    }
-
-    private var checkedCalendarIdentifiers: Set<String> {
-        Set(userDefaults.stringArray(forKey: checkedCalendarsKey) ?? [])
-    }
-
-    private func apply(_ snapshot: CalendarEventSnapshot) {
-        events = snapshot.events
-        upcomingEvents = snapshot.upcomingEvents
-    }
-
-    private func apply(_ snapshot: ReminderSnapshot) {
-        reminders = snapshot.reminders
-        scheduledReminders = snapshot.scheduledReminders
-    }
-
-    private func initializeCheckedCalendarsIfNeeded() {
-        let validIdentifiers = Set(calendars.map(\.id))
-        if userDefaults.object(forKey: checkedCalendarsKey) == nil {
-            userDefaults.set(Array(validIdentifiers), forKey: checkedCalendarsKey)
-            return
-        }
-
-        let identifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
-        let validSavedIdentifiers = identifiers.filter(validIdentifiers.contains)
-        if identifiers != validSavedIdentifiers {
-            userDefaults.set(validSavedIdentifiers, forKey: checkedCalendarsKey)
-        }
-    }
-
-    private func removeCheckedCalendar(identifier: String) {
-        var identifiers = userDefaults.stringArray(forKey: checkedCalendarsKey) ?? []
-        identifiers.removeAll { $0 == identifier }
-        userDefaults.set(identifiers, forKey: checkedCalendarsKey)
-    }
-
-    private func record(_ error: Error) {
-        lastErrorMessage = error.localizedDescription
+    private func forwardFeatureChanges() {
+        permissionStore.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+        calendarStore.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+        reminderStore.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
     }
 }

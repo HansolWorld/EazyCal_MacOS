@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD1000010000000000000001 /* EventStorePermissionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1000020000000000000002 /* EventStorePermissionStore.swift */; };
+		AD1000030000000000000003 /* CalendarFeatureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1000040000000000000004 /* CalendarFeatureStore.swift */; };
+		AD1000050000000000000005 /* ReminderFeatureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1000060000000000000006 /* ReminderFeatureStore.swift */; };
 		AD0000010000000000000001 /* NewReminderComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000020000000000000002 /* NewReminderComposer.swift */; };
 		AD0000030000000000000003 /* ReminderMetadataEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000040000000000000004 /* ReminderMetadataEditor.swift */; };
 		AD0000050000000000000005 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000060000000000000006 /* TemplateEditorView.swift */; };
@@ -80,6 +83,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD1000020000000000000002 /* EventStorePermissionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStorePermissionStore.swift; sourceTree = "<group>"; };
+		AD1000040000000000000004 /* CalendarFeatureStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarFeatureStore.swift; sourceTree = "<group>"; };
+		AD1000060000000000000006 /* ReminderFeatureStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderFeatureStore.swift; sourceTree = "<group>"; };
 		AD0000020000000000000002 /* NewReminderComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReminderComposer.swift; sourceTree = "<group>"; };
 		AD0000040000000000000004 /* ReminderMetadataEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderMetadataEditor.swift; sourceTree = "<group>"; };
 		AD0000060000000000000006 /* TemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorView.swift; sourceTree = "<group>"; };
@@ -267,6 +273,9 @@
 			isa = PBXGroup;
 			children = (
 				FF5759552ADC0F0A001E588F /* EventStoreManager.swift */,
+				AD1000020000000000000002 /* EventStorePermissionStore.swift */,
+				AD1000040000000000000004 /* CalendarFeatureStore.swift */,
+				AD1000060000000000000006 /* ReminderFeatureStore.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -490,6 +499,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD1000010000000000000001 /* EventStorePermissionStore.swift in Sources */,
+				AD1000030000000000000003 /* CalendarFeatureStore.swift in Sources */,
+				AD1000050000000000000005 /* ReminderFeatureStore.swift in Sources */,
 				AD0000010000000000000001 /* NewReminderComposer.swift in Sources */,
 				AD0000030000000000000003 /* ReminderMetadataEditor.swift in Sources */,
 				AD0000050000000000000005 /* TemplateEditorView.swift in Sources */,
